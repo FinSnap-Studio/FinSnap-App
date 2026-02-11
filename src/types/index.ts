@@ -1,0 +1,149 @@
+import { type CurrencyCode } from "@/lib/currencies";
+
+export type WalletType = "EWALLET" | "BANK" | "CASH";
+export type TransactionType = "INCOME" | "EXPENSE" | "TRANSFER";
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+}
+
+export interface Wallet {
+  id: string;
+  name: string;
+  type: WalletType;
+  currency: CurrencyCode;
+  balance: number;
+  icon: string;
+  color: string;
+  isActive: boolean;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  type: TransactionType;
+  icon: string;
+  color: string;
+  isDefault: boolean;
+  userId: string;
+  createdAt: string;
+}
+
+export interface Transaction {
+  id: string;
+  amount: number;
+  currency: CurrencyCode;
+  type: TransactionType;
+  description: string;
+  date: string;
+  userId: string;
+  walletId: string;
+  wallet?: Wallet;
+  categoryId: string | null;
+  category?: Category | null;
+  toWalletId: string | null;
+  toWallet?: Wallet | null;
+  toAmount: number | null;
+  toCurrency: CurrencyCode | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Budget {
+  id: string;
+  amount: number;
+  spent: number;
+  currency: CurrencyCode;
+  month: number;
+  year: number;
+  userId: string;
+  categoryId: string;
+  category?: Category;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WalletFormInput {
+  name: string;
+  type: WalletType;
+  currency: CurrencyCode;
+  balance: number;
+  icon: string;
+  color: string;
+}
+
+export interface TransactionFormInput {
+  amount: number;
+  type: TransactionType;
+  description: string;
+  date: Date;
+  walletId: string;
+  categoryId: string;
+  toWalletId?: string;
+  toAmount?: number;
+}
+
+export interface BudgetFormInput {
+  amount: number;
+  currency: CurrencyCode;
+  categoryId: string;
+  month: number;
+  year: number;
+}
+
+export interface CategoryFormInput {
+  name: string;
+  type: TransactionType;
+  icon: string;
+  color: string;
+}
+
+export interface LoginFormInput {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormInput {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface CategoryExpense {
+  categoryId: string;
+  categoryName: string;
+  total: number;
+  color: string;
+  icon: string;
+}
+
+export interface DailyTotal {
+  date: string;
+  dayLabel: string;
+  income: number;
+  expense: number;
+}
+
+export interface MonthlyTrend {
+  month: number;
+  year: number;
+  label: string;
+  income: number;
+  expense: number;
+}
+
+export interface TransactionFilters {
+  type?: TransactionType | "ALL";
+  walletId?: string;
+  categoryId?: string;
+  dateFrom?: Date;
+  dateTo?: Date;
+  search?: string;
+}
