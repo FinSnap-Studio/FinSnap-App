@@ -4,6 +4,8 @@ export const STORAGE_KEYS = {
   budgets: "finsnap-budgets",
   categories: "finsnap-categories",
   templates: "finsnap-templates",
+  recurring: "finsnap-recurring",
+  debts: "finsnap-debts",
 } as const;
 
 export function storageGet<T>(key: string): T | null {

@@ -31,6 +31,7 @@ export const NAV_ITEMS = [
   { label: "nav.dashboard" as TranslationKey, href: "/dashboard", icon: "LayoutDashboard" },
   { label: "nav.wallets" as TranslationKey, href: "/wallets", icon: "Wallet" },
   { label: "nav.transactions" as TranslationKey, href: "/transactions", icon: "ArrowLeftRight" },
+  { label: "nav.debts" as TranslationKey, href: "/debts", icon: "Handshake" },
   { label: "nav.budgets" as TranslationKey, href: "/budgets", icon: "PiggyBank" },
   { label: "nav.categories" as TranslationKey, href: "/categories", icon: "Tag" },
 ] as const;

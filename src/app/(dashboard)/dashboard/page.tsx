@@ -9,6 +9,7 @@ import { ExpenseBreakdown } from "@/components/dashboard/expense-breakdown";
 import { IncomeVsExpenseChart } from "@/components/dashboard/income-vs-expense-chart";
 import { SpendingTrendChart } from "@/components/dashboard/spending-trend-chart";
 import { FAB } from "@/components/dashboard/fab";
+import { DebtReminder } from "@/components/debts/debt-reminder";
 
 export default function DashboardPage() {
   return (
@@ -30,6 +31,9 @@ export default function DashboardPage() {
 
       {/* Spending trend (full width) */}
       <SpendingTrendChart />
+
+      {/* Debt reminders */}
+      <DebtReminder />
 
       {/* Recent transactions + Budget overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

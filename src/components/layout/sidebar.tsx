@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Wallet,
   ArrowLeftRight,
+  Handshake,
   PiggyBank,
   Tag,
   ChevronsUpDown,
@@ -41,6 +42,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
   Wallet,
   ArrowLeftRight,
+  Handshake,
   PiggyBank,
   Tag,
 };
