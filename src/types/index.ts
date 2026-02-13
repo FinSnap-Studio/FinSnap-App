@@ -139,6 +139,32 @@ export interface MonthlyTrend {
   expense: number;
 }
 
+export interface TransactionTemplate {
+  id: string;
+  name: string;
+  type: TransactionType;
+  amount: number;
+  description: string;
+  walletId: string;
+  categoryId: string | null;
+  toWalletId: string | null;
+  toAmount: number | null;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TransactionTemplateFormInput {
+  name: string;
+  type: TransactionType;
+  amount: number;
+  description: string;
+  walletId: string;
+  categoryId: string;
+  toWalletId?: string;
+  toAmount?: number;
+}
+
 export interface TransactionFilters {
   type?: TransactionType | "ALL";
   walletId?: string;

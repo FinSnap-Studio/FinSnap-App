@@ -7,6 +7,7 @@ import { useWalletStore } from "@/stores/wallet-store";
 import { useCategoryStore } from "@/stores/category-store";
 import { useTransactionStore } from "@/stores/transaction-store";
 import { useBudgetStore } from "@/stores/budget-store";
+import { useTemplateStore } from "@/stores/template-store";
 import { AppSidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -23,6 +24,7 @@ export default function DashboardLayout({
   const fetchCategories = useCategoryStore((s) => s.fetchCategories);
   const fetchTransactions = useTransactionStore((s) => s.fetchTransactions);
   const fetchBudgets = useBudgetStore((s) => s.fetchBudgets);
+  const fetchTemplates = useTemplateStore((s) => s.fetchTemplates);
   const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
@@ -43,11 +45,12 @@ export default function DashboardLayout({
         fetchCategories(),
         fetchTransactions(),
         fetchBudgets(now.getMonth() + 1, now.getFullYear()),
+        fetchTemplates(),
       ]);
       setDataLoaded(true);
     };
     loadData();
-  }, [isAuthenticated, authLoading, router, fetchWallets, fetchCategories, fetchTransactions, fetchBudgets]);
+  }, [isAuthenticated, authLoading, router, fetchWallets, fetchCategories, fetchTransactions, fetchBudgets, fetchTemplates]);
 
   if (authLoading || (!dataLoaded && isAuthenticated)) {
     return (
