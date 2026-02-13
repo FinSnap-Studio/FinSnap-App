@@ -139,6 +139,109 @@ export interface MonthlyTrend {
   expense: number;
 }
 
+export interface TransactionTemplate {
+  id: string;
+  name: string;
+  type: TransactionType;
+  amount: number;
+  description: string;
+  walletId: string;
+  categoryId: string | null;
+  toWalletId: string | null;
+  toAmount: number | null;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TransactionTemplateFormInput {
+  name: string;
+  type: TransactionType;
+  amount: number;
+  description: string;
+  walletId: string;
+  categoryId: string;
+  toWalletId?: string;
+  toAmount?: number;
+}
+
+export type RecurringFrequency = "daily" | "weekly" | "monthly" | "yearly";
+
+export interface RecurringTransaction {
+  id: string;
+  name: string;
+  amount: number;
+  currency: CurrencyCode;
+  type: TransactionType;
+  description: string;
+  walletId: string;
+  categoryId: string | null;
+  toWalletId: string | null;
+  toAmount: number | null;
+  toCurrency: CurrencyCode | null;
+  frequency: RecurringFrequency;
+  interval: number;
+  startDate: string;
+  endDate: string | null;
+  nextRunDate: string;
+  lastRunDate: string | null;
+  isActive: boolean;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RecurringTransactionFormInput {
+  name: string;
+  amount: number;
+  type: TransactionType;
+  description: string;
+  walletId: string;
+  categoryId: string;
+  toWalletId?: string;
+  toAmount?: number;
+  frequency: RecurringFrequency;
+  interval: number;
+  startDate: Date;
+  endDate?: Date | null;
+}
+
+export type DebtType = "DEBT" | "RECEIVABLE";
+export type DebtStatus = "ACTIVE" | "PARTIALLY_PAID" | "SETTLED" | "OVERDUE";
+
+export interface Debt {
+  id: string;
+  type: DebtType;
+  personName: string;
+  amount: number;
+  paidAmount: number;
+  currency: CurrencyCode;
+  description: string;
+  dueDate: string | null;
+  status: DebtStatus;
+  walletId: string;
+  linkedTransactionIds: string[];
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DebtFormInput {
+  type: DebtType;
+  personName: string;
+  amount: number;
+  description: string;
+  dueDate?: Date | null;
+  walletId: string;
+  createInitialTransaction: boolean;
+}
+
+export interface DebtPaymentInput {
+  amount: number;
+  date: Date;
+  description?: string;
+}
+
 export interface TransactionFilters {
   type?: TransactionType | "ALL";
   walletId?: string;

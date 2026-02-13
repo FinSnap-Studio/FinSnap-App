@@ -4,59 +4,52 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { format } from "date-fns";
-import { BookmarkPlus, CalendarIcon, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { CurrencyInput } from "@/components/ui/currency-input";
-import { createTransactionSchema } from "@/lib/validations/transaction";
-import { cn, formatCurrency } from "@/lib/utils";
-import { Transaction, TransactionFormInput, TransactionType } from "@/types";
-import { useTransactionStore } from "@/stores/transaction-store";
+import { createTemplateSchema } from "@/lib/validations/template";
+import { formatCurrency, mergeRefs } from "@/lib/utils";
+import { TransactionTemplate, TransactionTemplateFormInput, TransactionType } from "@/types";
+import { useTemplateStore } from "@/stores/template-store";
 import { useWalletStore } from "@/stores/wallet-store";
 import { useCategoryStore } from "@/stores/category-store";
 import { useUIStore } from "@/stores/ui-store";
 import { useTranslation } from "@/hooks/use-translation";
 import { useAutoFocus } from "@/hooks/use-auto-focus";
-import { getDateLocale } from "@/lib/i18n";
-import { ReceiptUpload } from "@/components/transactions/receipt-upload";
-import type { OCRResult } from "@/lib/mock-ocr";
 
-interface TransactionFormProps {
+interface TemplateFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  transaction?: Transaction | null;
-  templateValues?: Partial<TransactionFormInput> | null;
-  onSaveAsTemplate?: (values: TransactionFormInput) => void;
+  template?: TransactionTemplate | null;
+  defaultValues?: Partial<TransactionTemplateFormInput> | null;
 }
 
-export function TransactionForm({ open, onOpenChange, transaction, templateValues, onSaveAsTemplate }: TransactionFormProps) {
-  const addTransaction = useTransactionStore((s) => s.addTransaction);
-  const updateTransaction = useTransactionStore((s) => s.updateTransaction);
+export function TemplateForm({ open, onOpenChange, template, defaultValues }: TemplateFormProps) {
+  const addTemplate = useTemplateStore((s) => s.addTemplate);
+  const updateTemplate = useTemplateStore((s) => s.updateTemplate);
   const allWallets = useWalletStore((s) => s.wallets);
   const wallets = useMemo(() => allWallets.filter((w) => w.isActive), [allWallets]);
   const getCategoriesByType = useCategoryStore((s) => s.getCategoriesByType);
   const defaultCurrency = useUIStore((s) => s.defaultCurrency);
-  const { t, locale } = useTranslation();
-  const amountRef = useAutoFocus<HTMLInputElement>(open);
+  const { t } = useTranslation();
+  const nameRef = useAutoFocus<HTMLInputElement>(open);
 
-  const isEditing = !!transaction;
+  const isEditing = !!template;
 
-  const schema = useMemo(() => createTransactionSchema(t), [t]);
-  const form = useForm<TransactionFormInput>({
+  const schema = useMemo(() => createTemplateSchema(t), [t]);
+  const form = useForm<TransactionTemplateFormInput>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
     defaultValues: {
+      name: "",
       amount: 0,
       type: "EXPENSE",
       description: "",
-      date: new Date(),
       walletId: "",
       categoryId: "",
       toWalletId: "",
@@ -78,37 +71,36 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
     sourceWallet.currency !== destWallet.currency
   );
 
-  // Reset form when opened/closed or when editing a different transaction
   useEffect(() => {
     if (open) {
-      if (transaction) {
+      if (template) {
         form.reset({
-          amount: transaction.amount,
-          type: transaction.type,
-          description: transaction.description,
-          date: new Date(transaction.date),
-          walletId: transaction.walletId,
-          categoryId: transaction.categoryId || "",
-          toWalletId: transaction.toWalletId || "",
-          toAmount: transaction.toAmount ?? undefined,
+          name: template.name,
+          amount: template.amount,
+          type: template.type,
+          description: template.description,
+          walletId: template.walletId,
+          categoryId: template.categoryId || "",
+          toWalletId: template.toWalletId || "",
+          toAmount: template.toAmount ?? undefined,
         });
-      } else if (templateValues) {
+      } else if (defaultValues) {
         form.reset({
-          amount: templateValues.amount ?? 0,
-          type: templateValues.type ?? "EXPENSE",
-          description: templateValues.description ?? "",
-          date: new Date(),
-          walletId: templateValues.walletId ?? "",
-          categoryId: templateValues.categoryId ?? "",
-          toWalletId: templateValues.toWalletId ?? "",
-          toAmount: templateValues.toAmount,
+          name: "",
+          amount: defaultValues.amount ?? 0,
+          type: defaultValues.type ?? "EXPENSE",
+          description: defaultValues.description ?? "",
+          walletId: defaultValues.walletId ?? "",
+          categoryId: defaultValues.categoryId ?? "",
+          toWalletId: defaultValues.toWalletId ?? "",
+          toAmount: defaultValues.toAmount,
         });
       } else {
         form.reset({
+          name: "",
           amount: 0,
           type: "EXPENSE",
           description: "",
-          date: new Date(),
           walletId: "",
           categoryId: "",
           toWalletId: "",
@@ -116,7 +108,7 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
         });
       }
     }
-  }, [open, transaction, templateValues, form]);
+  }, [open, template, defaultValues, form]);
 
   const onTypeChange = (type: string) => {
     form.setValue("type", type as TransactionType);
@@ -127,30 +119,18 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
 
   const categories = getCategoriesByType(watchType === "TRANSFER" ? "EXPENSE" : watchType);
 
-  const handleOCRResult = (result: OCRResult) => {
-    form.setValue("type", result.type);
-    form.setValue("amount", result.amount);
-    form.setValue("description", result.description);
-    form.setValue("date", result.date);
-    form.setValue("categoryId", result.categoryId);
-  };
-
-  const onSubmit = async (data: TransactionFormInput) => {
-    if (isCrossCurrency && !data.toAmount) {
-      form.setError("toAmount", { message: t("transaction.crossCurrencyRequired") });
-      return;
-    }
+  const onSubmit = async (data: TransactionTemplateFormInput) => {
     try {
       if (isEditing) {
-        await updateTransaction(transaction.id, data);
-        toast.success(t("transaction.updateSuccess"));
+        await updateTemplate(template.id, data);
+        toast.success(t("template.updateSuccess"));
       } else {
-        await addTransaction(data);
-        toast.success(t("transaction.addSuccess"));
+        await addTemplate(data);
+        toast.success(t("template.addSuccess"));
       }
       onOpenChange(false);
     } catch {
-      toast.error(t("transaction.saveError"));
+      toast.error(t("template.saveError"));
     }
   };
 
@@ -162,14 +142,23 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto px-6">
         <SheetHeader>
-          <SheetTitle>{isEditing ? t("transaction.editTransaction") : t("transaction.addTransaction")}</SheetTitle>
+          <SheetTitle>{isEditing ? t("template.editTemplate") : t("template.addTemplate")}</SheetTitle>
         </SheetHeader>
 
-        {!isEditing && (
-          <ReceiptUpload onResult={handleOCRResult} disabled={form.formState.isSubmitting} />
-        )}
-
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
+          {/* Template Name */}
+          <div className="space-y-2">
+            <Label>{t("template.name")}</Label>
+            <Input
+              placeholder={t("template.namePlaceholder")}
+              {...(() => { const { ref, ...rest } = form.register("name"); return rest; })()}
+              ref={mergeRefs(nameRef, form.register("name").ref)}
+            />
+            {form.formState.errors.name && (
+              <p className="text-sm text-red-500">{form.formState.errors.name.message}</p>
+            )}
+          </div>
+
           {/* Type Tabs */}
           <Tabs value={watchType} onValueChange={onTypeChange}>
             <TabsList className="w-full">
@@ -191,7 +180,6 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
               name="amount"
               render={({ field }) => (
                 <CurrencyInput
-                  ref={amountRef}
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
@@ -206,7 +194,7 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
             )}
           </div>
 
-          {/* Wallet + Category side-by-side (or Wallet full width for Transfer) */}
+          {/* Wallet + Category */}
           {watchType !== "TRANSFER" ? (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -276,7 +264,7 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
             </div>
           )}
 
-          {/* To Wallet (only for Transfer) */}
+          {/* To Wallet (Transfer only) */}
           {watchType === "TRANSFER" && (
             <div className="space-y-2">
               <Label>{t("transaction.walletDest")}</Label>
@@ -346,54 +334,9 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
             />
           </div>
 
-          {/* Date */}
-          <div className="space-y-2">
-            <Label>{t("common.date")}</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !form.watch("date") && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {form.watch("date")
-                    ? format(form.watch("date"), "PPP", { locale: getDateLocale(locale) })
-                    : t("common.selectDate")}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={form.watch("date")}
-                  onSelect={(date) => date && form.setValue("date", date)}
-                  locale={getDateLocale(locale)}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-            {form.formState.errors.date && (
-              <p className="text-sm text-red-500">{form.formState.errors.date.message}</p>
-            )}
-          </div>
-
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? t("common.saving") : isEditing ? t("common.update") : t("common.save")}
           </Button>
-
-          {!isEditing && onSaveAsTemplate && (
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={() => onSaveAsTemplate(form.getValues())}
-            >
-              <BookmarkPlus className="h-4 w-4 mr-2" />
-              {t("template.saveAsTemplate")}
-            </Button>
-          )}
         </form>
       </SheetContent>
     </Sheet>
