@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useWalletStore } from "@/stores/wallet-store";
-import { useTransactionStore } from "@/stores/transaction-store";
 import { useCategoryStore } from "@/stores/category-store";
+import { useTransactionsByWallet } from "@/hooks/use-transaction-computed";
 import { formatCurrency, formatDate, getTransactionColor, getTransactionSign } from "@/lib/utils";
 import { WALLET_TYPES } from "@/lib/constants";
 import { IconRenderer } from "@/lib/icon-map";
@@ -20,12 +20,11 @@ export default function WalletDetailPage() {
   const { t, locale } = useTranslation();
 
   const getWalletById = useWalletStore((s) => s.getWalletById);
-  const getTransactionsByWallet = useTransactionStore((s) => s.getTransactionsByWallet);
   const categories = useCategoryStore((s) => s.categories);
   const wallets = useWalletStore((s) => s.wallets);
 
   const wallet = getWalletById(walletId);
-  const transactions = getTransactionsByWallet(walletId);
+  const transactions = useTransactionsByWallet(walletId);
 
   if (!wallet) {
     return (

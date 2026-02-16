@@ -1,16 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowLeftRight, ClipboardList } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useTransactionStore } from "@/stores/transaction-store";
 import { useWalletStore } from "@/stores/wallet-store";
 import { useCategoryStore } from "@/stores/category-store";
 import { formatCurrency, formatDate, getTransactionColor, getTransactionSign } from "@/lib/utils";
 import { IconRenderer } from "@/lib/icon-map";
 import { useTranslation } from "@/hooks/use-translation";
+import { useRecentTransactions } from "@/hooks/use-transaction-computed";
 import { type TransactionType } from "@/types";
 
 function TypeBadge({ type, t }: { type: TransactionType; t: (key: any) => string }) {
@@ -28,18 +27,11 @@ function TypeBadge({ type, t }: { type: TransactionType; t: (key: any) => string
 }
 
 export function RecentTransactions() {
-  const allTransactions = useTransactionStore((s) => s.transactions);
   const wallets = useWalletStore((s) => s.wallets);
   const categories = useCategoryStore((s) => s.categories);
   const { t, locale } = useTranslation();
 
-  const transactions = useMemo(
-    () =>
-      [...allTransactions]
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        .slice(0, 7),
-    [allTransactions]
-  );
+  const transactions = useRecentTransactions(7);
 
   return (
     <Card>

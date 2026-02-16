@@ -3,27 +3,10 @@
 import { useMemo } from "react";
 import { TrendingUp, TrendingDown, Scale, ArrowUp, ArrowDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useTransactionStore } from "@/stores/transaction-store";
 import { formatCurrency } from "@/lib/utils";
 import { type CurrencyCode } from "@/lib/currencies";
 import { useTranslation } from "@/hooks/use-translation";
-import { type Transaction } from "@/types";
-
-function getMonthlyByType(
-  txs: Transaction[],
-  type: "INCOME" | "EXPENSE",
-  month: number,
-  year: number
-): Record<string, number> {
-  const result: Record<string, number> = {};
-  for (const t of txs) {
-    if (t.type !== type) continue;
-    const d = new Date(t.date);
-    if (d.getMonth() + 1 !== month || d.getFullYear() !== year) continue;
-    result[t.currency] = (result[t.currency] || 0) + t.amount;
-  }
-  return result;
-}
+import { useMonthlyAmounts } from "@/hooks/use-transaction-computed";
 
 function renderAmounts(amounts: Record<string, number>, colorClass: string) {
   const currencies = Object.keys(amounts) as CurrencyCode[];
@@ -62,14 +45,13 @@ function ChangeIndicator({ current, previous, label }: { current: number; previo
 }
 
 export function MonthlySummary() {
-  const transactions = useTransactionStore((s) => s.transactions);
   const { t } = useTranslation();
   const now = new Date();
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
-  const incomeMap = useMemo(() => getMonthlyByType(transactions, "INCOME", month, year), [transactions, month, year]);
-  const expenseMap = useMemo(() => getMonthlyByType(transactions, "EXPENSE", month, year), [transactions, month, year]);
+  const incomeMap = useMonthlyAmounts("INCOME", month, year);
+  const expenseMap = useMonthlyAmounts("EXPENSE", month, year);
 
   const allCurrencies = [...new Set([...Object.keys(incomeMap), ...Object.keys(expenseMap)])] as CurrencyCode[];
 
@@ -81,20 +63,23 @@ export function MonthlySummary() {
   const totalBalance = Object.values(balanceMap).reduce((sum, v) => sum + v, 0);
   const balanceColor = totalBalance >= 0 ? "text-green-600" : "text-red-600";
 
-  const prev = useMemo(() => {
-    const prevDate = new Date(year, month - 2, 1);
-    const pm = prevDate.getMonth() + 1;
-    const py = prevDate.getFullYear();
-    const prevIncome = Object.values(getMonthlyByType(transactions, "INCOME", pm, py)).reduce((s, v) => s + v, 0);
-    const prevExpense = Object.values(getMonthlyByType(transactions, "EXPENSE", pm, py)).reduce((s, v) => s + v, 0);
-    return { income: prevIncome, expense: prevExpense, balance: prevIncome - prevExpense };
-  }, [transactions, month, year]);
+  const prevDate = new Date(year, month - 2, 1);
+  const pm = prevDate.getMonth() + 1;
+  const py = prevDate.getFullYear();
+  const prevIncomeMap = useMonthlyAmounts("INCOME", pm, py);
+  const prevExpenseMap = useMonthlyAmounts("EXPENSE", pm, py);
 
-  const curTotals = useMemo(() => ({
-    income: Object.values(incomeMap).reduce((s, v) => s + v, 0),
-    expense: Object.values(expenseMap).reduce((s, v) => s + v, 0),
-    balance: totalBalance,
-  }), [incomeMap, expenseMap, totalBalance]);
+  const prev = useMemo(() => {
+    const prevIncome = Object.values(prevIncomeMap).reduce((s, v) => s + v, 0);
+    const prevExpense = Object.values(prevExpenseMap).reduce((s, v) => s + v, 0);
+    return { income: prevIncome, expense: prevExpense, balance: prevIncome - prevExpense };
+  }, [prevIncomeMap, prevExpenseMap]);
+
+  const curTotals = useMemo(() => {
+    const income = Object.values(incomeMap).reduce((s, v) => s + v, 0);
+    const expense = Object.values(expenseMap).reduce((s, v) => s + v, 0);
+    return { income, expense, balance: income - expense };
+  }, [incomeMap, expenseMap]);
 
   const vsLabel = t("dashboard.vsLastMonth");
 

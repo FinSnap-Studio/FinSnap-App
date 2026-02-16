@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Maintaining This File
+
+**IMPORTANT:** Update this file whenever you make architectural changes or establish new patterns. Examples of when to update:
+
+- **State management changes:** New stores, middleware changes, data flow patterns
+- **Architecture decisions:** Moving from localStorage to API, changing routing structure, new auth flow
+- **New conventions:** Naming patterns, folder structure, coding standards
+- **Tool/library changes:** Switching validation libraries, updating form handling, new UI patterns
+- **Build/dev workflow:** New commands, environment setup, deployment steps
+
+**When in doubt, update it.** This file is the single source of truth for Claude Code to understand the project correctly. Outdated documentation leads to incorrect implementations.
+
 ## Commands
 
 ```bash
@@ -14,7 +26,7 @@ No test framework is configured.
 
 ## Architecture
 
-**FinSnap** is a client-side-only personal finance tracker. All data lives in `localStorage` — there is no backend API. Zustand stores use `storageGet`/`storageSet` from `src/lib/storage.ts` and are designed with `// TODO: Replace → GET /api/...` comments for future API migration.
+**FinSnap** is a client-side-only personal finance tracker. All data lives in `localStorage` — there is no backend API. Zustand stores use the `persist` middleware for automatic localStorage sync and are designed with `// TODO: Replace → GET /api/...` comments for future API migration.
 
 ### Routing (Next.js App Router)
 
@@ -24,9 +36,16 @@ No test framework is configured.
 
 ### State Management (Zustand)
 
-Six stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`, `budget-store`, `category-store`, `ui-store`.
+Eight stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`, `budget-store`, `category-store`, `template-store`, `recurring-store`, `debt-store`, `ui-store`.
 
-Cross-store access pattern: use `require()` for lazy imports and `useXStore.getState()` to avoid circular dependencies (e.g., budget-store reads from transaction-store).
+**Persistence:** All data stores use Zustand's `persist` middleware with:
+- `skipHydration: true` (except `auth-store`) — `fetchXxx()` methods call `await useXxxStore.persist.rehydrate()`
+- `partialize` to persist only data arrays (e.g., `{ wallets: state.wallets }`)
+- No manual `storageGet`/`storageSet` calls — persist middleware auto-writes on `set()`
+
+**Cross-store access:** Top-level ES imports + `useXStore.getState()` inside function bodies (no circular deps).
+
+**Custom hooks:** Computed/derived state extracted to `src/hooks/use-filtered-transactions.ts` and `use-transaction-computed.ts` for memoized selectors used across components.
 
 ### Types
 
@@ -51,3 +70,7 @@ Custom translation system in `src/lib/i18n/` with `createT(locale)` returning a 
 ### UI Components
 
 shadcn/ui components in `src/components/ui/`. Feature components organized by domain: `src/components/{landing,layout,dashboard,wallets,transactions,budgets,categories}/`.
+
+## MCP Tools
+
+Always use **Context7 MCP** (`resolve-library-id` → `query-docs`) when needing library/API documentation, code generation, setup or configuration steps — without the user having to explicitly ask. This applies to any task involving external libraries (e.g., Next.js, Zustand, Zod, React Hook Form, Tailwind CSS, shadcn/ui, etc.).

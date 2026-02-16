@@ -4,11 +4,10 @@ import { useMemo } from "react";
 import { PieChart, Pie, Cell, Label } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import { useTransactionStore } from "@/stores/transaction-store";
-import { useCategoryStore } from "@/stores/category-store";
 import { formatCurrency } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 import { IconRenderer } from "@/lib/icon-map";
+import { useExpenseByCategory } from "@/hooks/use-transaction-computed";
 
 const CHART_COLORS = [
   "var(--chart-1)",
@@ -19,43 +18,13 @@ const CHART_COLORS = [
 ];
 
 export function ExpenseBreakdown() {
-  const transactions = useTransactionStore((s) => s.transactions);
-  const categories = useCategoryStore((s) => s.categories);
   const { t } = useTranslation();
 
   const now = new Date();
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
-  const data = useMemo(() => {
-    const expenses = transactions.filter((t) => {
-      if (t.type !== "EXPENSE") return false;
-      const d = new Date(t.date);
-      return d.getMonth() + 1 === month && d.getFullYear() === year;
-    });
-
-    const map = new Map<string, number>();
-    for (const tx of expenses) {
-      if (!tx.categoryId) continue;
-      map.set(tx.categoryId, (map.get(tx.categoryId) || 0) + tx.amount);
-    }
-
-    const result: { categoryId: string; categoryName: string; total: number; color: string; icon: string; fill: string }[] = [];
-    for (const [catId, total] of map) {
-      const cat = categories.find((c) => c.id === catId);
-      if (cat) {
-        result.push({
-          categoryId: catId,
-          categoryName: cat.name,
-          total,
-          color: cat.color,
-          icon: cat.icon,
-          fill: CHART_COLORS[result.length % CHART_COLORS.length],
-        });
-      }
-    }
-    return result.sort((a, b) => b.total - a.total);
-  }, [transactions, categories, month, year]);
+  const data = useExpenseByCategory(month, year);
 
   const totalExpense = useMemo(
     () => data.reduce((sum, d) => sum + d.total, 0),

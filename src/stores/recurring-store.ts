@@ -1,7 +1,8 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { RecurringTransaction, RecurringTransactionFormInput } from "@/types";
 import { generateId } from "@/lib/utils";
-import { storageGet, storageSet, STORAGE_KEYS } from "@/lib/storage";
+import { STORAGE_KEYS } from "@/lib/storage";
 import { useTransactionStore } from "./transaction-store";
 import { useWalletStore } from "./wallet-store";
 
@@ -42,89 +43,38 @@ function calculateNextRunDate(from: Date, frequency: string, interval: number): 
   return next;
 }
 
-export const useRecurringStore = create<RecurringStore>((set, get) => ({
-  recurrings: [],
-  isLoading: false,
-  isProcessing: false,
+export const useRecurringStore = create<RecurringStore>()(
+  persist(
+    (set, get) => ({
+      recurrings: [],
+      isLoading: false,
+      isProcessing: false,
 
-  // TODO: Replace → GET /api/recurring
-  fetchRecurring: async () => {
-    set({ isLoading: true });
-    const stored = storageGet<RecurringTransaction[]>(STORAGE_KEYS.recurring);
-    set({ recurrings: stored ?? [], isLoading: false });
-  },
+      // TODO: Replace → GET /api/recurring
+      fetchRecurring: async () => {
+        set({ isLoading: true });
+        await useRecurringStore.persist.rehydrate();
+        set({ isLoading: false });
+      },
 
-  // TODO: Replace → POST /api/recurring
-  addRecurring: async (input) => {
-    const now = new Date().toISOString();
-    const walletStore = useWalletStore.getState();
-    const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
+      // TODO: Replace → POST /api/recurring
+      addRecurring: async (input) => {
+        const now = new Date().toISOString();
+        const walletStore = useWalletStore.getState();
+        const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
 
-    let toCurrency = null;
-    let toAmount = null;
-    if (input.type === "TRANSFER" && input.toWalletId) {
-      toCurrency = walletStore.getWalletCurrency(input.toWalletId);
-      if (toCurrency !== sourceCurrency && input.toAmount) {
-        toAmount = input.toAmount;
-      }
-    }
+        let toCurrency = null;
+        let toAmount = null;
+        if (input.type === "TRANSFER" && input.toWalletId) {
+          toCurrency = walletStore.getWalletCurrency(input.toWalletId);
+          if (toCurrency !== sourceCurrency && input.toAmount) {
+            toAmount = input.toAmount;
+          }
+        }
 
-    const startDate = input.startDate.toISOString();
-    const recurring: RecurringTransaction = {
-      id: generateId(),
-      name: input.name,
-      amount: input.amount,
-      currency: sourceCurrency,
-      type: input.type,
-      description: input.description || "",
-      walletId: input.walletId,
-      categoryId: input.type === "TRANSFER" ? null : (input.categoryId || null),
-      toWalletId: input.type === "TRANSFER" ? (input.toWalletId || null) : null,
-      toAmount,
-      toCurrency,
-      frequency: input.frequency,
-      interval: input.interval,
-      startDate,
-      endDate: input.endDate ? input.endDate.toISOString() : null,
-      nextRunDate: startDate,
-      lastRunDate: null,
-      isActive: true,
-      userId: "user-mock-001",
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    set((s) => {
-      const recurrings = [recurring, ...s.recurrings];
-      storageSet(STORAGE_KEYS.recurring, recurrings);
-      return { recurrings };
-    });
-    return recurring;
-  },
-
-  // TODO: Replace → PATCH /api/recurring/[id]
-  updateRecurring: async (id, input) => {
-    const walletStore = useWalletStore.getState();
-    const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
-
-    let toCurrency = null;
-    let toAmount = null;
-    if (input.type === "TRANSFER" && input.toWalletId) {
-      toCurrency = walletStore.getWalletCurrency(input.toWalletId);
-      if (toCurrency !== sourceCurrency && input.toAmount) {
-        toAmount = input.toAmount;
-      }
-    }
-
-    const now = new Date().toISOString();
-    set((s) => {
-      const recurrings = s.recurrings.map((r) => {
-        if (r.id !== id) return r;
-        const newStartDate = input.startDate.toISOString();
-        // If start date changed, reset nextRunDate
-        const nextRunDate = newStartDate !== r.startDate ? newStartDate : r.nextRunDate;
-        return {
-          ...r,
+        const startDate = input.startDate.toISOString();
+        const recurring: RecurringTransaction = {
+          id: generateId(),
           name: input.name,
           amount: input.amount,
           currency: sourceCurrency,
@@ -137,96 +87,143 @@ export const useRecurringStore = create<RecurringStore>((set, get) => ({
           toCurrency,
           frequency: input.frequency,
           interval: input.interval,
-          startDate: newStartDate,
+          startDate,
           endDate: input.endDate ? input.endDate.toISOString() : null,
-          nextRunDate,
+          nextRunDate: startDate,
+          lastRunDate: null,
+          isActive: true,
+          userId: "user-mock-001",
+          createdAt: now,
           updatedAt: now,
         };
-      });
-      storageSet(STORAGE_KEYS.recurring, recurrings);
-      return { recurrings };
-    });
-  },
 
-  // TODO: Replace → DELETE /api/recurring/[id]
-  deleteRecurring: async (id) => {
-    set((s) => {
-      const recurrings = s.recurrings.filter((r) => r.id !== id);
-      storageSet(STORAGE_KEYS.recurring, recurrings);
-      return { recurrings };
-    });
-  },
+        set((s) => ({ recurrings: [recurring, ...s.recurrings] }));
+        return recurring;
+      },
 
-  toggleActive: async (id) => {
-    set((s) => {
-      const recurrings = s.recurrings.map((r) =>
-        r.id === id ? { ...r, isActive: !r.isActive, updatedAt: new Date().toISOString() } : r
-      );
-      storageSet(STORAGE_KEYS.recurring, recurrings);
-      return { recurrings };
-    });
-  },
+      // TODO: Replace → PATCH /api/recurring/[id]
+      updateRecurring: async (id, input) => {
+        const walletStore = useWalletStore.getState();
+        const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
 
-  processRecurringTransactions: async () => {
-    set({ isProcessing: true });
-    const result: ProcessResult = { processed: 0, created: 0, details: [] };
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
+        let toCurrency = null;
+        let toAmount = null;
+        if (input.type === "TRANSFER" && input.toWalletId) {
+          toCurrency = walletStore.getWalletCurrency(input.toWalletId);
+          if (toCurrency !== sourceCurrency && input.toAmount) {
+            toAmount = input.toAmount;
+          }
+        }
 
-    const { recurrings } = get();
-    const addTransaction = useTransactionStore.getState().addTransaction;
-    const updatedRecurrings = [...recurrings];
+        const now = new Date().toISOString();
+        set((s) => ({
+          recurrings: s.recurrings.map((r) => {
+            if (r.id !== id) return r;
+            const newStartDate = input.startDate.toISOString();
+            // If start date changed, reset nextRunDate
+            const nextRunDate = newStartDate !== r.startDate ? newStartDate : r.nextRunDate;
+            return {
+              ...r,
+              name: input.name,
+              amount: input.amount,
+              currency: sourceCurrency,
+              type: input.type,
+              description: input.description || "",
+              walletId: input.walletId,
+              categoryId: input.type === "TRANSFER" ? null : (input.categoryId || null),
+              toWalletId: input.type === "TRANSFER" ? (input.toWalletId || null) : null,
+              toAmount,
+              toCurrency,
+              frequency: input.frequency,
+              interval: input.interval,
+              startDate: newStartDate,
+              endDate: input.endDate ? input.endDate.toISOString() : null,
+              nextRunDate,
+              updatedAt: now,
+            };
+          }),
+        }));
+      },
 
-    for (let i = 0; i < updatedRecurrings.length; i++) {
-      const rec = updatedRecurrings[i];
-      if (!rec.isActive) continue;
+      // TODO: Replace → DELETE /api/recurring/[id]
+      deleteRecurring: async (id) => {
+        set((s) => ({ recurrings: s.recurrings.filter((r) => r.id !== id) }));
+      },
 
-      // Check if expired
-      if (rec.endDate && new Date(rec.endDate) < new Date()) continue;
+      toggleActive: async (id) => {
+        set((s) => ({
+          recurrings: s.recurrings.map((r) =>
+            r.id === id ? { ...r, isActive: !r.isActive, updatedAt: new Date().toISOString() } : r
+          ),
+        }));
+      },
 
-      let nextRun = new Date(rec.nextRunDate);
-      let count = 0;
+      processRecurringTransactions: async () => {
+        set({ isProcessing: true });
+        const result: ProcessResult = { processed: 0, created: 0, details: [] };
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
 
-      while (nextRun <= today) {
-        // Check end date
-        if (rec.endDate && nextRun > new Date(rec.endDate)) break;
+        const { recurrings } = get();
+        const addTransaction = useTransactionStore.getState().addTransaction;
+        const updatedRecurrings = [...recurrings];
 
-        // Create the transaction
-        await addTransaction({
-          amount: rec.amount,
-          type: rec.type,
-          description: rec.description,
-          date: nextRun,
-          walletId: rec.walletId,
-          categoryId: rec.categoryId || "",
-          toWalletId: rec.toWalletId || undefined,
-          toAmount: rec.toAmount ?? undefined,
-        });
+        for (let i = 0; i < updatedRecurrings.length; i++) {
+          const rec = updatedRecurrings[i];
+          if (!rec.isActive) continue;
 
-        count++;
-        nextRun = calculateNextRunDate(nextRun, rec.frequency, rec.interval);
-      }
+          // Check if expired
+          if (rec.endDate && new Date(rec.endDate) < new Date()) continue;
 
-      if (count > 0) {
-        result.processed++;
-        result.created += count;
-        result.details.push({ name: rec.name, count });
+          let nextRun = new Date(rec.nextRunDate);
+          let count = 0;
 
-        updatedRecurrings[i] = {
-          ...rec,
-          nextRunDate: nextRun.toISOString(),
-          lastRunDate: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-      }
+          while (nextRun <= today) {
+            // Check end date
+            if (rec.endDate && nextRun > new Date(rec.endDate)) break;
+
+            // Create the transaction
+            await addTransaction({
+              amount: rec.amount,
+              type: rec.type,
+              description: rec.description,
+              date: nextRun,
+              walletId: rec.walletId,
+              categoryId: rec.categoryId || "",
+              toWalletId: rec.toWalletId || undefined,
+              toAmount: rec.toAmount ?? undefined,
+            });
+
+            count++;
+            nextRun = calculateNextRunDate(nextRun, rec.frequency, rec.interval);
+          }
+
+          if (count > 0) {
+            result.processed++;
+            result.created += count;
+            result.details.push({ name: rec.name, count });
+
+            updatedRecurrings[i] = {
+              ...rec,
+              nextRunDate: nextRun.toISOString(),
+              lastRunDate: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            };
+          }
+        }
+
+        if (result.created > 0) {
+          set({ recurrings: updatedRecurrings });
+        }
+
+        set({ isProcessing: false });
+        return result;
+      },
+    }),
+    {
+      name: STORAGE_KEYS.recurring,
+      skipHydration: true,
+      partialize: (state) => ({ recurrings: state.recurrings }),
     }
-
-    if (result.created > 0) {
-      set({ recurrings: updatedRecurrings });
-      storageSet(STORAGE_KEYS.recurring, updatedRecurrings);
-    }
-
-    set({ isProcessing: false });
-    return result;
-  },
-}));
+  )
+);

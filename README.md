@@ -55,8 +55,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/dompet-hub.git
-cd dompet-hub
+git clone https://github.com/FinSnap-Studio/FinSnap-App.git
+cd FinSnap-App
 
 # Install dependencies
 npm install

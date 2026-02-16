@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeftRight, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { IconRenderer } from "@/lib/icon-map";
 import { toast } from "sonner";
@@ -36,16 +36,18 @@ import { useCategoryStore } from "@/stores/category-store";
 import { formatCurrency, formatDate, getTransactionColor, getTransactionSign } from "@/lib/utils";
 import { TransactionForm } from "./transaction-form";
 import { useTranslation } from "@/hooks/use-translation";
+import { useFilteredTransactions } from "@/hooks/use-filtered-transactions";
 
 const PAGE_SIZE = 10;
 
 export function TransactionList() {
-  const transactions = useTransactionStore((s) => s.transactions);
   const filters = useTransactionStore((s) => s.filters);
   const deleteTransaction = useTransactionStore((s) => s.deleteTransaction);
   const getWalletById = useWalletStore((s) => s.getWalletById);
   const categories = useCategoryStore((s) => s.categories);
   const { t, locale } = useTranslation();
+
+  const allTransactions = useFilteredTransactions();
 
   const [page, setPage] = useState(1);
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
@@ -59,39 +61,6 @@ export function TransactionList() {
       setPage(1);
     }
   }, [filters]);
-
-  const allTransactions = useMemo(() => {
-    let result = [...transactions];
-
-    if (filters.type && filters.type !== "ALL") {
-      result = result.filter((t) => t.type === filters.type);
-    }
-    if (filters.walletId) {
-      result = result.filter(
-        (t) => t.walletId === filters.walletId || t.toWalletId === filters.walletId
-      );
-    }
-    if (filters.categoryId) {
-      result = result.filter((t) => t.categoryId === filters.categoryId);
-    }
-    if (filters.dateFrom) {
-      result = result.filter((t) => new Date(t.date) >= filters.dateFrom!);
-    }
-    if (filters.dateTo) {
-      const endOfDay = new Date(filters.dateTo);
-      endOfDay.setHours(23, 59, 59, 999);
-      result = result.filter((t) => new Date(t.date) <= endOfDay);
-    }
-    if (filters.search) {
-      const search = filters.search.toLowerCase();
-      result = result.filter((t) =>
-        t.description.toLowerCase().includes(search)
-      );
-    }
-
-    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    return result;
-  }, [transactions, filters]);
   const totalPages = Math.max(1, Math.ceil(allTransactions.length / PAGE_SIZE));
   const paginatedTransactions = allTransactions.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
