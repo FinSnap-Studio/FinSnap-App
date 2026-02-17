@@ -1,6 +1,9 @@
 import { useMemo } from "react";
+import { format } from "date-fns";
 import { useTransactionStore } from "@/stores/transaction-store";
 import { useCategoryStore } from "@/stores/category-store";
+import { useUIStore } from "@/stores/ui-store";
+import { getDateLocale } from "@/lib/i18n";
 import { Transaction, CategoryExpense, DailyTotal, MonthlyTrend } from "@/types";
 
 export function useRecentTransactions(limit = 5): Transaction[] {
@@ -117,36 +120,44 @@ export function useDailyTotals(month: number, year: number): DailyTotal[] {
 
 export function useMonthlyTrend(months: number): MonthlyTrend[] {
   const transactions = useTransactionStore((s) => s.transactions);
+  const locale = useUIStore((s) => s.locale);
 
   return useMemo(() => {
     const now = new Date();
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const result: MonthlyTrend[] = [];
+    const dateFnsLocale = getDateLocale(locale);
 
+    // Single-pass: group transactions by "YYYY-MM" key
+    const monthlyMap = new Map<string, { income: number; expense: number }>();
+    for (const t of transactions) {
+      if (t.type !== "INCOME" && t.type !== "EXPENSE") continue;
+      const d = new Date(t.date);
+      const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+      let entry = monthlyMap.get(key);
+      if (!entry) {
+        entry = { income: 0, expense: 0 };
+        monthlyMap.set(key, entry);
+      }
+      if (t.type === "INCOME") entry.income += t.amount;
+      else entry.expense += t.amount;
+    }
+
+    const result: MonthlyTrend[] = [];
     for (let i = months - 1; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const m = date.getMonth() + 1;
       const y = date.getFullYear();
-
-      let income = 0;
-      let expense = 0;
-      for (const t of transactions) {
-        const d = new Date(t.date);
-        if (d.getMonth() + 1 !== m || d.getFullYear() !== y) continue;
-        if (t.type === "INCOME") income += t.amount;
-        else if (t.type === "EXPENSE") expense += t.amount;
-      }
+      const entry = monthlyMap.get(`${y}-${m}`) ?? { income: 0, expense: 0 };
 
       result.push({
         month: m,
         year: y,
-        label: monthNames[m - 1],
-        income,
-        expense,
+        label: format(date, "MMM", { locale: dateFnsLocale }),
+        income: entry.income,
+        expense: entry.expense,
       });
     }
     return result;
-  }, [transactions, months]);
+  }, [transactions, months, locale]);
 }
 
 export function useTransactionsByWallet(walletId: string): Transaction[] {

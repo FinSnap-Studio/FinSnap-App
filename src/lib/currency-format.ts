@@ -5,7 +5,12 @@ interface LocaleSeparators {
   decimal: string;
 }
 
+const separatorsCache = new Map<string, LocaleSeparators>();
+
 export function getLocaleSeparators(locale: string): LocaleSeparators {
+  let cached = separatorsCache.get(locale);
+  if (cached) return cached;
+
   const parts = new Intl.NumberFormat(locale, {
     numberingSystem: "latn",
   }).formatToParts(1234.5);
@@ -15,21 +20,30 @@ export function getLocaleSeparators(locale: string): LocaleSeparators {
     if (part.type === "group") thousand = part.value;
     if (part.type === "decimal") decimal = part.value;
   }
-  return { thousand, decimal };
+  cached = { thousand, decimal };
+  separatorsCache.set(locale, cached);
+  return cached;
 }
+
+const inputFormatters = new Map<string, Intl.NumberFormat>();
 
 export function formatNumberForInput(
   value: number,
   currencyCode: CurrencyCode
 ): string {
   if (value === 0) return "";
-  const info = getCurrencyInfo(currencyCode);
-  return new Intl.NumberFormat(info.locale, {
-    numberingSystem: "latn",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: info.maxFractionDigits,
-    useGrouping: true,
-  }).format(value);
+  let formatter = inputFormatters.get(currencyCode);
+  if (!formatter) {
+    const info = getCurrencyInfo(currencyCode);
+    formatter = new Intl.NumberFormat(info.locale, {
+      numberingSystem: "latn",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: info.maxFractionDigits,
+      useGrouping: true,
+    });
+    inputFormatters.set(currencyCode, formatter);
+  }
+  return formatter.format(value);
 }
 
 export function parseFormattedNumber(
