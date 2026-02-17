@@ -10,6 +10,7 @@ import { useBudgetStore } from "@/stores/budget-store";
 import { useTemplateStore } from "@/stores/template-store";
 import { useRecurringStore } from "@/stores/recurring-store";
 import { useDebtStore } from "@/stores/debt-store";
+import { useShoppingStore } from "@/stores/shopping-store";
 import { AppSidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -28,6 +29,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const fetchRecurring = useRecurringStore((s) => s.fetchRecurring);
   const processRecurringTransactions = useRecurringStore((s) => s.processRecurringTransactions);
   const fetchDebts = useDebtStore((s) => s.fetchDebts);
+  const fetchShoppingLists = useShoppingStore((s) => s.fetchShoppingLists);
   const { t } = useTranslation();
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -52,6 +54,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         fetchTemplates(),
         fetchRecurring(),
         fetchDebts(),
+        fetchShoppingLists(),
       ]);
 
       // Process recurring transactions after all data is loaded
@@ -81,6 +84,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     fetchTemplates,
     fetchRecurring,
     fetchDebts,
+    fetchShoppingLists,
   ]);
 
   if (authLoading || (!dataLoaded && isAuthenticated)) {
