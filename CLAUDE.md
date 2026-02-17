@@ -20,7 +20,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev      # Start dev server (http://localhost:3000)
 npm run build    # Production build
 npm run lint     # ESLint
+npm run format   # Format code with Biome
 ```
+
+**Code formatting:** Biome v2 with double quotes, semicolons, 100-char line width. CSS formatting disabled (conflicts with Tailwind syntax).
 
 No test framework is configured.
 
@@ -47,6 +50,8 @@ Eight stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`
 **Cross-store access:** Top-level ES imports + `useXStore.getState()` inside function bodies (no circular deps).
 
 **Custom hooks:** Computed/derived state extracted to `src/hooks/use-filtered-transactions.ts` and `use-transaction-computed.ts` for memoized selectors used across components.
+
+**Development tools:** All stores use `devtools` middleware (enabled only in `development` via `process.env.NODE_ENV`) for Redux DevTools integration.
 
 ### Shared Constants & Helpers
 
@@ -81,6 +86,8 @@ React Hook Form + Zod v4. Schemas live in `src/lib/validations/` (one per domain
 
 Tailwind CSS v4 with CSS-based config (no `tailwind.config.ts`). Theme variables defined in `src/app/globals.css` via `@theme`. Seven color themes applied via `data-theme` attribute on `<html>`. Dark mode via `.dark` class. Theme definitions in `src/lib/themes.ts`.
 
+**Font configuration:** Inter font loaded in `layout.tsx` with `variable: "--font-inter"` and `display: "swap"`. Applied via `inter.variable` on `<html>` className. Font family defined in `globals.css` as `--font-sans: var(--font-inter)`.
+
 ### i18n
 
 Custom translation system in `src/lib/i18n/` with `createT(locale)` returning a `TFunction`. Two locales: `id` (Bahasa Indonesia, default) and `en`. Translation keys typed via `TranslationKey`. Locale persisted in localStorage as `finsnap-locale`.
@@ -94,6 +101,10 @@ Custom translation system in `src/lib/i18n/` with `createT(locale)` returning a 
 ### UI Components
 
 shadcn/ui components in `src/components/ui/`. Feature components organized by domain: `src/components/{landing,layout,dashboard,wallets,transactions,budgets,categories}/`.
+
+### Next.js Optimizations
+
+**Package imports:** `optimizePackageImports` enabled in `next.config.mjs` for `lucide-react`, `recharts`, and `date-fns` to reduce bundle size and improve tree-shaking.
 
 ## MCP Tools
 
