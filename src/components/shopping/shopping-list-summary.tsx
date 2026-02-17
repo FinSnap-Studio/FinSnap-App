@@ -39,7 +39,12 @@ export function ShoppingListSummary({ lists }: ShoppingListSummaryProps) {
     [activeLists],
   );
 
-  const currency = activeLists[0]?.currency || "IDR";
+  const currencies = useMemo(
+    () => [...new Set(activeLists.map((l) => l.currency))],
+    [activeLists],
+  );
+  const isMixedCurrency = currencies.length > 1;
+  const currency = currencies[0] || "IDR";
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -66,7 +71,13 @@ export function ShoppingListSummary({ lists }: ShoppingListSummaryProps) {
               <p className="text-sm font-medium text-muted-foreground">
                 {t("shopping.totalEstimated")}
               </p>
-              <p className="text-2xl font-bold">{formatCurrency(totalEstimated, currency)}</p>
+              {isMixedCurrency ? (
+                <p className="text-lg font-bold text-muted-foreground">
+                  {t("shopping.mixedCurrencies")}
+                </p>
+              ) : (
+                <p className="text-2xl font-bold">{formatCurrency(totalEstimated, currency)}</p>
+              )}
             </div>
             <div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center">
               <TrendingDown className="h-6 w-6 text-red-600 dark:text-red-400" />
