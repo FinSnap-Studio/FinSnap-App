@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { ArrowLeftRight, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { IconRenderer } from "@/lib/icon-map";
 import { toast } from "sonner";
@@ -48,6 +48,11 @@ export function TransactionList() {
   const { t, locale } = useTranslation();
 
   const allTransactions = useFilteredTransactions();
+
+  const categoryMap = useMemo(
+    () => new Map(categories.map((c) => [c.id, c])),
+    [categories]
+  );
 
   const [page, setPage] = useState(1);
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
@@ -99,7 +104,7 @@ export function TransactionList() {
           </TableHeader>
           <TableBody>
             {paginatedTransactions.map((tx) => {
-              const category = categories.find((c) => c.id === tx.categoryId);
+              const category = tx.categoryId ? categoryMap.get(tx.categoryId) : undefined;
               const wallet = getWalletById(tx.walletId);
               const toWallet = tx.toWalletId ? getWalletById(tx.toWalletId) : null;
 

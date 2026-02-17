@@ -1,11 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Transaction, TransactionFormInput, TransactionFilters, CategoryExpense } from "@/types";
+import { Transaction, TransactionFormInput, TransactionFilters } from "@/types";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
+import { MOCK_USER_ID } from "@/lib/constants";
+import {
+  applyTransactionEffect,
+  reverseTransactionEffect,
+  resolveTransferFields,
+} from "@/lib/transaction-helpers";
 import { useWalletStore } from "./wallet-store";
 import { useBudgetStore } from "./budget-store";
-import { useCategoryStore } from "./category-store";
 
 interface TransactionStore {
   transactions: Transaction[];
@@ -17,10 +22,6 @@ interface TransactionStore {
   deleteTransaction: (id: string) => Promise<void>;
   setFilters: (filters: Partial<TransactionFilters>) => void;
   resetFilters: () => void;
-  getRecentTransactions: (limit?: number) => Transaction[];
-  getMonthlyIncome: (month: number, year: number) => Record<string, number>;
-  getMonthlyExpense: (month: number, year: number) => Record<string, number>;
-  getExpenseByCategory: (month: number, year: number) => CategoryExpense[];
 }
 
 const DEFAULT_FILTERS: TransactionFilters = {
@@ -51,15 +52,7 @@ export const useTransactionStore = create<TransactionStore>()(
         const now = new Date().toISOString();
         const walletStore = useWalletStore.getState();
         const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
-
-        let toCurrency = null;
-        let toAmount = null;
-        if (input.type === "TRANSFER" && input.toWalletId) {
-          toCurrency = walletStore.getWalletCurrency(input.toWalletId);
-          if (toCurrency !== sourceCurrency && input.toAmount) {
-            toAmount = input.toAmount;
-          }
-        }
+        const { toCurrency, toAmount } = resolveTransferFields(walletStore, input);
 
         const transaction: Transaction = {
           id: generateId(),
@@ -68,7 +61,7 @@ export const useTransactionStore = create<TransactionStore>()(
           type: input.type,
           description: input.description || "",
           date: input.date.toISOString(),
-          userId: "user-mock-001",
+          userId: MOCK_USER_ID,
           walletId: input.walletId,
           categoryId: input.type === "TRANSFER" ? null : (input.categoryId || null),
           toWalletId: input.type === "TRANSFER" ? (input.toWalletId || null) : null,
@@ -78,16 +71,13 @@ export const useTransactionStore = create<TransactionStore>()(
           updatedAt: now,
         };
 
-        // Update wallet balance
-        if (input.type === "INCOME") {
-          walletStore.updateBalance(input.walletId, input.amount, "add");
-        } else if (input.type === "EXPENSE") {
-          walletStore.updateBalance(input.walletId, input.amount, "subtract");
-        } else if (input.type === "TRANSFER" && input.toWalletId) {
-          walletStore.updateBalance(input.walletId, input.amount, "subtract");
-          const creditAmount = toAmount ?? input.amount;
-          walletStore.updateBalance(input.toWalletId, creditAmount, "add");
-        }
+        applyTransactionEffect(walletStore, {
+          type: input.type,
+          walletId: input.walletId,
+          amount: input.amount,
+          toWalletId: input.toWalletId,
+          toAmount,
+        });
 
         set((s) => ({ transactions: [transaction, ...s.transactions] }));
 
@@ -107,34 +97,25 @@ export const useTransactionStore = create<TransactionStore>()(
         const walletStore = useWalletStore.getState();
 
         // Reverse old transaction effect
-        if (oldTx.type === "INCOME") {
-          walletStore.updateBalance(oldTx.walletId, oldTx.amount, "subtract");
-        } else if (oldTx.type === "EXPENSE") {
-          walletStore.updateBalance(oldTx.walletId, oldTx.amount, "add");
-        } else if (oldTx.type === "TRANSFER" && oldTx.toWalletId) {
-          walletStore.updateBalance(oldTx.walletId, oldTx.amount, "add");
-          const oldCreditAmount = oldTx.toAmount ?? oldTx.amount;
-          walletStore.updateBalance(oldTx.toWalletId, oldCreditAmount, "subtract");
-        }
+        reverseTransactionEffect(walletStore, {
+          type: oldTx.type,
+          walletId: oldTx.walletId,
+          amount: oldTx.amount,
+          toWalletId: oldTx.toWalletId,
+          toAmount: oldTx.toAmount,
+        });
 
         // Apply new transaction effect
         const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
-        let toCurrency = null;
-        let toAmount = null;
+        const { toCurrency, toAmount } = resolveTransferFields(walletStore, input);
 
-        if (input.type === "INCOME") {
-          walletStore.updateBalance(input.walletId, input.amount, "add");
-        } else if (input.type === "EXPENSE") {
-          walletStore.updateBalance(input.walletId, input.amount, "subtract");
-        } else if (input.type === "TRANSFER" && input.toWalletId) {
-          toCurrency = walletStore.getWalletCurrency(input.toWalletId);
-          if (toCurrency !== sourceCurrency && input.toAmount) {
-            toAmount = input.toAmount;
-          }
-          walletStore.updateBalance(input.walletId, input.amount, "subtract");
-          const creditAmount = toAmount ?? input.amount;
-          walletStore.updateBalance(input.toWalletId, creditAmount, "add");
-        }
+        applyTransactionEffect(walletStore, {
+          type: input.type,
+          walletId: input.walletId,
+          amount: input.amount,
+          toWalletId: input.toWalletId,
+          toAmount,
+        });
 
         const now = new Date().toISOString();
         set((s) => ({
@@ -174,16 +155,13 @@ export const useTransactionStore = create<TransactionStore>()(
         if (!tx) return;
 
         // Reverse transaction effect
-        const walletStore = useWalletStore.getState();
-        if (tx.type === "INCOME") {
-          walletStore.updateBalance(tx.walletId, tx.amount, "subtract");
-        } else if (tx.type === "EXPENSE") {
-          walletStore.updateBalance(tx.walletId, tx.amount, "add");
-        } else if (tx.type === "TRANSFER" && tx.toWalletId) {
-          walletStore.updateBalance(tx.walletId, tx.amount, "add");
-          const creditAmount = tx.toAmount ?? tx.amount;
-          walletStore.updateBalance(tx.toWalletId, creditAmount, "subtract");
-        }
+        reverseTransactionEffect(useWalletStore.getState(), {
+          type: tx.type,
+          walletId: tx.walletId,
+          amount: tx.amount,
+          toWalletId: tx.toWalletId,
+          toAmount: tx.toAmount,
+        });
 
         set((s) => ({
           transactions: s.transactions.filter((t) => t.id !== id),
@@ -202,72 +180,6 @@ export const useTransactionStore = create<TransactionStore>()(
       resetFilters: () => {
         set({ filters: { ...DEFAULT_FILTERS } });
       },
-
-      getRecentTransactions: (limit = 5) => {
-        const { transactions } = get();
-        return [...transactions]
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, limit);
-      },
-
-      getMonthlyIncome: (month, year) => {
-        const result: Record<string, number> = {};
-        get()
-          .transactions.filter((t) => {
-            if (t.type !== "INCOME") return false;
-            const d = new Date(t.date);
-            return d.getMonth() + 1 === month && d.getFullYear() === year;
-          })
-          .forEach((t) => {
-            result[t.currency] = (result[t.currency] || 0) + t.amount;
-          });
-        return result;
-      },
-
-      getMonthlyExpense: (month, year) => {
-        const result: Record<string, number> = {};
-        get()
-          .transactions.filter((t) => {
-            if (t.type !== "EXPENSE") return false;
-            const d = new Date(t.date);
-            return d.getMonth() + 1 === month && d.getFullYear() === year;
-          })
-          .forEach((t) => {
-            result[t.currency] = (result[t.currency] || 0) + t.amount;
-          });
-        return result;
-      },
-
-      getExpenseByCategory: (month, year) => {
-        const categories = useCategoryStore.getState().categories;
-        const expenses = get().transactions.filter((t) => {
-          if (t.type !== "EXPENSE") return false;
-          const d = new Date(t.date);
-          return d.getMonth() + 1 === month && d.getFullYear() === year;
-        });
-
-        const map = new Map<string, number>();
-        for (const tx of expenses) {
-          if (!tx.categoryId) continue;
-          map.set(tx.categoryId, (map.get(tx.categoryId) || 0) + tx.amount);
-        }
-
-        const result: CategoryExpense[] = [];
-        for (const [catId, total] of map) {
-          const cat = categories.find((c: { id: string }) => c.id === catId);
-          if (cat) {
-            result.push({
-              categoryId: catId,
-              categoryName: cat.name,
-              total,
-              color: cat.color,
-              icon: cat.icon,
-            });
-          }
-        }
-        return result.sort((a, b) => b.total - a.total);
-      },
-
     }),
     {
       name: STORAGE_KEYS.transactions,

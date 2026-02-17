@@ -210,7 +210,7 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
           {watchType !== "TRANSFER" ? (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Wallet</Label>
+                <Label>{t("nav.wallets")}</Label>
                 <Select
                   value={watchWalletId}
                   onValueChange={(val) => form.setValue("walletId", val)}

@@ -4,6 +4,7 @@ import { Wallet, WalletFormInput } from "@/types";
 import { type CurrencyCode } from "@/lib/currencies";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
+import { MOCK_USER_ID } from "@/lib/constants";
 
 interface WalletStore {
   wallets: Wallet[];
@@ -15,7 +16,6 @@ interface WalletStore {
   updateBalance: (id: string, amount: number, op: "add" | "subtract") => void;
   getWalletById: (id: string) => Wallet | undefined;
   getWalletCurrency: (id: string) => CurrencyCode;
-  getTotalBalance: () => Record<string, number>;
 }
 
 export const useWalletStore = create<WalletStore>()(
@@ -38,7 +38,7 @@ export const useWalletStore = create<WalletStore>()(
           id: generateId(),
           ...input,
           isActive: true,
-          userId: "user-mock-001",
+          userId: MOCK_USER_ID,
           createdAt: now,
           updatedAt: now,
         };
@@ -84,16 +84,6 @@ export const useWalletStore = create<WalletStore>()(
       getWalletCurrency: (id) => {
         const wallet = get().wallets.find((w) => w.id === id);
         return wallet?.currency ?? "IDR";
-      },
-
-      getTotalBalance: () => {
-        const balances: Record<string, number> = {};
-        get()
-          .wallets.filter((w) => w.isActive)
-          .forEach((w) => {
-            balances[w.currency] = (balances[w.currency] || 0) + w.balance;
-          });
-        return balances;
       },
     }),
     {

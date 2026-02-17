@@ -1,3 +1,11 @@
+import {
+  LayoutDashboard,
+  Wallet,
+  ArrowLeftRight,
+  Handshake,
+  PiggyBank,
+  Tag,
+} from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
 
 export const WALLET_TYPES = [
@@ -37,3 +45,16 @@ export const NAV_ITEMS = [
 ] as const;
 
 export const MONTH_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
+
+// Mock user ID — single source of truth until real auth is implemented
+export const MOCK_USER_ID = "user-mock-001";
+
+// Shared nav icon mapping used by sidebar and mobile-nav
+export const NAV_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  LayoutDashboard,
+  Wallet,
+  ArrowLeftRight,
+  Handshake,
+  PiggyBank,
+  Tag,
+};
