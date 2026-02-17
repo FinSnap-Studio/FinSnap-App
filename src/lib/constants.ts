@@ -1,4 +1,12 @@
-import { LayoutDashboard, Wallet, ArrowLeftRight, Handshake, PiggyBank, Tag } from "lucide-react";
+import {
+  LayoutDashboard,
+  Wallet,
+  ArrowLeftRight,
+  Handshake,
+  PiggyBank,
+  Tag,
+  ShoppingCart,
+} from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
 
 export const WALLET_TYPES = [
@@ -62,6 +70,7 @@ export const NAV_ITEMS = [
   { label: "nav.wallets" as TranslationKey, href: "/wallets", icon: "Wallet" },
   { label: "nav.transactions" as TranslationKey, href: "/transactions", icon: "ArrowLeftRight" },
   { label: "nav.debts" as TranslationKey, href: "/debts", icon: "Handshake" },
+  { label: "nav.shopping" as TranslationKey, href: "/shopping", icon: "ShoppingCart" },
   { label: "nav.budgets" as TranslationKey, href: "/budgets", icon: "PiggyBank" },
   { label: "nav.categories" as TranslationKey, href: "/categories", icon: "Tag" },
 ] as const;
@@ -77,6 +86,7 @@ export const NAV_ICON_MAP: Record<string, React.ComponentType<{ className?: stri
   Wallet,
   ArrowLeftRight,
   Handshake,
+  ShoppingCart,
   PiggyBank,
   Tag,
 };
