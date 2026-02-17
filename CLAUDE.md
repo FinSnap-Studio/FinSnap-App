@@ -112,31 +112,17 @@ Always use **Context7 MCP** (`resolve-library-id` → `query-docs`) when needing
 
 ---
 
-## Orchestrator Role
-
-You are the Orchestrator for this project. You plan, delegate, and oversee — you do not blindly code.
-
-### Sub-Agents
-
-You have access to two sub-agents:
-
-1. **Coder** (Sonnet 4.5) — Pure code execution. Follows your Implementation Plans step-by-step. Returns `[REVIEW_REQUIRED]` when done or `[ESCALATE_TO_ORCHESTRATOR]` if a step is ambiguous.
-2. **Code Reviewer** (Haiku 4.5) — Critical validation only. Reviews code against the plan. Returns a `[CORRECTION_LIST]` if issues are found, or `[TASK_COMPLETE]` if the code passes.
-
-### Skills
-
-You have access to the **Implementation Plan Breakdown** skill (`.claude/skills/implementation-plan.md`). Use it to decompose tasks before delegating.
+## Working Style
 
 ### Clarifying Questions First
 
-Before building any Implementation Plan or writing any code, assess whether the request has ambiguity. If it does, ask clarifying questions first. This prevents wasted tokens on plans that miss the mark.
+Before writing code, assess whether the request has ambiguity. If it does, ask 2-3 targeted clarifying questions first. This prevents wasted work on plans that miss the mark.
 
 Ask when:
 
 - The scope is unclear (e.g., "add a settings feature" — which settings?)
-- Multiple valid approaches exist (e.g., "add filtering" — client-side or URL params?)
-- The request touches areas with existing patterns that could conflict
-- UI/UX behavior is not specified (e.g., "add a modal" — trigger, content, actions?)
+- Multiple valid approaches exist
+- UI/UX behavior is not specified
 - New data fields are implied but not defined
 
 Do not ask when:
@@ -146,39 +132,31 @@ Do not ask when:
 - The user says "just do it" or provides a detailed spec
 - The answer is obvious from existing codebase patterns
 
-Keep clarifying questions concise — ask 2-3 targeted questions maximum in a single message. Group related questions together. Once clarified, proceed to the Decision Logic below.
+### Task Approach
 
-### Decision Logic
+- **Simple** (single file, <30 lines): Execute directly. No planning needed.
+- **Moderate** (2-4 files, clear scope): Brief outline, then execute.
+- **Large** (5+ files, new domain): Use the New Feature skill (`.claude/skills/new-feature.md`), save plan to `docs/plans/`. Ask user first.
 
-Assess every incoming task before acting:
+Execute all work directly. No delegation to sub-agents.
 
-- **Simple** (single file, <30 lines, no cross-file deps): Execute it yourself directly. No delegation, no plan file. Just do it.
-- **Moderate** (multi-file, clear steps, 3-7 step plan): Use the Implementation Plan skill → delegate to Coder → Code Reviewer loop. Output the plan in chat only.
-- **Large** (8+ steps, multi-session, or involves architectural changes): Use the Implementation Plan skill and save the plan as `docs/plans/[task-name].md` for cross-session reference. Then delegate. Ask the user before creating the plan file.
-- **Complex/Architectural** (ambiguous requirements, major refactors, new patterns): Execute it yourself. Your judgment is better for decisions that shape the codebase.
+### Quality Gates
 
-Always tell the user which path you are taking and why, in one sentence, before proceeding.
+After significant changes, run these in order:
 
-### Delegation Workflow
+1. `npm run build` — must pass (catches type errors, wrong imports, missing exports)
+2. `npm run lint` — must pass with 0 errors (catches React Compiler violations, unused vars)
+3. `npm run format` — apply Biome formatting
 
-When delegating a moderate or large task:
+### Project-Specific Pitfalls
 
-1. Build an Implementation Plan using the skill. End with `[PLAN_READY]`.
-2. Hand off only the **Context Summary + Steps** to the Coder. Never pass full chat history. The Context Summary must reference this CLAUDE.md's Architecture section so the Coder follows existing patterns (Zustand persist conventions, Zod v4 rules, Biome formatting, i18n keys, etc.).
-3. When Coder returns `[REVIEW_REQUIRED]`, send the output to the Code Reviewer.
-4. If Reviewer returns `[CORRECTION_LIST]`, send only the corrections and the affected code back to the Coder. Do not resend the full plan.
-5. Repeat steps 3-4 until Reviewer returns `[TASK_COMPLETE]`.
-6. Report the final result to the user.
+Hard-won lessons — always verify these before writing code that touches these areas:
 
-### Escalation & Safety
-
-- If Coder returns `[ESCALATE_TO_ORCHESTRATOR]`, handle the ambiguity yourself — clarify the plan step or implement that part directly.
-- If the Coder ↔ Reviewer loop exceeds **3 iterations**, stop the loop and ask the user for guidance. Do not burn tokens on infinite corrections.
-- After any delegated task completes, verify the result yourself with a quick sanity check (e.g., `npm run build`, `npm run lint`) before reporting success.
-
-### Token Efficiency Rules
-
-- Never forward raw conversation history to sub-agents. Always distill into a concise Context Summary.
-- When looping corrections, pass only the Correction List and affected files — never the full plan.
-- For simple tasks, skip the entire orchestration overhead. Direct execution is cheaper and faster.
-- Prefer referencing file paths and line numbers over copying code blocks when communicating with sub-agents.
+- `CurrencyInput` uses `currencyCode` prop, not `currency`
+- `Badge` only has variants: `default`, `secondary`, `destructive`, `outline` — use `className` for custom colors
+- `CurrencyCode` type lives in `@/lib/currencies`, not `@/types`
+- Verify i18n keys exist in `src/lib/i18n/id.ts` before using them in components
+- Read actual component prop interfaces before using them in new code
+- Wrap Zod schemas and filtered arrays in `useMemo`
+- No component creation inside render functions (React Compiler `static-components` rule)
+- Bare `catch {}` when error variable is unused
