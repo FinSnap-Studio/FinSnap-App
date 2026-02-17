@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import Link from "next/link";
 import { AlertTriangle, Clock, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,9 @@ import { useTranslation } from "@/hooks/use-translation";
 export function DebtReminder() {
   const { t } = useTranslation();
   const debts = useDebtStore((s) => s.debts);
+  // eslint-disable-next-line react-hooks/purity -- capture timestamp once on mount, intentionally impure
+  const nowRef = useRef(Date.now());
+  const now = nowRef.current;
 
   const reminders = useMemo(() => {
     const now = new Date();
@@ -48,7 +51,7 @@ export function DebtReminder() {
           <div className="space-y-2">
             {overdue.map((debt) => {
               const days = Math.abs(
-                Math.ceil((new Date(debt.dueDate!).getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
+                Math.ceil((new Date(debt.dueDate!).getTime() - now) / (1000 * 60 * 60 * 24)),
               );
               return (
                 <div
@@ -90,7 +93,7 @@ export function DebtReminder() {
             {dueSoon.map((debt) => {
               const days = Math.max(
                 0,
-                Math.ceil((new Date(debt.dueDate!).getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
+                Math.ceil((new Date(debt.dueDate!).getTime() - now) / (1000 * 60 * 60 * 24)),
               );
               return (
                 <div

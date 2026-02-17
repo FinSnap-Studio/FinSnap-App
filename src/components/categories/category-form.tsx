@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -50,7 +50,9 @@ export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps
     },
   });
 
-  const watchType = form.watch("type");
+  const watchType = useWatch({ control: form.control, name: "type" });
+  const watchIcon = useWatch({ control: form.control, name: "icon" });
+  const watchColor = useWatch({ control: form.control, name: "color" });
   const icons = watchType === "INCOME" ? INCOME_ICONS : EXPENSE_ICONS;
 
   useEffect(() => {
@@ -146,7 +148,7 @@ export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps
                   onClick={() => form.setValue("icon", icon)}
                   className={cn(
                     "h-10 w-10 flex items-center justify-center rounded-md border transition-colors",
-                    form.watch("icon") === icon
+                    watchIcon === icon
                       ? "border-foreground bg-accent"
                       : "border-border hover:bg-accent/50",
                   )}
@@ -167,7 +169,7 @@ export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps
                   onClick={() => form.setValue("color", color)}
                   className={cn(
                     "h-8 w-8 rounded-full transition-all",
-                    form.watch("color") === color
+                    watchColor === color
                       ? "ring-2 ring-offset-2 ring-offset-background ring-foreground"
                       : "",
                   )}

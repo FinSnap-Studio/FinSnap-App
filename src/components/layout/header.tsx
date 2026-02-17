@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Sun, Moon, Wallet, Settings, LogOut, Check, Languages } from "lucide-react";
+import { Sun, Moon, Wallet, Settings, LogOut, Check } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -20,7 +20,7 @@ import { useUIStore } from "@/stores/ui-store";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTranslation } from "@/hooks/use-translation";
 import { COLOR_THEMES } from "@/lib/themes";
-import { LOCALE_OPTIONS, type Locale } from "@/lib/i18n";
+import { LOCALE_OPTIONS } from "@/lib/i18n";
 
 export function Header() {
   const { theme, toggleTheme, colorTheme, setColorTheme, setLocale, locale, initTheme } =

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { Debt, DebtFormInput, DebtPaymentInput, DebtType, DebtStatus } from "@/types";
+import { Debt, DebtFormInput, DebtPaymentInput, DebtStatus } from "@/types";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
 import { MOCK_USER_ID } from "@/lib/constants";

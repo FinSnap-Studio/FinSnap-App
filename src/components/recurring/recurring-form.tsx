@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -77,11 +77,15 @@ export function RecurringForm({ open, onOpenChange, recurring }: RecurringFormPr
     },
   });
 
-  const watchType = form.watch("type");
-  const watchWalletId = form.watch("walletId");
-  const watchToWalletId = form.watch("toWalletId");
-  const watchAmount = form.watch("amount");
-  const watchToAmount = form.watch("toAmount");
+  const watchType = useWatch({ control: form.control, name: "type" });
+  const watchWalletId = useWatch({ control: form.control, name: "walletId" });
+  const watchToWalletId = useWatch({ control: form.control, name: "toWalletId" });
+  const watchAmount = useWatch({ control: form.control, name: "amount" });
+  const watchToAmount = useWatch({ control: form.control, name: "toAmount" });
+  const watchCategoryId = useWatch({ control: form.control, name: "categoryId" });
+  const watchFrequency = useWatch({ control: form.control, name: "frequency" });
+  const watchStartDate = useWatch({ control: form.control, name: "startDate" });
+  const watchEndDate = useWatch({ control: form.control, name: "endDate" });
 
   const sourceWallet = wallets.find((w) => w.id === watchWalletId);
   const destWallet = wallets.find((w) => w.id === watchToWalletId);
@@ -177,7 +181,7 @@ export function RecurringForm({ open, onOpenChange, recurring }: RecurringFormPr
             <Input
               placeholder={t("recurring.namePlaceholder")}
               {...(() => {
-                const { ref, ...rest } = form.register("name");
+                const { ref: _ref, ...rest } = form.register("name");
                 return rest;
               })()}
               ref={mergeRefs(nameRef, form.register("name").ref)}
@@ -255,7 +259,7 @@ export function RecurringForm({ open, onOpenChange, recurring }: RecurringFormPr
               <div className="space-y-2">
                 <Label>{t("common.category")}</Label>
                 <Select
-                  value={form.watch("categoryId") || ""}
+                  value={watchCategoryId || ""}
                   onValueChange={(val) => form.setValue("categoryId", val)}
                 >
                   <SelectTrigger>
@@ -300,7 +304,7 @@ export function RecurringForm({ open, onOpenChange, recurring }: RecurringFormPr
             <div className="space-y-2">
               <Label>{t("transaction.walletDest")}</Label>
               <Select
-                value={form.watch("toWalletId") || ""}
+                value={watchToWalletId || ""}
                 onValueChange={(val) => form.setValue("toWalletId", val)}
               >
                 <SelectTrigger>
@@ -382,7 +386,7 @@ export function RecurringForm({ open, onOpenChange, recurring }: RecurringFormPr
               <div className="space-y-2">
                 <Label>{t("recurring.frequency")}</Label>
                 <Select
-                  value={form.watch("frequency")}
+                  value={watchFrequency}
                   onValueChange={(val) =>
                     form.setValue("frequency", val as RecurringTransactionFormInput["frequency"])
                   }
@@ -425,19 +429,19 @@ export function RecurringForm({ open, onOpenChange, recurring }: RecurringFormPr
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !form.watch("startDate") && "text-muted-foreground",
+                      !watchStartDate && "text-muted-foreground",
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {form.watch("startDate")
-                      ? format(form.watch("startDate"), "PPP", { locale: getDateLocale(locale) })
+                    {watchStartDate
+                      ? format(watchStartDate, "PPP", { locale: getDateLocale(locale) })
                       : t("common.selectDate")}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    selected={form.watch("startDate")}
+                    selected={watchStartDate}
                     onSelect={(date) => date && form.setValue("startDate", date)}
                     locale={getDateLocale(locale)}
                     initialFocus
@@ -461,19 +465,19 @@ export function RecurringForm({ open, onOpenChange, recurring }: RecurringFormPr
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !form.watch("endDate") && "text-muted-foreground",
+                      !watchEndDate && "text-muted-foreground",
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {form.watch("endDate")
-                      ? format(form.watch("endDate")!, "PPP", { locale: getDateLocale(locale) })
+                    {watchEndDate
+                      ? format(watchEndDate, "PPP", { locale: getDateLocale(locale) })
                       : t("common.selectDate")}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    selected={form.watch("endDate") ?? undefined}
+                    selected={watchEndDate ?? undefined}
                     onSelect={(date) => form.setValue("endDate", date ?? null)}
                     locale={getDateLocale(locale)}
                     initialFocus

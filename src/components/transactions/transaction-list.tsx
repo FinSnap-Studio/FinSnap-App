@@ -60,7 +60,7 @@ export function TransactionList() {
   useEffect(() => {
     if (filtersRef.current !== filters) {
       filtersRef.current = filters;
-      setPage(1);
+      setPage(1); // eslint-disable-line react-hooks/set-state-in-effect -- intentional: reset pagination when filters change
     }
   }, [filters]);
   const totalPages = Math.max(1, Math.ceil(allTransactions.length / PAGE_SIZE));

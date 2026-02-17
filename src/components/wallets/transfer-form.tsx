@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -59,10 +59,11 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
     },
   });
 
-  const watchWalletId = form.watch("walletId");
-  const watchToWalletId = form.watch("toWalletId");
-  const watchAmount = form.watch("amount");
-  const watchToAmount = form.watch("toAmount");
+  const watchWalletId = useWatch({ control: form.control, name: "walletId" });
+  const watchToWalletId = useWatch({ control: form.control, name: "toWalletId" });
+  const watchAmount = useWatch({ control: form.control, name: "amount" });
+  const watchToAmount = useWatch({ control: form.control, name: "toAmount" });
+  const watchDate = useWatch({ control: form.control, name: "date" });
 
   const sourceWallet = wallets.find((w) => w.id === watchWalletId);
   const destWallet = wallets.find((w) => w.id === watchToWalletId);
@@ -120,7 +121,7 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
               value={watchWalletId}
               onValueChange={(val) => {
                 form.setValue("walletId", val);
-                if (form.watch("toWalletId") === val) {
+                if (watchToWalletId === val) {
                   form.setValue("toWalletId", "");
                 }
               }}
@@ -144,7 +145,7 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
           <div className="space-y-2">
             <Label>{t("transfer.toWallet")}</Label>
             <Select
-              value={form.watch("toWalletId") || ""}
+              value={watchToWalletId || ""}
               onValueChange={(val) => form.setValue("toWalletId", val)}
             >
               <SelectTrigger>
@@ -245,19 +246,19 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !form.watch("date") && "text-muted-foreground",
+                    !watchDate && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {form.watch("date")
-                    ? format(form.watch("date"), "PPP", { locale: getDateLocale(locale) })
+                  {watchDate
+                    ? format(watchDate, "PPP", { locale: getDateLocale(locale) })
                     : t("common.selectDate")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={form.watch("date")}
+                  selected={watchDate}
                   onSelect={(date) => date && form.setValue("date", date)}
                   locale={getDateLocale(locale)}
                   initialFocus

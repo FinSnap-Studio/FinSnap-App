@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Info } from "lucide-react";
@@ -63,11 +63,12 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
     },
   });
 
-  const watchType = form.watch("type");
-  const watchWalletId = form.watch("walletId");
-  const watchToWalletId = form.watch("toWalletId");
-  const watchAmount = form.watch("amount");
-  const watchToAmount = form.watch("toAmount");
+  const watchType = useWatch({ control: form.control, name: "type" });
+  const watchWalletId = useWatch({ control: form.control, name: "walletId" });
+  const watchToWalletId = useWatch({ control: form.control, name: "toWalletId" });
+  const watchAmount = useWatch({ control: form.control, name: "amount" });
+  const watchToAmount = useWatch({ control: form.control, name: "toAmount" });
+  const watchCategoryId = useWatch({ control: form.control, name: "categoryId" });
 
   const sourceWallet = wallets.find((w) => w.id === watchWalletId);
   const destWallet = wallets.find((w) => w.id === watchToWalletId);
@@ -162,7 +163,7 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
             <Input
               placeholder={t("template.namePlaceholder")}
               {...(() => {
-                const { ref, ...rest } = form.register("name");
+                const { ref: _ref, ...rest } = form.register("name");
                 return rest;
               })()}
               ref={mergeRefs(nameRef, form.register("name").ref)}
@@ -240,7 +241,7 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
               <div className="space-y-2">
                 <Label>{t("common.category")}</Label>
                 <Select
-                  value={form.watch("categoryId") || ""}
+                  value={watchCategoryId || ""}
                   onValueChange={(val) => form.setValue("categoryId", val)}
                 >
                   <SelectTrigger>
@@ -285,7 +286,7 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
             <div className="space-y-2">
               <Label>{t("transaction.walletDest")}</Label>
               <Select
-                value={form.watch("toWalletId") || ""}
+                value={watchToWalletId || ""}
                 onValueChange={(val) => form.setValue("toWalletId", val)}
               >
                 <SelectTrigger>

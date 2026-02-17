@@ -34,14 +34,13 @@ export function SpendingTrendChart() {
   const dailyData = useDailyTotals(month, year);
 
   const cumulativeData = useMemo(() => {
-    let cumulative = 0;
-    return dailyData.map((d) => {
-      cumulative += d.expense;
-      return {
-        ...d,
-        cumulative,
-      };
-    });
+    const result: ((typeof dailyData)[number] & { cumulative: number })[] = [];
+    dailyData.reduce((sum, d) => {
+      const next = sum + d.expense;
+      result.push({ ...d, cumulative: next });
+      return next;
+    }, 0);
+    return result;
   }, [dailyData]);
 
   const totalBudget = useMemo(() => {

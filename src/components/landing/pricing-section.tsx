@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { type TranslationKey } from "@/lib/i18n";
 
 const EARLY_FEATURES = [
   "landing.pricing.earlyFeature1",
@@ -73,7 +74,7 @@ export function PricingSection() {
                   {EARLY_FEATURES.map((key) => (
                     <li key={key} className="flex items-center gap-2 text-sm">
                       <Check className="size-4 text-primary shrink-0" />
-                      {t(key as any)}
+                      {t(key as TranslationKey)}
                     </li>
                   ))}
                 </ul>
@@ -110,7 +111,7 @@ export function PricingSection() {
                   {PRO_FEATURES.map((key) => (
                     <li key={key} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Check className="size-4 shrink-0" />
-                      {t(key as any)}
+                      {t(key as TranslationKey)}
                     </li>
                   ))}
                 </ul>

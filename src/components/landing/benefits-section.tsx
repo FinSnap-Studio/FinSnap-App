@@ -4,6 +4,7 @@ import { ShoppingCart, Coffee, Zap, Car, ArrowDownLeft, ArrowUpRight } from "luc
 import { Progress } from "@/components/ui/progress";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTranslation } from "@/hooks/use-translation";
+import { type TranslationKey } from "@/lib/i18n";
 
 function MockTransactions() {
   const items = [
@@ -166,8 +167,8 @@ function BenefitRow({
       } items-center`}
     >
       <div ref={textRef} className={`flex-1 landing-animate ${animLeft}`}>
-        <h3 className="text-2xl sm:text-3xl font-bold mb-4">{t(titleKey as any)}</h3>
-        <p className="text-muted-foreground leading-relaxed">{t(descKey as any)}</p>
+        <h3 className="text-2xl sm:text-3xl font-bold mb-4">{t(titleKey as TranslationKey)}</h3>
+        <p className="text-muted-foreground leading-relaxed">{t(descKey as TranslationKey)}</p>
       </div>
       <div
         ref={visualRef}

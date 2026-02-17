@@ -4,6 +4,7 @@ import { Wallet, ArrowLeftRight, PiggyBank, BarChart3, Palette, ShieldCheck } fr
 import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTranslation } from "@/hooks/use-translation";
+import { type TranslationKey } from "@/lib/i18n";
 
 const FEATURES = [
   {
@@ -63,8 +64,10 @@ function FeatureCard({
           <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
             <Icon className="size-6 text-primary" />
           </div>
-          <h3 className="font-semibold text-lg mb-2">{t(titleKey as any)}</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{t(descKey as any)}</p>
+          <h3 className="font-semibold text-lg mb-2">{t(titleKey as TranslationKey)}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {t(descKey as TranslationKey)}
+          </p>
         </CardContent>
       </Card>
     </div>

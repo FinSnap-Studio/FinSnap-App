@@ -27,20 +27,6 @@ export default function WalletDetailPage() {
   const wallet = getWalletById(walletId);
   const transactions = useTransactionsByWallet(walletId);
 
-  if (!wallet) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">{t("wallet.notFound")}</p>
-        <Button variant="link" onClick={() => router.push("/wallets")}>
-          {t("wallet.backToList")}
-        </Button>
-      </div>
-    );
-  }
-
-  const typeKey = WALLET_TYPES.find((wt) => wt.value === wallet.type)?.label;
-  const typeLabel = typeKey ? t(typeKey) : wallet.type;
-
   const categoryMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
 
   const { monthIncome, monthExpense } = useMemo(() => {
@@ -58,6 +44,20 @@ export default function WalletDetailPage() {
     }
     return { monthIncome: income, monthExpense: expense };
   }, [transactions, walletId]);
+
+  if (!wallet) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">{t("wallet.notFound")}</p>
+        <Button variant="link" onClick={() => router.push("/wallets")}>
+          {t("wallet.backToList")}
+        </Button>
+      </div>
+    );
+  }
+
+  const typeKey = WALLET_TYPES.find((wt) => wt.value === wallet.type)?.label;
+  const typeLabel = typeKey ? t(typeKey) : wallet.type;
 
   return (
     <div className="space-y-6">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -58,9 +58,9 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
     },
   });
 
-  const watchType = form.watch("type");
-  const watchWalletId = form.watch("walletId");
-  const watchCreateTx = form.watch("createInitialTransaction");
+  const watchType = useWatch({ control: form.control, name: "type" });
+  const watchWalletId = useWatch({ control: form.control, name: "walletId" });
+  const watchCreateTx = useWatch({ control: form.control, name: "createInitialTransaction" });
   const selectedWallet = wallets.find((w) => w.id === watchWalletId);
 
   useEffect(() => {
@@ -154,7 +154,7 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
           <div className="space-y-2">
             <Label>Wallet</Label>
             <Select
-              value={form.watch("walletId")}
+              value={watchWalletId}
               onValueChange={(val) => form.setValue("walletId", val)}
               disabled={isEditing}
             >

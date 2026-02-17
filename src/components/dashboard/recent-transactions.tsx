@@ -12,8 +12,9 @@ import { IconRenderer } from "@/lib/icon-map";
 import { useTranslation } from "@/hooks/use-translation";
 import { useRecentTransactions } from "@/hooks/use-transaction-computed";
 import { type TransactionType } from "@/types";
+import { type TFunction } from "@/lib/i18n";
 
-function TypeBadge({ type, t }: { type: TransactionType; t: (key: any) => string }) {
+function TypeBadge({ type, t }: { type: TransactionType; t: TFunction }) {
   const map: Record<
     TransactionType,
     { label: string; variant: "default" | "destructive" | "secondary" | "outline" }

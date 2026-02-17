@@ -15,7 +15,7 @@ export function BalanceSummary() {
   const wallets = useWalletStore((s) => s.wallets);
   const isLoading = useWalletStore((s) => s.isLoading);
   const transactions = useTransactionStore((s) => s.transactions);
-  const { t, locale } = useTranslation();
+  const { locale } = useTranslation();
 
   const now = useMemo(() => new Date(), []);
 

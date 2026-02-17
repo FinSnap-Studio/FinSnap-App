@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -55,6 +55,11 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
       color: "#6366f1",
     },
   });
+
+  const watchType = useWatch({ control: form.control, name: "type" });
+  const watchCurrency = useWatch({ control: form.control, name: "currency" });
+  const watchIcon = useWatch({ control: form.control, name: "icon" });
+  const watchColor = useWatch({ control: form.control, name: "color" });
 
   useEffect(() => {
     if (open) {
@@ -124,7 +129,7 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
             <div className="space-y-2">
               <Label>{t("common.type")}</Label>
               <Select
-                value={form.watch("type")}
+                value={watchType}
                 onValueChange={(val) => form.setValue("type", val as WalletFormInput["type"])}
               >
                 <SelectTrigger>
@@ -143,7 +148,7 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
             <div className="space-y-2">
               <Label>{t("common.currency")}</Label>
               <CurrencySelect
-                value={form.watch("currency")}
+                value={watchCurrency}
                 onValueChange={(val) => form.setValue("currency", val as CurrencyCode)}
                 disabled={isEditing}
               />
@@ -163,7 +168,7 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
-                  currencyCode={form.watch("currency")}
+                  currencyCode={watchCurrency}
                   disabled={isEditing}
                   hasError={!!form.formState.errors.balance}
                 />
@@ -184,7 +189,7 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
                   onClick={() => form.setValue("icon", icon)}
                   className={cn(
                     "h-10 w-10 flex items-center justify-center rounded-md border transition-colors",
-                    form.watch("icon") === icon
+                    watchIcon === icon
                       ? "border-foreground bg-accent"
                       : "border-border hover:bg-accent/50",
                   )}
@@ -208,7 +213,7 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
                   onClick={() => form.setValue("color", color)}
                   className={cn(
                     "h-8 w-8 rounded-full transition-all",
-                    form.watch("color") === color
+                    watchColor === color
                       ? "ring-2 ring-offset-2 ring-offset-background ring-foreground"
                       : "",
                   )}
