@@ -39,13 +39,27 @@ No test framework is configured.
 Eight stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`, `budget-store`, `category-store`, `template-store`, `recurring-store`, `debt-store`, `ui-store`.
 
 **Persistence:** All data stores use Zustand's `persist` middleware with:
+
 - `skipHydration: true` (except `auth-store`) — `fetchXxx()` methods call `await useXxxStore.persist.rehydrate()`
 - `partialize` to persist only data arrays (e.g., `{ wallets: state.wallets }`)
-- No manual `storageGet`/`storageSet` calls — persist middleware auto-writes on `set()`
+- **No manual localStorage access** — always use Zustand actions (e.g., `updateProfile` in Settings). Persist middleware auto-writes on `set()`.
 
 **Cross-store access:** Top-level ES imports + `useXStore.getState()` inside function bodies (no circular deps).
 
 **Custom hooks:** Computed/derived state extracted to `src/hooks/use-filtered-transactions.ts` and `use-transaction-computed.ts` for memoized selectors used across components.
+
+### Shared Constants & Helpers
+
+- **`src/lib/constants.ts`** — `MOCK_USER_ID` (user ID until auth backend exists)
+- **`src/lib/transaction-helpers.ts`** — `applyTransactionEffect`, `reverseTransactionEffect`, `resolveTransferFields` (centralized transaction effect logic)
+- **`src/lib/nav-icon-map.ts`** — `NAV_ICON_MAP` for i18n-consistent navigation icons
+
+### Performance Patterns
+
+- **Category maps:** Use `useMemo(() => new Map(categories.map(c => [c.id, c])), [categories])` for O(1) lookups instead of O(n) `find()` calls
+- **Cached formatters:** Create `Intl.NumberFormat` instances once, reuse across renders (e.g., in `format-currency.ts`)
+- **Single-pass hooks:** Compute derived state in one loop (e.g., `useMonthlyTrend` calculates income/expense/net in single reduce)
+- **Wrap derived state in `useMemo`:** Prevent recalculation on every render for computed values
 
 ### Types
 
@@ -53,7 +67,15 @@ All domain types and form input types are in `src/types/index.ts`. Key types: `W
 
 ### Forms & Validation
 
-React Hook Form + Zod v4. Schemas live in `src/lib/validations/` (one per domain). Note: Zod v4 uses `{ message: "..." }` instead of `{ required_error: "..." }` for `z.enum()` and `z.date()`. Use `as any` on `zodResolver()` when `z.coerce.number()` causes type mismatch with `useForm<T>()`.
+React Hook Form + Zod v4. Schemas live in `src/lib/validations/` (one per domain).
+
+**Zod v4 conventions:**
+
+- Use `{ message: "..." }` instead of `{ required_error: "..." }` for `z.enum()` and `z.date()`
+- **Transfer refinements:** Shared `.refine()` logic for "from wallet ≠ to wallet" validation in transaction schemas
+- **Dynamic year range:** `z.number().min(2000).max(new Date().getFullYear() + 10)` instead of hardcoded years
+- **Debt person validation:** `z.string().min(1).max(100)` with custom messages
+- Use `as any` on `zodResolver()` when `z.coerce.number()` causes type mismatch with `useForm<T>()`
 
 ### Styling & Theming
 
@@ -62,6 +84,8 @@ Tailwind CSS v4 with CSS-based config (no `tailwind.config.ts`). Theme variables
 ### i18n
 
 Custom translation system in `src/lib/i18n/` with `createT(locale)` returning a `TFunction`. Two locales: `id` (Bahasa Indonesia, default) and `en`. Translation keys typed via `TranslationKey`. Locale persisted in localStorage as `finsnap-locale`.
+
+**Icon consistency:** `NAV_ICON_MAP` in `src/lib/nav-icon-map.ts` maps translation keys to Lucide icons, ensuring feature navigation icons stay in sync across components.
 
 ### Path Aliases
 
