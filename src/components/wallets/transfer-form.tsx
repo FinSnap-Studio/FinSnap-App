@@ -10,7 +10,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CurrencyInput } from "@/components/ui/currency-input";
@@ -60,7 +66,11 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
 
   const sourceWallet = wallets.find((w) => w.id === watchWalletId);
   const destWallet = wallets.find((w) => w.id === watchToWalletId);
-  const isCrossCurrency = !!(sourceWallet && destWallet && sourceWallet.currency !== destWallet.currency);
+  const isCrossCurrency = !!(
+    sourceWallet &&
+    destWallet &&
+    sourceWallet.currency !== destWallet.currency
+  );
 
   useEffect(() => {
     if (open) {
@@ -91,9 +101,10 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
     }
   };
 
-  const implicitRate = isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
-    ? watchAmount / watchToAmount
-    : null;
+  const implicitRate =
+    isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
+      ? watchAmount / watchToAmount
+      : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -157,7 +168,12 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
           {isCrossCurrency && (
             <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
               <Info className="h-4 w-4 flex-shrink-0" />
-              <span>{t("transfer.crossCurrency", { from: sourceWallet?.currency ?? "", to: destWallet?.currency ?? "" })}</span>
+              <span>
+                {t("transfer.crossCurrency", {
+                  from: sourceWallet?.currency ?? "",
+                  to: destWallet?.currency ?? "",
+                })}
+              </span>
             </div>
           )}
 
@@ -207,7 +223,10 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
               )}
               {implicitRate && (
                 <p className="text-xs text-muted-foreground">
-                  {t("transfer.rate", { dest: destWallet?.currency ?? "", rate: formatCurrency(implicitRate, sourceWallet?.currency) })}
+                  {t("transfer.rate", {
+                    dest: destWallet?.currency ?? "",
+                    rate: formatCurrency(implicitRate, sourceWallet?.currency),
+                  })}
                 </p>
               )}
             </div>
@@ -226,7 +245,7 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !form.watch("date") && "text-muted-foreground"
+                    !form.watch("date") && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />

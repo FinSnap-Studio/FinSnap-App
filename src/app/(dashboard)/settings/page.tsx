@@ -1,7 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Sun, Moon, User, Palette, Database, LogOut, Check, Coins, Languages, Plus, RotateCcw } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  User,
+  Palette,
+  Database,
+  LogOut,
+  Check,
+  Coins,
+  Languages,
+  Plus,
+  RotateCcw,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,7 +47,16 @@ import { MOCK_WALLETS, MOCK_TRANSACTIONS, MOCK_BUDGETS, MOCK_CATEGORIES } from "
 export default function SettingsPage() {
   const router = useRouter();
   const { user, logout, updateProfile } = useAuthStore();
-  const { theme, toggleTheme, colorTheme, setColorTheme, defaultCurrency, setDefaultCurrency, locale, setLocale } = useUIStore();
+  const {
+    theme,
+    toggleTheme,
+    colorTheme,
+    setColorTheme,
+    defaultCurrency,
+    setDefaultCurrency,
+    locale,
+    setLocale,
+  } = useUIStore();
   const { t } = useTranslation();
 
   const [name, setName] = useState(user?.name || "");
@@ -167,9 +188,7 @@ export default function SettingsPage() {
           <div className="space-y-2">
             <Label>{t("settings.defaultCurrency")}</Label>
             <CurrencySelect value={defaultCurrency} onValueChange={setDefaultCurrency} />
-            <p className="text-xs text-muted-foreground">
-              {t("settings.currencyHint")}
-            </p>
+            <p className="text-xs text-muted-foreground">{t("settings.currencyHint")}</p>
           </div>
         </CardContent>
       </Card>
@@ -246,9 +265,7 @@ export default function SettingsPage() {
                     key={themeItem.id}
                     onClick={() => setColorTheme(themeItem.id)}
                     className={`relative flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors hover:bg-accent/50 ${
-                      isActive
-                        ? "border-primary bg-accent/30"
-                        : "border-border"
+                      isActive ? "border-primary bg-accent/30" : "border-border"
                     }`}
                   >
                     {isActive && (
@@ -302,7 +319,9 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium">{t("settings.addDefaultCategories")}</p>
-              <p className="text-xs text-muted-foreground">{t("settings.addDefaultCategoriesDesc")}</p>
+              <p className="text-xs text-muted-foreground">
+                {t("settings.addDefaultCategoriesDesc")}
+              </p>
             </div>
             <Button variant="outline" size="sm" onClick={handleAddDefaultCategories}>
               <RotateCcw className="h-4 w-4 mr-1" />
@@ -335,9 +354,7 @@ export default function SettingsPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("settings.addDemoTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("settings.addDemoConfirm")}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("settings.addDemoConfirm")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
@@ -353,9 +370,7 @@ export default function SettingsPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("settings.clearDataTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("settings.clearDataConfirm")}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("settings.clearDataConfirm")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>

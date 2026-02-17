@@ -14,7 +14,10 @@ import { useRecentTransactions } from "@/hooks/use-transaction-computed";
 import { type TransactionType } from "@/types";
 
 function TypeBadge({ type, t }: { type: TransactionType; t: (key: any) => string }) {
-  const map: Record<TransactionType, { label: string; variant: "default" | "destructive" | "secondary" | "outline" }> = {
+  const map: Record<
+    TransactionType,
+    { label: string; variant: "default" | "destructive" | "secondary" | "outline" }
+  > = {
     INCOME: { label: t("common.income"), variant: "default" },
     EXPENSE: { label: t("common.expense"), variant: "destructive" },
     TRANSFER: { label: t("common.transfer"), variant: "secondary" },
@@ -34,15 +37,14 @@ export function RecentTransactions() {
 
   const transactions = useRecentTransactions(7);
 
-  const categoryMap = useMemo(
-    () => new Map(categories.map((c) => [c.id, c])),
-    [categories]
-  );
+  const categoryMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-base font-semibold">{t("dashboard.recentTransactions")}</CardTitle>
+        <CardTitle className="text-base font-semibold">
+          {t("dashboard.recentTransactions")}
+        </CardTitle>
         <Link
           href="/transactions"
           className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
@@ -67,7 +69,11 @@ export function RecentTransactions() {
                       {tx.type === "TRANSFER" ? (
                         <ArrowLeftRight className="h-4 w-4 text-blue-500" />
                       ) : category?.icon ? (
-                        <IconRenderer name={category.icon} className="h-4 w-4" color={category.color} />
+                        <IconRenderer
+                          name={category.icon}
+                          className="h-4 w-4"
+                          color={category.color}
+                        />
                       ) : (
                         <ClipboardList className="h-4 w-4 text-muted-foreground" />
                       )}
@@ -75,7 +81,8 @@ export function RecentTransactions() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
                         <p className="text-sm font-medium text-foreground truncate">
-                          {tx.description || (tx.type === "TRANSFER" ? t("common.transfer") : category?.name)}
+                          {tx.description ||
+                            (tx.type === "TRANSFER" ? t("common.transfer") : category?.name)}
                         </p>
                         <TypeBadge type={tx.type} t={t} />
                       </div>
@@ -84,8 +91,11 @@ export function RecentTransactions() {
                       </p>
                     </div>
                   </div>
-                  <p className={`text-sm font-semibold shrink-0 ml-2 ${getTransactionColor(tx.type)}`}>
-                    {getTransactionSign(tx.type)}{formatCurrency(tx.amount, tx.currency)}
+                  <p
+                    className={`text-sm font-semibold shrink-0 ml-2 ${getTransactionColor(tx.type)}`}
+                  >
+                    {getTransactionSign(tx.type)}
+                    {formatCurrency(tx.amount, tx.currency)}
                     {tx.toAmount && tx.toCurrency && (
                       <span> → {formatCurrency(tx.toAmount, tx.toCurrency)}</span>
                     )}

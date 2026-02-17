@@ -14,9 +14,7 @@ export function WalletQuickView() {
   const { t } = useTranslation();
 
   if (wallets.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">{t("dashboard.noWallet")}</p>
-    );
+    return <p className="text-sm text-muted-foreground">{t("dashboard.noWallet")}</p>;
   }
 
   return (
@@ -31,7 +29,9 @@ export function WalletQuickView() {
           <IconRenderer name={wallet.icon} className="h-6 w-6" color={wallet.color} />
           <div className="text-left">
             <p className="text-sm font-medium text-foreground">{wallet.name}</p>
-            <p className="text-sm text-muted-foreground">{formatCurrency(wallet.balance, wallet.currency)}</p>
+            <p className="text-sm text-muted-foreground">
+              {formatCurrency(wallet.balance, wallet.currency)}
+            </p>
           </div>
         </button>
       ))}

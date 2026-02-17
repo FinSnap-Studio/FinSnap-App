@@ -36,27 +36,20 @@ export function IncomeVsExpenseChart() {
       income: { ...chartConfig.income, label: t("common.income") },
       expense: { ...chartConfig.expense, label: t("common.expense") },
     }),
-    [t]
+    [t],
   );
 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          {t("dashboard.incomeVsExpense")}
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">{t("dashboard.incomeVsExpense")}</CardTitle>
         <CardDescription>{t("dashboard.last6Months")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={localConfig} className="max-h-[250px] w-full">
           <BarChart data={data} accessibilityLayer>
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="label"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} />
             <YAxis
               tickLine={false}
               axisLine={false}
@@ -69,9 +62,7 @@ export function IncomeVsExpenseChart() {
             />
             <ChartTooltip
               content={
-                <ChartTooltipContent
-                  formatter={(value) => formatCurrency(value as number)}
-                />
+                <ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />
               }
             />
             <ChartLegend content={<ChartLegendContent />} />

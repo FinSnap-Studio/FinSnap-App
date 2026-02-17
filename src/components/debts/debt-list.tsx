@@ -13,7 +13,14 @@ interface DebtListProps {
   onHistory: (debt: Debt) => void;
 }
 
-export function DebtList({ debts, onPayment, onEdit, onDelete, onSettle, onHistory }: DebtListProps) {
+export function DebtList({
+  debts,
+  onPayment,
+  onEdit,
+  onDelete,
+  onSettle,
+  onHistory,
+}: DebtListProps) {
   const { t } = useTranslation();
 
   if (debts.length === 0) {

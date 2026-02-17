@@ -31,13 +31,23 @@ function renderAmounts(amounts: Record<string, number>, colorClass: string) {
   );
 }
 
-function ChangeIndicator({ current, previous, label }: { current: number; previous: number; label: string }) {
+function ChangeIndicator({
+  current,
+  previous,
+  label,
+}: {
+  current: number;
+  previous: number;
+  label: string;
+}) {
   if (previous === 0) return null;
   const pctChange = ((current - previous) / Math.abs(previous)) * 100;
   const isUp = pctChange >= 0;
 
   return (
-    <span className={`flex items-center gap-0.5 text-xs ${isUp ? "text-green-600" : "text-red-600"}`}>
+    <span
+      className={`flex items-center gap-0.5 text-xs ${isUp ? "text-green-600" : "text-red-600"}`}
+    >
       {isUp ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
       {Math.abs(pctChange).toFixed(0)}% {label}
     </span>
@@ -53,7 +63,9 @@ export function MonthlySummary() {
   const incomeMap = useMonthlyAmounts("INCOME", month, year);
   const expenseMap = useMonthlyAmounts("EXPENSE", month, year);
 
-  const allCurrencies = [...new Set([...Object.keys(incomeMap), ...Object.keys(expenseMap)])] as CurrencyCode[];
+  const allCurrencies = [
+    ...new Set([...Object.keys(incomeMap), ...Object.keys(expenseMap)]),
+  ] as CurrencyCode[];
 
   const balanceMap: Record<string, number> = {};
   for (const cur of allCurrencies) {

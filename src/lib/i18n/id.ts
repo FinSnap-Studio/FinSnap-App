@@ -157,8 +157,7 @@ export const id = {
   "transaction.selectWalletDest": "Pilih wallet tujuan",
   "transaction.selectCategory": "Pilih kategori",
   "transaction.descPlaceholder": "Catatan transaksi (opsional)",
-  "transaction.crossCurrencyRequired":
-    "Jumlah tujuan wajib diisi untuk transfer lintas mata uang",
+  "transaction.crossCurrencyRequired": "Jumlah tujuan wajib diisi untuk transfer lintas mata uang",
   "transaction.tableDate": "Tanggal",
   "transaction.tableCategory": "Kategori",
   "transaction.tableDesc": "Deskripsi",
@@ -173,8 +172,7 @@ export const id = {
   "budget.addBudget": "Tambah Budget",
   "budget.editBudget": "Edit Budget",
   "budget.deleteTitle": "Hapus Budget",
-  "budget.deleteDesc":
-    'Apakah kamu yakin ingin menghapus budget untuk "{name}"?',
+  "budget.deleteDesc": 'Apakah kamu yakin ingin menghapus budget untuk "{name}"?',
   "budget.deleteSuccess": "Budget berhasil dihapus",
   "budget.deleteError": "Gagal menghapus budget",
   "budget.updateSuccess": "Budget berhasil diupdate",
@@ -217,8 +215,7 @@ export const id = {
   "settings.currency": "Mata Uang",
   "settings.currencyDesc": "Mata uang default untuk wallet dan budget baru",
   "settings.defaultCurrency": "Mata Uang Default",
-  "settings.currencyHint":
-    "Digunakan sebagai default saat membuat wallet atau budget baru",
+  "settings.currencyHint": "Digunakan sebagai default saat membuat wallet atau budget baru",
   "settings.language": "Bahasa",
   "settings.languageDesc": "Pilih bahasa tampilan aplikasi",
   "settings.appearance": "Tampilan",
@@ -230,8 +227,7 @@ export const id = {
   "settings.data": "Data",
   "settings.dataDesc": "Kelola data aplikasi",
   "settings.clearData": "Hapus semua data",
-  "settings.clearDataDesc":
-    "Menghapus semua data wallet, transaksi, budget, dan kategori",
+  "settings.clearDataDesc": "Menghapus semua data wallet, transaksi, budget, dan kategori",
   "settings.clearDataButton": "Hapus Data",
   "settings.clearDataTitle": "Hapus Semua Data",
   "settings.clearDataConfirm":
@@ -239,11 +235,13 @@ export const id = {
   "settings.clearDataSuccess": "Semua data berhasil dihapus",
   "settings.clearDataYes": "Ya, Hapus Semua",
   "settings.addDemoData": "Tambah data demo",
-  "settings.addDemoDataDesc": "Menambah contoh wallet, transaksi, dan budget ke data yang sudah ada",
+  "settings.addDemoDataDesc":
+    "Menambah contoh wallet, transaksi, dan budget ke data yang sudah ada",
   "settings.addDemoDataButton": "Tambah Demo",
   "settings.addDemoSuccess": "Data demo berhasil ditambahkan",
   "settings.addDemoTitle": "Tambah Data Demo",
-  "settings.addDemoConfirm": "Data demo (wallet, transaksi, budget) akan ditambahkan ke data yang sudah ada. Data lama tidak akan dihapus. Lanjutkan?",
+  "settings.addDemoConfirm":
+    "Data demo (wallet, transaksi, budget) akan ditambahkan ke data yang sudah ada. Data lama tidak akan dihapus. Lanjutkan?",
   "settings.addDefaultCategories": "Tambah kategori default",
   "settings.addDefaultCategoriesDesc": "Tambah 14 kategori default yang belum ada",
   "settings.addDefaultCategoriesButton": "Tambah Kategori",
@@ -467,8 +465,7 @@ export const id = {
     "Visualisasi pengeluaran dengan grafik interaktif. Temukan pola dan ambil keputusan keuangan yang lebih cerdas.",
 
   "landing.pricing.title": "Harga Sederhana",
-  "landing.pricing.subtitle":
-    "Gratis selama pengembangan, berbayar nanti saat peluncuran resmi.",
+  "landing.pricing.subtitle": "Gratis selama pengembangan, berbayar nanti saat peluncuran resmi.",
   "landing.pricing.earlyAccess": "Early Access",
   "landing.pricing.earlyBadge": "Sekarang",
   "landing.pricing.free": "GRATIS",

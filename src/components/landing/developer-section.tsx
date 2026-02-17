@@ -21,13 +21,8 @@ export function DeveloperSection() {
   return (
     <section id="developer" className="py-20 sm:py-28 bg-muted/30">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div
-          ref={ref}
-          className="text-center landing-animate animate-fade-up"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-10">
-            {t("landing.developer.title")}
-          </h2>
+        <div ref={ref} className="text-center landing-animate animate-fade-up">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-10">{t("landing.developer.title")}</h2>
 
           <Avatar className="size-20 mx-auto mb-4">
             <AvatarFallback className="text-2xl font-bold bg-primary text-primary-foreground">
@@ -48,13 +43,7 @@ export function DeveloperSection() {
 
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {SOCIALS.map((s) => (
-              <Button
-                key={s.label}
-                variant="outline"
-                size="icon"
-                className="rounded-full"
-                asChild
-              >
+              <Button key={s.label} variant="outline" size="icon" className="rounded-full" asChild>
                 <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
                   <s.icon className="size-4" />
                 </a>

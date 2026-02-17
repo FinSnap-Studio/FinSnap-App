@@ -27,7 +27,9 @@ export function DebtHistoryDialog({ open, onOpenChange, debt }: DebtHistoryDialo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("debt.historyTitle")} — {debt.personName}</DialogTitle>
+          <DialogTitle>
+            {t("debt.historyTitle")} — {debt.personName}
+          </DialogTitle>
         </DialogHeader>
 
         {linkedTxs.length === 0 ? (
@@ -35,13 +37,25 @@ export function DebtHistoryDialog({ open, onOpenChange, debt }: DebtHistoryDialo
         ) : (
           <div className="space-y-3 max-h-80 overflow-y-auto">
             {linkedTxs.map((tx) => (
-              <div key={tx!.id} className="flex items-center justify-between border-b pb-2 last:border-0">
+              <div
+                key={tx!.id}
+                className="flex items-center justify-between border-b pb-2 last:border-0"
+              >
                 <div>
                   <p className="text-sm font-medium">{tx!.description || "-"}</p>
-                  <p className="text-xs text-muted-foreground">{formatDate(tx!.date, "dd MMM yyyy", locale)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(tx!.date, "dd MMM yyyy", locale)}
+                  </p>
                 </div>
-                <span className={tx!.type === "INCOME" ? "text-green-600 font-medium text-sm" : "text-red-600 font-medium text-sm"}>
-                  {tx!.type === "INCOME" ? "+" : "-"}{formatCurrency(tx!.amount, tx!.currency)}
+                <span
+                  className={
+                    tx!.type === "INCOME"
+                      ? "text-green-600 font-medium text-sm"
+                      : "text-red-600 font-medium text-sm"
+                  }
+                >
+                  {tx!.type === "INCOME" ? "+" : "-"}
+                  {formatCurrency(tx!.amount, tx!.currency)}
                 </span>
               </div>
             ))}

@@ -81,10 +81,12 @@ export function TemplateList({ open, onOpenChange }: TemplateListProps) {
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-sm truncate">{tmpl.name}</p>
                       <p className="text-xs text-muted-foreground truncate">
-                        {tmpl.type === "TRANSFER" ? t("common.transfer") : category?.name ?? "—"} · {wallet?.name ?? "—"}
+                        {tmpl.type === "TRANSFER" ? t("common.transfer") : (category?.name ?? "—")}{" "}
+                        · {wallet?.name ?? "—"}
                       </p>
                       <p className={`text-sm font-semibold ${getTransactionColor(tmpl.type)}`}>
-                        {getTransactionSign(tmpl.type)}{formatCurrency(tmpl.amount, wallet?.currency)}
+                        {getTransactionSign(tmpl.type)}
+                        {formatCurrency(tmpl.amount, wallet?.currency)}
                       </p>
                     </div>
                     <DropdownMenu>
@@ -121,7 +123,10 @@ export function TemplateList({ open, onOpenChange }: TemplateListProps) {
       />
 
       {/* Delete Confirmation */}
-      <AlertDialog open={!!deletingTemplate} onOpenChange={(open) => !open && setDeletingTemplate(null)}>
+      <AlertDialog
+        open={!!deletingTemplate}
+        onOpenChange={(open) => !open && setDeletingTemplate(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("template.deleteTitle")}</AlertDialogTitle>

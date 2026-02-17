@@ -85,11 +85,7 @@ export function ReceiptUpload({ onResult, disabled }: ReceiptUploadProps) {
 
       {(state === "preview" || state === "scanning") && preview && (
         <div className="relative overflow-hidden rounded-lg border">
-          <img
-            src={preview}
-            alt="Receipt"
-            className="h-32 w-full object-cover"
-          />
+          <img src={preview} alt="Receipt" className="h-32 w-full object-cover" />
           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
             <div className="flex items-center gap-2 rounded-full bg-background/90 px-4 py-2">
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -103,11 +99,7 @@ export function ReceiptUpload({ onResult, disabled }: ReceiptUploadProps) {
 
       {state === "done" && preview && (
         <div className="relative flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-          <img
-            src={preview}
-            alt="Receipt"
-            className="h-12 w-12 rounded object-cover"
-          />
+          <img src={preview} alt="Receipt" className="h-12 w-12 rounded object-cover" />
           <div className="flex items-center gap-1.5 text-sm font-medium text-green-600 dark:text-green-400">
             <Check className="h-4 w-4" />
             {t("receipt.scanned")}

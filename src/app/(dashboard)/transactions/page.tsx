@@ -22,7 +22,8 @@ export default function TransactionsPage() {
   const [templateFormOpen, setTemplateFormOpen] = useState(false);
   const [templateListOpen, setTemplateListOpen] = useState(false);
   const [templateValues, setTemplateValues] = useState<Partial<TransactionFormInput> | null>(null);
-  const [saveAsTemplateDefaults, setSaveAsTemplateDefaults] = useState<Partial<TransactionTemplateFormInput> | null>(null);
+  const [saveAsTemplateDefaults, setSaveAsTemplateDefaults] =
+    useState<Partial<TransactionTemplateFormInput> | null>(null);
   const { t } = useTranslation();
 
   const handleApplyTemplate = useCallback((template: TransactionTemplate) => {
@@ -76,7 +77,10 @@ export default function TransactionsPage() {
         )}
       </div>
 
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "transactions" | "recurring")}>
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => setActiveTab(v as "transactions" | "recurring")}
+      >
         <TabsList>
           <TabsTrigger value="transactions">{t("recurring.tabTransactions")}</TabsTrigger>
           <TabsTrigger value="recurring">{t("recurring.tabRecurring")}</TabsTrigger>
@@ -104,10 +108,7 @@ export default function TransactionsPage() {
         onSaveAsTemplate={handleSaveAsTemplate}
       />
 
-      <RecurringForm
-        open={recurringFormOpen}
-        onOpenChange={setRecurringFormOpen}
-      />
+      <RecurringForm open={recurringFormOpen} onOpenChange={setRecurringFormOpen} />
 
       <TemplateForm
         open={templateFormOpen}
@@ -115,10 +116,7 @@ export default function TransactionsPage() {
         defaultValues={saveAsTemplateDefaults}
       />
 
-      <TemplateList
-        open={templateListOpen}
-        onOpenChange={setTemplateListOpen}
-      />
+      <TemplateList open={templateListOpen} onOpenChange={setTemplateListOpen} />
     </div>
   );
 }

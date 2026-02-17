@@ -27,10 +27,7 @@ export function getLocaleSeparators(locale: string): LocaleSeparators {
 
 const inputFormatters = new Map<string, Intl.NumberFormat>();
 
-export function formatNumberForInput(
-  value: number,
-  currencyCode: CurrencyCode
-): string {
+export function formatNumberForInput(value: number, currencyCode: CurrencyCode): string {
   if (value === 0) return "";
   let formatter = inputFormatters.get(currencyCode);
   if (!formatter) {
@@ -46,10 +43,7 @@ export function formatNumberForInput(
   return formatter.format(value);
 }
 
-export function parseFormattedNumber(
-  text: string,
-  locale: string
-): number {
+export function parseFormattedNumber(text: string, locale: string): number {
   const { thousand, decimal } = getLocaleSeparators(locale);
   let cleaned = text;
   if (thousand) {

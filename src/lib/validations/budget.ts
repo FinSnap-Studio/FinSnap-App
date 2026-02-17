@@ -8,6 +8,9 @@ export function createBudgetSchema(t: TFunction) {
     currency: z.enum(CURRENCY_CODES, { error: t("validation.selectCurrency") }),
     categoryId: z.string().min(1, t("validation.selectCategory")),
     month: z.coerce.number().min(1).max(12),
-    year: z.coerce.number().min(2020).max(new Date().getFullYear() + 5),
+    year: z.coerce
+      .number()
+      .min(2020)
+      .max(new Date().getFullYear() + 5),
   });
 }

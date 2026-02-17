@@ -36,7 +36,10 @@ export function BalanceSummary() {
     const prevMonth = prevDate.getMonth() + 1;
     const prevYear = prevDate.getFullYear();
 
-    let curIncome = 0, curExpense = 0, prevIncome = 0, prevExpense = 0;
+    let curIncome = 0,
+      curExpense = 0,
+      prevIncome = 0,
+      prevExpense = 0;
     for (const t of transactions) {
       if (t.type !== "INCOME" && t.type !== "EXPENSE") continue;
       const d = new Date(t.date);
@@ -95,10 +98,7 @@ export function BalanceSummary() {
             </div>
           )}
           {netChange !== null && (
-            <Badge
-              variant={netChange >= 0 ? "default" : "destructive"}
-              className="text-xs gap-0.5"
-            >
+            <Badge variant={netChange >= 0 ? "default" : "destructive"} className="text-xs gap-0.5">
               {netChange >= 0 ? (
                 <TrendingUp className="h-3 w-3" />
               ) : (

@@ -20,12 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Category } from "@/types";
 import { useCategoryStore } from "@/stores/category-store";
 import { useTransactionStore } from "@/stores/transaction-store";
@@ -73,7 +68,9 @@ export function CategoryItem({ category }: CategoryItemProps) {
           </div>
           <div>
             <p className="font-medium text-foreground">{category.name}</p>
-            <p className="text-xs text-muted-foreground capitalize">{category.type === "INCOME" ? t("common.income") : t("common.expense")}</p>
+            <p className="text-xs text-muted-foreground capitalize">
+              {category.type === "INCOME" ? t("common.income") : t("common.expense")}
+            </p>
           </div>
         </div>
         <DropdownMenu>
@@ -99,7 +96,11 @@ export function CategoryItem({ category }: CategoryItemProps) {
                     </DropdownMenuItem>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{category.isDefault ? t("category.defaultCannotDelete") : t("category.hasTransactions")}</p>
+                    <p>
+                      {category.isDefault
+                        ? t("category.defaultCannotDelete")
+                        : t("category.hasTransactions")}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

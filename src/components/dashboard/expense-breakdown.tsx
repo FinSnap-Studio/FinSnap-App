@@ -3,7 +3,12 @@
 import { useMemo } from "react";
 import { PieChart, Pie, Cell, Label } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { formatCurrency } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 import { IconRenderer } from "@/lib/icon-map";
@@ -26,10 +31,7 @@ export function ExpenseBreakdown() {
 
   const data = useExpenseByCategory(month, year);
 
-  const totalExpense = useMemo(
-    () => data.reduce((sum, d) => sum + d.total, 0),
-    [data]
-  );
+  const totalExpense = useMemo(() => data.reduce((sum, d) => sum + d.total, 0), [data]);
 
   const chartConfig = useMemo(() => {
     const config: ChartConfig = {};
@@ -45,9 +47,7 @@ export function ExpenseBreakdown() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          {t("dashboard.expenseBreakdown")}
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">{t("dashboard.expenseBreakdown")}</CardTitle>
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (

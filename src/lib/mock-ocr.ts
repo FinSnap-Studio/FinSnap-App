@@ -8,10 +8,10 @@ export interface OCRResult {
 
 const MOCK_RECEIPTS: Omit<OCRResult, "date">[] = [
   { amount: 45000, type: "EXPENSE", description: "Starbucks Caramel Macchiato", categoryId: "ce1" }, // Makan & Minum
-  { amount: 25000, type: "EXPENSE", description: "Grab Car to Office", categoryId: "ce2" },          // Transportasi
-  { amount: 150000, type: "EXPENSE", description: "Superindo Grocery", categoryId: "ce3" },           // Belanja
-  { amount: 35000, type: "EXPENSE", description: "Netflix Subscription", categoryId: "ce5" },         // Hiburan
-  { amount: 500000, type: "INCOME", description: "Freelance Payment", categoryId: "ci2" },            // Freelance
+  { amount: 25000, type: "EXPENSE", description: "Grab Car to Office", categoryId: "ce2" }, // Transportasi
+  { amount: 150000, type: "EXPENSE", description: "Superindo Grocery", categoryId: "ce3" }, // Belanja
+  { amount: 35000, type: "EXPENSE", description: "Netflix Subscription", categoryId: "ce5" }, // Hiburan
+  { amount: 500000, type: "INCOME", description: "Freelance Payment", categoryId: "ci2" }, // Freelance
 ];
 
 export function scanReceipt(): Promise<OCRResult> {

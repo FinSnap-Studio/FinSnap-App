@@ -17,11 +17,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useTranslation } from "@/hooks/use-translation";
 import { toast } from "sonner";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading, checkAuth } = useAuthStore();
   const fetchWallets = useWalletStore((s) => s.fetchWallets);
@@ -64,15 +60,28 @@ export default function DashboardLayout({
         if (result.processed === 1) {
           toast.info(t("recurring.processedSingle", { count: result.created }));
         } else {
-          toast.info(t("recurring.processedMultiple", { count: result.created, sources: result.processed }));
+          toast.info(
+            t("recurring.processedMultiple", { count: result.created, sources: result.processed }),
+          );
         }
       }
 
       setDataLoaded(true);
     };
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, authLoading, router, fetchWallets, fetchCategories, fetchTransactions, fetchBudgets, fetchTemplates, fetchRecurring, fetchDebts]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isAuthenticated,
+    authLoading,
+    router,
+    fetchWallets,
+    fetchCategories,
+    fetchTransactions,
+    fetchBudgets,
+    fetchTemplates,
+    fetchRecurring,
+    fetchDebts,
+  ]);
 
   if (authLoading || (!dataLoaded && isAuthenticated)) {
     return (

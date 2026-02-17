@@ -20,7 +20,7 @@ interface BalanceEffectParams {
  */
 export function applyTransactionEffect(
   walletStore: WalletStoreActions,
-  params: BalanceEffectParams
+  params: BalanceEffectParams,
 ) {
   const { type, walletId, amount, toWalletId, toAmount } = params;
   if (type === "INCOME") {
@@ -38,7 +38,7 @@ export function applyTransactionEffect(
  */
 export function reverseTransactionEffect(
   walletStore: WalletStoreActions,
-  params: BalanceEffectParams
+  params: BalanceEffectParams,
 ) {
   const { type, walletId, amount, toWalletId, toAmount } = params;
   if (type === "INCOME") {
@@ -62,14 +62,13 @@ export function resolveTransferFields(
     walletId: string;
     toWalletId?: string;
     toAmount?: number;
-  }
+  },
 ): { toCurrency: CurrencyCode | null; toAmount: number | null } {
   if (input.type !== "TRANSFER" || !input.toWalletId) {
     return { toCurrency: null, toAmount: null };
   }
   const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
   const toCurrency = walletStore.getWalletCurrency(input.toWalletId);
-  const toAmount =
-    toCurrency !== sourceCurrency && input.toAmount ? input.toAmount : null;
+  const toAmount = toCurrency !== sourceCurrency && input.toAmount ? input.toAmount : null;
   return { toCurrency, toAmount };
 }

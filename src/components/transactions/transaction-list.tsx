@@ -49,10 +49,7 @@ export function TransactionList() {
 
   const allTransactions = useFilteredTransactions();
 
-  const categoryMap = useMemo(
-    () => new Map(categories.map((c) => [c.id, c])),
-    [categories]
-  );
+  const categoryMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
 
   const [page, setPage] = useState(1);
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
@@ -117,24 +114,34 @@ export function TransactionList() {
                         {tx.type === "TRANSFER" ? (
                           <ArrowLeftRight className="h-4 w-4 text-blue-500" />
                         ) : category?.icon ? (
-                          <IconRenderer name={category.icon} className="h-4 w-4" color={category.color} />
+                          <IconRenderer
+                            name={category.icon}
+                            className="h-4 w-4"
+                            color={category.color}
+                          />
                         ) : null}
                       </span>
-                      <span className="text-sm">{tx.type === "TRANSFER" ? t("common.transfer") : category?.name}</span>
+                      <span className="text-sm">
+                        {tx.type === "TRANSFER" ? t("common.transfer") : category?.name}
+                      </span>
                     </span>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground hidden md:table-cell">
                     {tx.description}
                   </TableCell>
                   <TableCell className="text-sm">
-                    {tx.type === "TRANSFER"
-                      ? `${wallet?.name} → ${toWallet?.name}`
-                      : wallet?.name}
+                    {tx.type === "TRANSFER" ? `${wallet?.name} → ${toWallet?.name}` : wallet?.name}
                   </TableCell>
-                  <TableCell className={`text-right text-sm font-semibold ${getTransactionColor(tx.type)}`}>
-                    {getTransactionSign(tx.type)}{formatCurrency(tx.amount, tx.currency)}
+                  <TableCell
+                    className={`text-right text-sm font-semibold ${getTransactionColor(tx.type)}`}
+                  >
+                    {getTransactionSign(tx.type)}
+                    {formatCurrency(tx.amount, tx.currency)}
                     {tx.toAmount && tx.toCurrency && (
-                      <span className="text-muted-foreground font-normal"> → {formatCurrency(tx.toAmount, tx.toCurrency)}</span>
+                      <span className="text-muted-foreground font-normal">
+                        {" "}
+                        → {formatCurrency(tx.toAmount, tx.toCurrency)}
+                      </span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -203,9 +210,7 @@ export function TransactionList() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("transaction.deleteTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("transaction.deleteDesc")}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("transaction.deleteDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>

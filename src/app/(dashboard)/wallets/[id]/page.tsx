@@ -41,10 +41,7 @@ export default function WalletDetailPage() {
   const typeKey = WALLET_TYPES.find((wt) => wt.value === wallet.type)?.label;
   const typeLabel = typeKey ? t(typeKey) : wallet.type;
 
-  const categoryMap = useMemo(
-    () => new Map(categories.map((c) => [c.id, c])),
-    [categories]
-  );
+  const categoryMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
 
   const { monthIncome, monthExpense } = useMemo(() => {
     const now = new Date();
@@ -71,7 +68,9 @@ export default function WalletDetailPage() {
       <Card style={{ borderLeftWidth: 4, borderLeftColor: wallet.color }}>
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center h-14 w-14 rounded-full bg-muted"><IconRenderer name={wallet.icon} className="h-7 w-7" color={wallet.color} /></div>
+            <div className="flex items-center justify-center h-14 w-14 rounded-full bg-muted">
+              <IconRenderer name={wallet.icon} className="h-7 w-7" color={wallet.color} />
+            </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">{wallet.name}</h1>
               <div className="flex items-center gap-2 mt-1">
@@ -129,16 +128,24 @@ export default function WalletDetailPage() {
 
                 const isDestination = tx.type === "TRANSFER" && tx.toWalletId === walletId;
                 const displayAmount = isDestination && tx.toAmount ? tx.toAmount : tx.amount;
-                const displayCurrency = isDestination && tx.toCurrency ? tx.toCurrency : tx.currency;
+                const displayCurrency =
+                  isDestination && tx.toCurrency ? tx.toCurrency : tx.currency;
 
                 return (
-                  <div key={tx.id} className="flex items-center justify-between py-2 border-b last:border-0">
+                  <div
+                    key={tx.id}
+                    className="flex items-center justify-between py-2 border-b last:border-0"
+                  >
                     <div className="flex items-center gap-3">
                       <span className="flex items-center justify-center h-9 w-9 rounded-full bg-muted">
                         {tx.type === "TRANSFER" ? (
                           <ArrowLeftRight className="h-4 w-4 text-blue-500" />
                         ) : category?.icon ? (
-                          <IconRenderer name={category.icon} className="h-4 w-4" color={category.color} />
+                          <IconRenderer
+                            name={category.icon}
+                            className="h-4 w-4"
+                            color={category.color}
+                          />
                         ) : (
                           <ClipboardList className="h-4 w-4 text-muted-foreground" />
                         )}
@@ -150,13 +157,20 @@ export default function WalletDetailPage() {
                         <p className="text-xs text-muted-foreground">
                           {formatDate(tx.date, undefined, locale)}
                           {tx.type === "TRANSFER" && toWallet && (
-                            <> &middot; {tx.walletId === walletId ? `→ ${toWallet.name}` : `← ${sourceWallet?.name}`}</>
+                            <>
+                              {" "}
+                              &middot;{" "}
+                              {tx.walletId === walletId
+                                ? `→ ${toWallet.name}`
+                                : `← ${sourceWallet?.name}`}
+                            </>
                           )}
                         </p>
                       </div>
                     </div>
                     <p className={`text-sm font-semibold ${getTransactionColor(tx.type)}`}>
-                      {getTransactionSign(tx.type)}{formatCurrency(displayAmount, displayCurrency)}
+                      {getTransactionSign(tx.type)}
+                      {formatCurrency(displayAmount, displayCurrency)}
                     </p>
                   </div>
                 );

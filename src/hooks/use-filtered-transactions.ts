@@ -14,7 +14,7 @@ export function useFilteredTransactions(): Transaction[] {
     }
     if (filters.walletId) {
       result = result.filter(
-        (t) => t.walletId === filters.walletId || t.toWalletId === filters.walletId
+        (t) => t.walletId === filters.walletId || t.toWalletId === filters.walletId,
       );
     }
     if (filters.categoryId) {
@@ -30,9 +30,7 @@ export function useFilteredTransactions(): Transaction[] {
     }
     if (filters.search) {
       const search = filters.search.toLowerCase();
-      result = result.filter((t) =>
-        t.description.toLowerCase().includes(search)
-      );
+      result = result.filter((t) => t.description.toLowerCase().includes(search));
     }
 
     result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

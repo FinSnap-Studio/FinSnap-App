@@ -14,8 +14,14 @@ export default function CategoriesPage() {
   const categories = useCategoryStore((s) => s.categories);
   const [formOpen, setFormOpen] = useState(false);
 
-  const expenseCategories = useMemo(() => categories.filter((c) => c.type === "EXPENSE"), [categories]);
-  const incomeCategories = useMemo(() => categories.filter((c) => c.type === "INCOME"), [categories]);
+  const expenseCategories = useMemo(
+    () => categories.filter((c) => c.type === "EXPENSE"),
+    [categories],
+  );
+  const incomeCategories = useMemo(
+    () => categories.filter((c) => c.type === "INCOME"),
+    [categories],
+  );
 
   return (
     <div className="space-y-6">
@@ -28,8 +34,12 @@ export default function CategoriesPage() {
 
       <Tabs defaultValue="EXPENSE">
         <TabsList>
-          <TabsTrigger value="EXPENSE">{t("common.expense")} ({expenseCategories.length})</TabsTrigger>
-          <TabsTrigger value="INCOME">{t("common.income")} ({incomeCategories.length})</TabsTrigger>
+          <TabsTrigger value="EXPENSE">
+            {t("common.expense")} ({expenseCategories.length})
+          </TabsTrigger>
+          <TabsTrigger value="INCOME">
+            {t("common.income")} ({incomeCategories.length})
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="EXPENSE" className="mt-4">
           {expenseCategories.length === 0 ? (

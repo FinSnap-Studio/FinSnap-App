@@ -6,7 +6,14 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -51,9 +58,7 @@ export default function RegisterPage() {
     <Card>
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">{t("auth.registerTitle")}</CardTitle>
-        <CardDescription>
-          {t("auth.registerDesc")}
-        </CardDescription>
+        <CardDescription>{t("auth.registerDesc")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" autoComplete="off">
@@ -65,9 +70,7 @@ export default function RegisterPage() {
               placeholder="John Doe"
               {...register("name")}
             />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="register-email">{t("auth.email")}</Label>
@@ -78,9 +81,7 @@ export default function RegisterPage() {
               placeholder="john@example.com"
               {...register("email")}
             />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="register-password">{t("auth.password")}</Label>
@@ -91,9 +92,7 @@ export default function RegisterPage() {
               placeholder={t("auth.passwordPlaceholder")}
               {...register("password")}
             />
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
-            )}
+            {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="register-confirmPassword">{t("auth.confirmPassword")}</Label>

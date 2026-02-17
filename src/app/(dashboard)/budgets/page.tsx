@@ -3,7 +3,13 @@
 import { useState, useMemo } from "react";
 import { AlertTriangle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { MONTH_VALUES } from "@/lib/constants";
 import { getMonthName } from "@/lib/utils";
 import { useBudgetStore } from "@/stores/budget-store";
@@ -24,14 +30,15 @@ export default function BudgetsPage() {
 
   const budgets = useMemo(
     () => allBudgets.filter((b) => b.month === selectedMonth && b.year === selectedYear),
-    [allBudgets, selectedMonth, selectedYear]
+    [allBudgets, selectedMonth, selectedYear],
   );
   const limitBudgets = useMemo(
-    () => budgets.filter((b) => {
-      const status = getBudgetStatus(b.spent, b.amount);
-      return status === "warning" || status === "danger";
-    }),
-    [budgets]
+    () =>
+      budgets.filter((b) => {
+        const status = getBudgetStatus(b.spent, b.amount);
+        return status === "warning" || status === "danger";
+      }),
+    [budgets],
   );
 
   return (
@@ -54,7 +61,9 @@ export default function BudgetsPage() {
           </SelectTrigger>
           <SelectContent>
             {MONTH_VALUES.map((m) => (
-              <SelectItem key={m} value={String(m)}>{getMonthName(m, locale)}</SelectItem>
+              <SelectItem key={m} value={String(m)}>
+                {getMonthName(m, locale)}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -67,7 +76,9 @@ export default function BudgetsPage() {
           </SelectTrigger>
           <SelectContent>
             {Array.from({ length: 7 }, (_, i) => new Date().getFullYear() - 2 + i).map((y) => (
-              <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+              <SelectItem key={y} value={String(y)}>
+                {y}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -90,8 +101,15 @@ export default function BudgetsPage() {
               return (
                 <div key={b.id} className="flex items-center justify-between text-sm">
                   <span className="font-medium text-foreground">{cat?.name}</span>
-                  <span className={status === "danger" ? "text-red-600 dark:text-red-400 font-semibold" : "text-yellow-700 dark:text-yellow-400"}>
-                    {formatCurrency(b.spent, b.currency)} / {formatCurrency(b.amount, b.currency)} ({pct}%)
+                  <span
+                    className={
+                      status === "danger"
+                        ? "text-red-600 dark:text-red-400 font-semibold"
+                        : "text-yellow-700 dark:text-yellow-400"
+                    }
+                  >
+                    {formatCurrency(b.spent, b.currency)} / {formatCurrency(b.amount, b.currency)} (
+                    {pct}%)
                   </span>
                 </div>
               );

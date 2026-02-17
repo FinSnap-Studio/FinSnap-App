@@ -1,27 +1,49 @@
 "use client";
 
-import {
-  Wallet,
-  ArrowLeftRight,
-  PiggyBank,
-  BarChart3,
-  Palette,
-  ShieldCheck,
-} from "lucide-react";
+import { Wallet, ArrowLeftRight, PiggyBank, BarChart3, Palette, ShieldCheck } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTranslation } from "@/hooks/use-translation";
 
 const FEATURES = [
-  { icon: Wallet, titleKey: "landing.features.multiWallet", descKey: "landing.features.multiWalletDesc" },
-  { icon: ArrowLeftRight, titleKey: "landing.features.smartTracking", descKey: "landing.features.smartTrackingDesc" },
-  { icon: PiggyBank, titleKey: "landing.features.budgetPlanner", descKey: "landing.features.budgetPlannerDesc" },
-  { icon: BarChart3, titleKey: "landing.features.analytics", descKey: "landing.features.analyticsDesc" },
-  { icon: Palette, titleKey: "landing.features.personalization", descKey: "landing.features.personalizationDesc" },
-  { icon: ShieldCheck, titleKey: "landing.features.privacyFirst", descKey: "landing.features.privacyFirstDesc" },
+  {
+    icon: Wallet,
+    titleKey: "landing.features.multiWallet",
+    descKey: "landing.features.multiWalletDesc",
+  },
+  {
+    icon: ArrowLeftRight,
+    titleKey: "landing.features.smartTracking",
+    descKey: "landing.features.smartTrackingDesc",
+  },
+  {
+    icon: PiggyBank,
+    titleKey: "landing.features.budgetPlanner",
+    descKey: "landing.features.budgetPlannerDesc",
+  },
+  {
+    icon: BarChart3,
+    titleKey: "landing.features.analytics",
+    descKey: "landing.features.analyticsDesc",
+  },
+  {
+    icon: Palette,
+    titleKey: "landing.features.personalization",
+    descKey: "landing.features.personalizationDesc",
+  },
+  {
+    icon: ShieldCheck,
+    titleKey: "landing.features.privacyFirst",
+    descKey: "landing.features.privacyFirstDesc",
+  },
 ] as const;
 
-function FeatureCard({ icon: Icon, titleKey, descKey, index }: {
+function FeatureCard({
+  icon: Icon,
+  titleKey,
+  descKey,
+  index,
+}: {
   icon: typeof Wallet;
   titleKey: string;
   descKey: string;
@@ -41,12 +63,8 @@ function FeatureCard({ icon: Icon, titleKey, descKey, index }: {
           <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
             <Icon className="size-6 text-primary" />
           </div>
-          <h3 className="font-semibold text-lg mb-2">
-            {t(titleKey as any)}
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {t(descKey as any)}
-          </p>
+          <h3 className="font-semibold text-lg mb-2">{t(titleKey as any)}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t(descKey as any)}</p>
         </CardContent>
       </Card>
     </div>
@@ -60,13 +78,8 @@ export function FeaturesSection() {
   return (
     <section id="features" className="py-20 sm:py-28">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div
-          ref={headerRef}
-          className="text-center mb-14 landing-animate animate-fade-up"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            {t("landing.features.title")}
-          </h2>
+        <div ref={headerRef} className="text-center mb-14 landing-animate animate-fade-up">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t("landing.features.title")}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             {t("landing.features.subtitle")}
           </p>

@@ -1,11 +1,4 @@
-import {
-  LayoutDashboard,
-  Wallet,
-  ArrowLeftRight,
-  Handshake,
-  PiggyBank,
-  Tag,
-} from "lucide-react";
+import { LayoutDashboard, Wallet, ArrowLeftRight, Handshake, PiggyBank, Tag } from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
 
 export const WALLET_TYPES = [
@@ -15,24 +8,53 @@ export const WALLET_TYPES = [
 ] as const;
 
 export const PRESET_COLORS = [
-  "#6366f1", "#8b5cf6", "#0d9488", "#059669", "#2563eb",
-  "#dc2626", "#ea580c", "#d97706", "#64748b", "#0891b2",
+  "#6366f1",
+  "#8b5cf6",
+  "#0d9488",
+  "#059669",
+  "#2563eb",
+  "#dc2626",
+  "#ea580c",
+  "#d97706",
+  "#64748b",
+  "#0891b2",
 ] as const;
 
 export const WALLET_ICONS = [
-  "CreditCard", "Smartphone", "Building2", "Banknote",
-  "Coins", "CircleDollarSign", "Gem", "Landmark",
+  "CreditCard",
+  "Smartphone",
+  "Building2",
+  "Banknote",
+  "Coins",
+  "CircleDollarSign",
+  "Gem",
+  "Landmark",
 ] as const;
 
 export const EXPENSE_ICONS = [
-  "UtensilsCrossed", "Car", "ShoppingCart", "Home",
-  "Gamepad2", "Pill", "BookOpen", "Shirt",
-  "Gift", "Scissors", "PawPrint", "Coffee",
+  "UtensilsCrossed",
+  "Car",
+  "ShoppingCart",
+  "Home",
+  "Gamepad2",
+  "Pill",
+  "BookOpen",
+  "Shirt",
+  "Gift",
+  "Scissors",
+  "PawPrint",
+  "Coffee",
 ] as const;
 
 export const INCOME_ICONS = [
-  "Coins", "Briefcase", "TrendingUp", "Gift",
-  "Banknote", "Trophy", "BarChart3", "Laptop",
+  "Coins",
+  "Briefcase",
+  "TrendingUp",
+  "Gift",
+  "Banknote",
+  "Trophy",
+  "BarChart3",
+  "Laptop",
 ] as const;
 
 export const NAV_ITEMS = [

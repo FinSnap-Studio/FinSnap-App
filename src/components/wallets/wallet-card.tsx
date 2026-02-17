@@ -64,10 +64,14 @@ export function WalletCard({ wallet }: WalletCardProps) {
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-muted"><IconRenderer name={wallet.icon} className="h-6 w-6" color={wallet.color} /></div>
+              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-muted">
+                <IconRenderer name={wallet.icon} className="h-6 w-6" color={wallet.color} />
+              </div>
               <div>
                 <p className="font-semibold text-foreground">{wallet.name}</p>
-                <Badge variant="secondary" className="mt-1">{typeLabel}</Badge>
+                <Badge variant="secondary" className="mt-1">
+                  {typeLabel}
+                </Badge>
               </div>
             </div>
             <DropdownMenu>
@@ -83,10 +87,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
                 <DropdownMenuItem onClick={() => setEditOpen(true)}>
                   <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setDeleteOpen(true)}
-                  className="text-red-600"
-                >
+                <DropdownMenuItem onClick={() => setDeleteOpen(true)} className="text-red-600">
                   <Trash2 className="h-4 w-4 mr-2" /> {t("common.delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -159,8 +159,7 @@ export const en: Record<TranslationKey, string> = {
   "transaction.selectWalletDest": "Select destination wallet",
   "transaction.selectCategory": "Select category",
   "transaction.descPlaceholder": "Transaction note (optional)",
-  "transaction.crossCurrencyRequired":
-    "Destination amount is required for cross-currency transfer",
+  "transaction.crossCurrencyRequired": "Destination amount is required for cross-currency transfer",
   "transaction.tableDate": "Date",
   "transaction.tableCategory": "Category",
   "transaction.tableDesc": "Description",
@@ -175,8 +174,7 @@ export const en: Record<TranslationKey, string> = {
   "budget.addBudget": "Add Budget",
   "budget.editBudget": "Edit Budget",
   "budget.deleteTitle": "Delete Budget",
-  "budget.deleteDesc":
-    'Are you sure you want to delete the budget for "{name}"?',
+  "budget.deleteDesc": 'Are you sure you want to delete the budget for "{name}"?',
   "budget.deleteSuccess": "Budget deleted successfully",
   "budget.deleteError": "Failed to delete budget",
   "budget.updateSuccess": "Budget updated successfully",
@@ -219,8 +217,7 @@ export const en: Record<TranslationKey, string> = {
   "settings.currency": "Currency",
   "settings.currencyDesc": "Default currency for new wallets and budgets",
   "settings.defaultCurrency": "Default Currency",
-  "settings.currencyHint":
-    "Used as default when creating new wallets or budgets",
+  "settings.currencyHint": "Used as default when creating new wallets or budgets",
   "settings.language": "Language",
   "settings.languageDesc": "Choose the app display language",
   "settings.appearance": "Appearance",
@@ -232,8 +229,7 @@ export const en: Record<TranslationKey, string> = {
   "settings.data": "Data",
   "settings.dataDesc": "Manage app data",
   "settings.clearData": "Clear all data",
-  "settings.clearDataDesc":
-    "Delete all wallets, transactions, budgets, and categories",
+  "settings.clearDataDesc": "Delete all wallets, transactions, budgets, and categories",
   "settings.clearDataButton": "Clear Data",
   "settings.clearDataTitle": "Clear All Data",
   "settings.clearDataConfirm":
@@ -245,7 +241,8 @@ export const en: Record<TranslationKey, string> = {
   "settings.addDemoDataButton": "Add Demo",
   "settings.addDemoSuccess": "Demo data added successfully",
   "settings.addDemoTitle": "Add Demo Data",
-  "settings.addDemoConfirm": "Demo data (wallets, transactions, budgets) will be added to your existing data. Existing data will not be deleted. Continue?",
+  "settings.addDemoConfirm":
+    "Demo data (wallets, transactions, budgets) will be added to your existing data. Existing data will not be deleted. Continue?",
   "settings.addDefaultCategories": "Add default categories",
   "settings.addDefaultCategoriesDesc": "Add the 14 default categories that are missing",
   "settings.addDefaultCategoriesButton": "Add Categories",
@@ -337,7 +334,8 @@ export const en: Record<TranslationKey, string> = {
   "recurring.frequencyYearly": "Yearly",
   "recurring.everyLabel": "Every {interval} {unit}",
   "recurring.processedSingle": "{count} recurring transaction(s) auto-created",
-  "recurring.processedMultiple": "{count} recurring transaction(s) auto-created from {sources} schedule(s)",
+  "recurring.processedMultiple":
+    "{count} recurring transaction(s) auto-created from {sources} schedule(s)",
   "recurring.deleteTitle": "Delete Recurring Transaction",
   "recurring.deleteDesc": 'Are you sure you want to delete "{name}"?',
   "recurring.deleteSuccess": "Recurring transaction deleted successfully",
@@ -456,8 +454,7 @@ export const en: Record<TranslationKey, string> = {
     "Your data stays in the browser. No servers, no third parties — just you.",
 
   "landing.benefits.title": "Why FinSnap?",
-  "landing.benefits.subtitle":
-    "Designed to help you manage your finances better.",
+  "landing.benefits.subtitle": "Designed to help you manage your finances better.",
   "landing.benefits.trackTitle": "Track Every Penny",
   "landing.benefits.trackDesc":
     "No more missed transactions. Record all income and expenses from multiple wallets in seconds.",
@@ -469,8 +466,7 @@ export const en: Record<TranslationKey, string> = {
     "Visualize spending with interactive charts. Discover patterns and make smarter financial decisions.",
 
   "landing.pricing.title": "Simple Pricing",
-  "landing.pricing.subtitle":
-    "Free during development, paid plans coming at official launch.",
+  "landing.pricing.subtitle": "Free during development, paid plans coming at official launch.",
   "landing.pricing.earlyAccess": "Early Access",
   "landing.pricing.earlyBadge": "Current",
   "landing.pricing.free": "FREE",

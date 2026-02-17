@@ -11,7 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CurrencyInput } from "@/components/ui/currency-input";
@@ -36,7 +42,13 @@ interface TransactionFormProps {
   onSaveAsTemplate?: (values: TransactionFormInput) => void;
 }
 
-export function TransactionForm({ open, onOpenChange, transaction, templateValues, onSaveAsTemplate }: TransactionFormProps) {
+export function TransactionForm({
+  open,
+  onOpenChange,
+  transaction,
+  templateValues,
+  onSaveAsTemplate,
+}: TransactionFormProps) {
   const addTransaction = useTransactionStore((s) => s.addTransaction);
   const updateTransaction = useTransactionStore((s) => s.updateTransaction);
   const allWallets = useWalletStore((s) => s.wallets);
@@ -74,7 +86,8 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
   const destWallet = wallets.find((w) => w.id === watchToWalletId);
   const isCrossCurrency = !!(
     watchType === "TRANSFER" &&
-    sourceWallet && destWallet &&
+    sourceWallet &&
+    destWallet &&
     sourceWallet.currency !== destWallet.currency
   );
 
@@ -154,15 +167,18 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
     }
   };
 
-  const implicitRate = isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
-    ? watchAmount / watchToAmount
-    : null;
+  const implicitRate =
+    isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
+      ? watchAmount / watchToAmount
+      : null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto px-6">
         <SheetHeader>
-          <SheetTitle>{isEditing ? t("transaction.editTransaction") : t("transaction.addTransaction")}</SheetTitle>
+          <SheetTitle>
+            {isEditing ? t("transaction.editTransaction") : t("transaction.addTransaction")}
+          </SheetTitle>
         </SheetHeader>
 
         {!isEditing && (
@@ -173,9 +189,15 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
           {/* Type Tabs */}
           <Tabs value={watchType} onValueChange={onTypeChange}>
             <TabsList className="w-full">
-              <TabsTrigger value="INCOME" className="flex-1">{t("common.income")}</TabsTrigger>
-              <TabsTrigger value="EXPENSE" className="flex-1">{t("common.expense")}</TabsTrigger>
-              <TabsTrigger value="TRANSFER" className="flex-1">{t("common.transfer")}</TabsTrigger>
+              <TabsTrigger value="INCOME" className="flex-1">
+                {t("common.income")}
+              </TabsTrigger>
+              <TabsTrigger value="EXPENSE" className="flex-1">
+                {t("common.expense")}
+              </TabsTrigger>
+              <TabsTrigger value="TRANSFER" className="flex-1">
+                {t("common.transfer")}
+              </TabsTrigger>
             </TabsList>
           </Tabs>
 
@@ -255,10 +277,7 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
           ) : (
             <div className="space-y-2">
               <Label>{t("transfer.fromWallet")}</Label>
-              <Select
-                value={watchWalletId}
-                onValueChange={(val) => form.setValue("walletId", val)}
-              >
+              <Select value={watchWalletId} onValueChange={(val) => form.setValue("walletId", val)}>
                 <SelectTrigger>
                   <SelectValue placeholder={t("transaction.selectWallet")} />
                 </SelectTrigger>
@@ -308,7 +327,12 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
             <>
               <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
                 <Info className="h-4 w-4 flex-shrink-0" />
-                <span>{t("transfer.crossCurrency", { from: sourceWallet?.currency ?? "", to: destWallet?.currency ?? "" })}</span>
+                <span>
+                  {t("transfer.crossCurrency", {
+                    from: sourceWallet?.currency ?? "",
+                    to: destWallet?.currency ?? "",
+                  })}
+                </span>
               </div>
               <div className="space-y-2">
                 <Label>{t("transfer.amountDest", { currency: destWallet?.currency ?? "" })}</Label>
@@ -330,7 +354,10 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
                 )}
                 {implicitRate && (
                   <p className="text-xs text-muted-foreground">
-                    {t("transfer.rate", { dest: destWallet?.currency ?? "", rate: formatCurrency(implicitRate, sourceWallet?.currency) })}
+                    {t("transfer.rate", {
+                      dest: destWallet?.currency ?? "",
+                      rate: formatCurrency(implicitRate, sourceWallet?.currency),
+                    })}
                   </p>
                 )}
               </div>
@@ -355,7 +382,7 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !form.watch("date") && "text-muted-foreground"
+                    !form.watch("date") && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -380,7 +407,11 @@ export function TransactionForm({ open, onOpenChange, transaction, templateValue
           </div>
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? t("common.saving") : isEditing ? t("common.update") : t("common.save")}
+            {form.formState.isSubmitting
+              ? t("common.saving")
+              : isEditing
+                ? t("common.update")
+                : t("common.save")}
           </Button>
 
           {!isEditing && onSaveAsTemplate && (

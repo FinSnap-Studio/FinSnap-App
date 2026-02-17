@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowDownCircle, ArrowLeftRight, ArrowUpCircle, ListPlus, Plus, Settings2 } from "lucide-react";
+import {
+  ArrowDownCircle,
+  ArrowLeftRight,
+  ArrowUpCircle,
+  ListPlus,
+  Plus,
+  Settings2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TransactionTemplate } from "@/types";
 import { useTemplateStore } from "@/stores/template-store";

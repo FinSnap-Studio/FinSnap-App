@@ -51,16 +51,9 @@ export function PricingSection() {
   return (
     <section id="pricing" className="py-20 sm:py-28">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div
-          ref={headerRef}
-          className="text-center mb-14 landing-animate animate-fade-up"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            {t("landing.pricing.title")}
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            {t("landing.pricing.subtitle")}
-          </p>
+        <div ref={headerRef} className="text-center mb-14 landing-animate animate-fade-up">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t("landing.pricing.title")}</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">{t("landing.pricing.subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
@@ -68,15 +61,9 @@ export function PricingSection() {
           <div ref={earlyRef} className="landing-animate animate-fade-up">
             <Card className="h-full border-primary shadow-md">
               <CardHeader className="text-center pb-2">
-                <Badge className="w-fit mx-auto mb-3">
-                  {t("landing.pricing.earlyBadge")}
-                </Badge>
-                <CardTitle className="text-xl">
-                  {t("landing.pricing.earlyAccess")}
-                </CardTitle>
-                <p className="text-4xl font-bold text-primary mt-2">
-                  {t("landing.pricing.free")}
-                </p>
+                <Badge className="w-fit mx-auto mb-3">{t("landing.pricing.earlyBadge")}</Badge>
+                <CardTitle className="text-xl">{t("landing.pricing.earlyAccess")}</CardTitle>
+                <p className="text-4xl font-bold text-primary mt-2">{t("landing.pricing.free")}</p>
                 <p className="text-sm text-muted-foreground">
                   {t("landing.pricing.earlySubtitle")}
                 </p>
@@ -90,11 +77,7 @@ export function PricingSection() {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  className="w-full"
-                  onClick={handleCta}
-                  disabled={demoLoading}
-                >
+                <Button className="w-full" onClick={handleCta} disabled={demoLoading}>
                   {demoLoading
                     ? t("common.loading")
                     : isAuthenticated
@@ -116,15 +99,11 @@ export function PricingSection() {
                 <Badge variant="secondary" className="w-fit mx-auto mb-3">
                   {t("landing.pricing.proBadge")}
                 </Badge>
-                <CardTitle className="text-xl">
-                  {t("landing.pricing.pro")}
-                </CardTitle>
+                <CardTitle className="text-xl">{t("landing.pricing.pro")}</CardTitle>
                 <p className="text-4xl font-bold text-muted-foreground mt-2">
                   {t("landing.pricing.proPrice")}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  {t("landing.pricing.proSubtitle")}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("landing.pricing.proSubtitle")}</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-2.5">

@@ -5,7 +5,13 @@ import { Search, X } from "lucide-react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -39,7 +45,9 @@ export function TransactionFilters() {
       {/* Type Tabs */}
       <Tabs
         value={filters.type || "ALL"}
-        onValueChange={(val) => setFilters({ type: val as "ALL" | "INCOME" | "EXPENSE" | "TRANSFER" })}
+        onValueChange={(val) =>
+          setFilters({ type: val as "ALL" | "INCOME" | "EXPENSE" | "TRANSFER" })
+        }
       >
         <TabsList>
           <TabsTrigger value="ALL">{t("common.all")}</TabsTrigger>
@@ -92,10 +100,15 @@ export function TransactionFilters() {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className={cn("w-[150px] justify-start text-left font-normal", !filters.dateFrom && "text-muted-foreground")}
+              className={cn(
+                "w-[150px] justify-start text-left font-normal",
+                !filters.dateFrom && "text-muted-foreground",
+              )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateFrom ? format(filters.dateFrom, "dd/MM/yy", { locale: getDateLocale(locale) }) : t("common.from")}
+              {filters.dateFrom
+                ? format(filters.dateFrom, "dd/MM/yy", { locale: getDateLocale(locale) })
+                : t("common.from")}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -114,10 +127,15 @@ export function TransactionFilters() {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className={cn("w-[150px] justify-start text-left font-normal", !filters.dateTo && "text-muted-foreground")}
+              className={cn(
+                "w-[150px] justify-start text-left font-normal",
+                !filters.dateTo && "text-muted-foreground",
+              )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateTo ? format(filters.dateTo, "dd/MM/yy", { locale: getDateLocale(locale) }) : t("common.to")}
+              {filters.dateTo
+                ? format(filters.dateTo, "dd/MM/yy", { locale: getDateLocale(locale) })
+                : t("common.to")}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">

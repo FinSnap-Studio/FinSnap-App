@@ -2,15 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Sun,
-  Moon,
-  Wallet,
-  Settings,
-  LogOut,
-  Check,
-  Languages,
-} from "lucide-react";
+import { Sun, Moon, Wallet, Settings, LogOut, Check, Languages } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -31,15 +23,8 @@ import { COLOR_THEMES } from "@/lib/themes";
 import { LOCALE_OPTIONS, type Locale } from "@/lib/i18n";
 
 export function Header() {
-  const {
-    theme,
-    toggleTheme,
-    colorTheme,
-    setColorTheme,
-    setLocale,
-    locale,
-    initTheme,
-  } = useUIStore();
+  const { theme, toggleTheme, colorTheme, setColorTheme, setLocale, locale, initTheme } =
+    useUIStore();
   const { user, logout } = useAuthStore();
   const { t } = useTranslation();
   const router = useRouter();
@@ -57,10 +42,7 @@ export function Header() {
     <header className="sticky top-0 z-20 h-16 flex items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="hidden md:flex" />
-        <Separator
-          orientation="vertical"
-          className="mr-2 h-4 hidden md:block"
-        />
+        <Separator orientation="vertical" className="mr-2 h-4 hidden md:block" />
         <div className="md:hidden flex items-center gap-2">
           <Wallet className="h-5 w-5 text-primary" />
           <span className="font-bold text-foreground">FinSnap</span>
@@ -69,11 +51,7 @@ export function Header() {
 
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" onClick={toggleTheme}>
-          {theme === "light" ? (
-            <Moon className="h-4 w-4" />
-          ) : (
-            <Sun className="h-4 w-4" />
-          )}
+          {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
         </Button>
 
         <DropdownMenu>
@@ -90,17 +68,13 @@ export function Header() {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user?.name}</p>
-                <p className="text-xs text-muted-foreground leading-none">
-                  {user?.email}
-                </p>
+                <p className="text-xs text-muted-foreground leading-none">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="text-xs">
-                {t("settings.colorTheme")}
-              </DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">{t("settings.colorTheme")}</DropdownMenuLabel>
               <div className="flex gap-1.5 px-2 pb-2">
                 {COLOR_THEMES.map((themeOption) => (
                   <button
@@ -120,9 +94,7 @@ export function Header() {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="text-xs">
-                {t("settings.language")}
-              </DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">{t("settings.language")}</DropdownMenuLabel>
               <div className="flex gap-1.5 px-2 pb-2">
                 {LOCALE_OPTIONS.map((opt) => (
                   <button

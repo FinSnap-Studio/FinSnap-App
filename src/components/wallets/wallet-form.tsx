@@ -8,7 +8,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CurrencySelect } from "@/components/ui/currency-select";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { createWalletSchema } from "@/lib/validations/wallet";
@@ -77,7 +83,12 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
   const onSubmit = async (data: WalletFormInput) => {
     try {
       if (isEditing) {
-        await updateWallet(wallet.id, { name: data.name, type: data.type, icon: data.icon, color: data.color });
+        await updateWallet(wallet.id, {
+          name: data.name,
+          type: data.type,
+          icon: data.icon,
+          color: data.color,
+        });
         toast.success(t("wallet.updateSuccess"));
       } else {
         await addWallet(data);
@@ -121,7 +132,9 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
                 </SelectTrigger>
                 <SelectContent>
                   {WALLET_TYPES.map((wt) => (
-                    <SelectItem key={wt.value} value={wt.value}>{t(wt.label)}</SelectItem>
+                    <SelectItem key={wt.value} value={wt.value}>
+                      {t(wt.label)}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -173,7 +186,7 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
                     "h-10 w-10 flex items-center justify-center rounded-md border transition-colors",
                     form.watch("icon") === icon
                       ? "border-foreground bg-accent"
-                      : "border-border hover:bg-accent/50"
+                      : "border-border hover:bg-accent/50",
                   )}
                 >
                   <IconRenderer name={icon} className="h-5 w-5" />
@@ -197,7 +210,7 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
                     "h-8 w-8 rounded-full transition-all",
                     form.watch("color") === color
                       ? "ring-2 ring-offset-2 ring-offset-background ring-foreground"
-                      : ""
+                      : "",
                   )}
                   style={{ backgroundColor: color }}
                 />
@@ -209,7 +222,11 @@ export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
           </div>
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? t("common.saving") : isEditing ? t("common.update") : t("common.save")}
+            {form.formState.isSubmitting
+              ? t("common.saving")
+              : isEditing
+                ? t("common.update")
+                : t("common.save")}
           </Button>
         </form>
       </DialogContent>

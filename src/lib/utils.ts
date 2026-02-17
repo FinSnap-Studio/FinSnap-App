@@ -17,7 +17,8 @@ export function formatCurrency(amount: number, currency?: CurrencyCode): string 
   if (!formatter) {
     const info = getCurrencyInfo(code);
     formatter = new Intl.NumberFormat(info.locale, {
-      style: "currency", currency: info.code,
+      style: "currency",
+      currency: info.code,
       minimumFractionDigits: info.minFractionDigits,
       maximumFractionDigits: info.maxFractionDigits,
     });

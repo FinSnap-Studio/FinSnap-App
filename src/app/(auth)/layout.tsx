@@ -6,11 +6,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useUIStore } from "@/stores/ui-store";
 import { AuthSettingsPopover } from "@/components/auth-settings-popover";
 
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
   const initTheme = useUIStore((s) => s.initTheme);

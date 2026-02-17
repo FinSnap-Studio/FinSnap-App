@@ -43,7 +43,10 @@ export default function DebtsPage() {
   const overdueDebts = debts.filter((d) => d.status === "OVERDUE");
 
   const totalDebtAmount = activeDebts.reduce((sum, d) => sum + (d.amount - d.paidAmount), 0);
-  const totalReceivableAmount = activeReceivables.reduce((sum, d) => sum + (d.amount - d.paidAmount), 0);
+  const totalReceivableAmount = activeReceivables.reduce(
+    (sum, d) => sum + (d.amount - d.paidAmount),
+    0,
+  );
   const debtCurrency = activeDebts[0]?.currency ?? "IDR";
   const receivableCurrency = activeReceivables[0]?.currency ?? "IDR";
 
@@ -72,7 +75,12 @@ export default function DebtsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">{t("debt.title")}</h1>
-        <Button onClick={() => { setEditDebt(null); setFormOpen(true); }}>
+        <Button
+          onClick={() => {
+            setEditDebt(null);
+            setFormOpen(true);
+          }}
+        >
           <Plus className="h-4 w-4 mr-2" /> {t("debt.addDebt")}
         </Button>
       </div>
@@ -87,7 +95,9 @@ export default function DebtsPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{t("debt.totalDebts")}</p>
-                <p className="text-lg font-bold text-red-600 dark:text-red-400">{formatCurrency(totalDebtAmount, debtCurrency)}</p>
+                <p className="text-lg font-bold text-red-600 dark:text-red-400">
+                  {formatCurrency(totalDebtAmount, debtCurrency)}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -101,7 +111,9 @@ export default function DebtsPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{t("debt.totalReceivables")}</p>
-                <p className="text-lg font-bold text-green-600 dark:text-green-400">{formatCurrency(totalReceivableAmount, receivableCurrency)}</p>
+                <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                  {formatCurrency(totalReceivableAmount, receivableCurrency)}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -125,9 +137,15 @@ export default function DebtsPage() {
       {/* Tabs */}
       <Tabs defaultValue="all">
         <TabsList>
-          <TabsTrigger value="all">{t("debt.tabAll")} ({debts.length})</TabsTrigger>
-          <TabsTrigger value="debts">{t("debt.tabDebts")} ({allDebts.length})</TabsTrigger>
-          <TabsTrigger value="receivables">{t("debt.tabReceivables")} ({allReceivables.length})</TabsTrigger>
+          <TabsTrigger value="all">
+            {t("debt.tabAll")} ({debts.length})
+          </TabsTrigger>
+          <TabsTrigger value="debts">
+            {t("debt.tabDebts")} ({allDebts.length})
+          </TabsTrigger>
+          <TabsTrigger value="receivables">
+            {t("debt.tabReceivables")} ({allReceivables.length})
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="all" className="mt-4">
           <DebtList
@@ -163,8 +181,16 @@ export default function DebtsPage() {
 
       {/* Dialogs */}
       <DebtForm open={formOpen} onOpenChange={setFormOpen} debt={editDebt} />
-      <DebtPaymentDialog open={!!paymentDebt} onOpenChange={(open) => !open && setPaymentDebt(null)} debt={paymentDebt} />
-      <DebtHistoryDialog open={!!historyDebt} onOpenChange={(open) => !open && setHistoryDebt(null)} debt={historyDebt} />
+      <DebtPaymentDialog
+        open={!!paymentDebt}
+        onOpenChange={(open) => !open && setPaymentDebt(null)}
+        debt={paymentDebt}
+      />
+      <DebtHistoryDialog
+        open={!!historyDebt}
+        onOpenChange={(open) => !open && setHistoryDebt(null)}
+        debt={historyDebt}
+      />
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>

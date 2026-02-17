@@ -14,14 +14,14 @@ export function useRecentTransactions(limit = 5): Transaction[] {
       [...transactions]
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, limit),
-    [transactions, limit]
+    [transactions, limit],
   );
 }
 
 export function useMonthlyAmounts(
   type: "INCOME" | "EXPENSE",
   month: number,
-  year: number
+  year: number,
 ): Record<string, number> {
   const transactions = useTransactionStore((s) => s.transactions);
 
@@ -47,7 +47,7 @@ const CHART_COLORS = [
 
 export function useExpenseByCategory(
   month: number,
-  year: number
+  year: number,
 ): (CategoryExpense & { fill: string })[] {
   const transactions = useTransactionStore((s) => s.transactions);
   const categories = useCategoryStore((s) => s.categories);
@@ -168,6 +168,6 @@ export function useTransactionsByWallet(walletId: string): Transaction[] {
       transactions
         .filter((t) => t.walletId === walletId || t.toWalletId === walletId)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
-    [transactions, walletId]
+    [transactions, walletId],
   );
 }

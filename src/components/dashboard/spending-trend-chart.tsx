@@ -57,15 +57,13 @@ export function SpendingTrendChart() {
         label: t("common.expense"),
       },
     }),
-    [t]
+    [t],
   );
 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          {t("dashboard.spendingTrend")}
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">{t("dashboard.spendingTrend")}</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={localConfig} className="max-h-[250px] w-full">
@@ -101,9 +99,7 @@ export function SpendingTrendChart() {
             />
             <ChartTooltip
               content={
-                <ChartTooltipContent
-                  formatter={(value) => formatCurrency(value as number)}
-                />
+                <ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />
               }
             />
             {totalBudget > 0 && (

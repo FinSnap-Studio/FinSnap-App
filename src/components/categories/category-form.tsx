@@ -8,7 +8,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createCategorySchema } from "@/lib/validations/category";
 import { EXPENSE_ICONS, INCOME_ICONS, PRESET_COLORS } from "@/lib/constants";
 import { Category, CategoryFormInput } from "@/types";
@@ -95,7 +101,9 @@ export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditing ? t("category.editCategory") : t("category.addCategory")}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? t("category.editCategory") : t("category.addCategory")}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -140,7 +148,7 @@ export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps
                     "h-10 w-10 flex items-center justify-center rounded-md border transition-colors",
                     form.watch("icon") === icon
                       ? "border-foreground bg-accent"
-                      : "border-border hover:bg-accent/50"
+                      : "border-border hover:bg-accent/50",
                   )}
                 >
                   <IconRenderer name={icon} className="h-5 w-5" />
@@ -161,7 +169,7 @@ export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps
                     "h-8 w-8 rounded-full transition-all",
                     form.watch("color") === color
                       ? "ring-2 ring-offset-2 ring-offset-background ring-foreground"
-                      : ""
+                      : "",
                   )}
                   style={{ backgroundColor: color }}
                 />
@@ -170,7 +178,11 @@ export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps
           </div>
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? t("common.saving") : isEditing ? t("common.update") : t("common.save")}
+            {form.formState.isSubmitting
+              ? t("common.saving")
+              : isEditing
+                ? t("common.update")
+                : t("common.save")}
           </Button>
         </form>
       </DialogContent>
