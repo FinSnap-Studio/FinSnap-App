@@ -29,12 +29,12 @@ import { useCategoryStore } from "@/stores/category-store";
 import { COLOR_THEMES } from "@/lib/themes";
 import { LOCALE_OPTIONS } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/use-translation";
-import { storageClearAllData, storageSet, STORAGE_KEYS } from "@/lib/storage";
+import { storageClearAllData } from "@/lib/storage";
 import { MOCK_WALLETS, MOCK_TRANSACTIONS, MOCK_BUDGETS, MOCK_CATEGORIES } from "@/data/mock-data";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { user, logout, updateProfile } = useAuthStore();
   const { theme, toggleTheme, colorTheme, setColorTheme, defaultCurrency, setDefaultCurrency, locale, setLocale } = useUIStore();
   const { t } = useTranslation();
 
@@ -48,13 +48,7 @@ export default function SettingsPage() {
       toast.error(t("settings.profileError"));
       return;
     }
-    const stored = localStorage.getItem("finsnap-auth");
-    if (stored) {
-      const data = JSON.parse(stored);
-      const updated = { ...data, name: name.trim(), email: email.trim() };
-      localStorage.setItem("finsnap-auth", JSON.stringify(updated));
-      useAuthStore.setState({ user: updated });
-    }
+    updateProfile({ name: name.trim(), email: email.trim() });
     toast.success(t("settings.profileSuccess"));
   };
 
@@ -77,36 +71,28 @@ export default function SettingsPage() {
     const existingCatKeys = new Set(categories.map((c) => `${c.name}|${c.type}`));
     const newCats = MOCK_CATEGORIES.filter((c) => !existingCatKeys.has(`${c.name}|${c.type}`));
     if (newCats.length > 0) {
-      const merged = [...categories, ...newCats];
-      useCategoryStore.setState({ categories: merged });
-      storageSet(STORAGE_KEYS.categories, merged);
+      useCategoryStore.setState({ categories: [...categories, ...newCats] });
     }
 
     // Merge mock wallets (skip duplicate by ID)
     const existingWalletIds = new Set(wallets.map((w) => w.id));
     const newWallets = MOCK_WALLETS.filter((w) => !existingWalletIds.has(w.id));
     if (newWallets.length > 0) {
-      const merged = [...wallets, ...newWallets];
-      useWalletStore.setState({ wallets: merged });
-      storageSet(STORAGE_KEYS.wallets, merged);
+      useWalletStore.setState({ wallets: [...wallets, ...newWallets] });
     }
 
     // Merge mock transactions (skip duplicate by ID)
     const existingTxIds = new Set(transactions.map((t) => t.id));
     const newTxs = MOCK_TRANSACTIONS.filter((t) => !existingTxIds.has(t.id));
     if (newTxs.length > 0) {
-      const merged = [...newTxs, ...transactions];
-      useTransactionStore.setState({ transactions: merged });
-      storageSet(STORAGE_KEYS.transactions, merged);
+      useTransactionStore.setState({ transactions: [...newTxs, ...transactions] });
     }
 
     // Merge mock budgets (skip duplicate by ID)
     const existingBudgetIds = new Set(budgets.map((b) => b.id));
     const newBudgets = MOCK_BUDGETS.filter((b) => !existingBudgetIds.has(b.id));
     if (newBudgets.length > 0) {
-      const merged = [...budgets, ...newBudgets];
-      useBudgetStore.setState({ budgets: merged });
-      storageSet(STORAGE_KEYS.budgets, merged);
+      useBudgetStore.setState({ budgets: [...budgets, ...newBudgets] });
     }
 
     toast.success(t("settings.addDemoSuccess"));
@@ -122,9 +108,7 @@ export default function SettingsPage() {
       return;
     }
 
-    const merged = [...categories, ...missing];
-    useCategoryStore.setState({ categories: merged });
-    storageSet(STORAGE_KEYS.categories, merged);
+    useCategoryStore.setState({ categories: [...categories, ...missing] });
     toast.success(t("settings.addDefaultCategoriesSuccess"));
   };
 
