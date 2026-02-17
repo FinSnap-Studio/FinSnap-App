@@ -23,6 +23,7 @@ interface ShoppingItemCardProps {
   onRemove: (item: ShoppingItem) => void;
   onPurchase: (item: ShoppingItem) => void;
   onSkip: (item: ShoppingItem) => void;
+  onMarkPending: (item: ShoppingItem) => void;
 }
 
 export function ShoppingItemCard({
@@ -32,6 +33,7 @@ export function ShoppingItemCard({
   onRemove,
   onPurchase,
   onSkip,
+  onMarkPending,
 }: ShoppingItemCardProps) {
   const { t } = useTranslation();
   const categories = useCategoryStore((state) => state.categories);
@@ -93,23 +95,32 @@ export function ShoppingItemCard({
                 </div>
               </div>
 
-              {item.status === "PENDING" && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(item)}>
-                      {t("common.edit")}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {item.status === "PENDING" ? (
+                    <>
+                      <DropdownMenuItem onClick={() => onEdit(item)}>
+                        {t("common.edit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onRemove(item)}
+                        className="text-destructive"
+                      >
+                        {t("common.delete")}
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem onClick={() => onMarkPending(item)}>
+                      {t("shopping.markPending")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onRemove(item)} className="text-destructive">
-                      {t("common.delete")}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <div className="flex items-center justify-between mt-2">

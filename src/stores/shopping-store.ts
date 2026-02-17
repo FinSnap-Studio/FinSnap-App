@@ -32,6 +32,7 @@ interface ShoppingStore {
   purchaseItem: (listId: string, itemId: string, actualPrice?: number) => Promise<void>;
   skipItem: (listId: string, itemId: string) => Promise<void>;
   purchaseAllRemaining: (listId: string) => Promise<number>;
+  markItemPending: (listId: string, itemId: string) => Promise<void>;
 }
 
 function checkAutoComplete(list: ShoppingList): ShoppingListStatus {
@@ -262,11 +263,79 @@ export const useShoppingStore = create<ShoppingStore>()(
           if (!list) return 0;
 
           const pendingItems = list.items.filter((item) => item.status === "PENDING");
-          for (const item of pendingItems) {
-            await get().purchaseItem(listId, item.id);
-          }
+          if (pendingItems.length === 0) return 0;
+
+          const totalAmount = pendingItems.reduce(
+            (sum, item) => sum + item.estimatedPrice * item.quantity,
+            0,
+          );
+          const description = `${list.name} (${pendingItems.length} items)`;
+
+          const tx = await useTransactionStore.getState().addTransaction({
+            amount: totalAmount,
+            type: "EXPENSE",
+            description,
+            date: new Date(),
+            walletId: list.walletId,
+            categoryId: "",
+          });
+
+          const now = new Date().toISOString();
+          set((s) => ({
+            shoppingLists: s.shoppingLists.map((l) => {
+              if (l.id !== listId) return l;
+              const updated = {
+                ...l,
+                items: l.items.map((item) => {
+                  if (item.status !== "PENDING") return item;
+                  return {
+                    ...item,
+                    status: "PURCHASED" as ShoppingItemStatus,
+                    actualPrice: item.estimatedPrice * item.quantity,
+                    linkedTransactionId: tx.id,
+                    updatedAt: now,
+                  };
+                }),
+                updatedAt: now,
+              };
+              return { ...updated, status: checkAutoComplete(updated) };
+            }),
+          }));
 
           return pendingItems.length;
+        },
+
+        markItemPending: async (listId, itemId) => {
+          const list = get().shoppingLists.find((l) => l.id === listId);
+          if (!list) return;
+
+          const item = list.items.find((i) => i.id === itemId);
+          if (!item) return;
+
+          if (item.status === "PURCHASED" && item.linkedTransactionId) {
+            await useTransactionStore.getState().deleteTransaction(item.linkedTransactionId);
+          }
+
+          set((s) => ({
+            shoppingLists: s.shoppingLists.map((l) => {
+              if (l.id !== listId) return l;
+              return {
+                ...l,
+                status: "ACTIVE" as ShoppingListStatus,
+                items: l.items.map((i) => {
+                  if (i.id !== itemId) return i;
+                  return {
+                    ...i,
+                    status: "PENDING" as ShoppingItemStatus,
+                    actualPrice: null,
+                    linkedTransactionId: null,
+                    updatedAt: new Date().toISOString(),
+                  };
+                }),
+                updatedAt: new Date().toISOString(),
+              };
+            }),
+          }));
         },
       }),
       {
