@@ -68,10 +68,10 @@ export function ShoppingListForm({ open, onOpenChange, list }: ShoppingListFormP
   const onSubmit = async (data: ShoppingListFormInput) => {
     try {
       if (list) {
-        updateShoppingList(list.id, data);
+        await updateShoppingList(list.id, data);
         toast.success(t("shopping.updateSuccess"));
       } else {
-        addShoppingList(data);
+        await addShoppingList(data);
         toast.success(t("shopping.addSuccess"));
       }
       onOpenChange(false);
@@ -105,7 +105,7 @@ export function ShoppingListForm({ open, onOpenChange, list }: ShoppingListFormP
           </div>
 
           <div className="space-y-2">
-            <Label>Wallet</Label>
+            <Label>{t("shopping.wallet")}</Label>
             <Controller
               name="walletId"
               control={control}

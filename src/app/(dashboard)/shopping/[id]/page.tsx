@@ -2,12 +2,18 @@
 
 import { use, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Archive, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Plus, MoreVertical, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,6 +43,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
   const removeItem = useShoppingStore((s) => s.removeItem);
   const skipItem = useShoppingStore((s) => s.skipItem);
   const purchaseAllRemaining = useShoppingStore((s) => s.purchaseAllRemaining);
+  const markItemPending = useShoppingStore((s) => s.markItemPending);
 
   const wallets = useWalletStore((s) => s.wallets);
 
@@ -47,6 +54,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
   const [purchaseItem, setPurchaseItem] = useState<ShoppingItem | null>(null);
   const [deleteItemTarget, setDeleteItemTarget] = useState<ShoppingItem | null>(null);
   const [purchaseAllOpen, setPurchaseAllOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
 
   // Computed values
   const estimatedTotal = useMemo(() => {
@@ -69,10 +77,18 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
     return list.items.filter((item) => item.status === "PENDING");
   }, [list]);
 
+  // Progress includes both PURCHASED and SKIPPED
   const progress = useMemo(() => {
     if (!list || list.items.length === 0) return 0;
-    const purchasedCount = list.items.filter((item) => item.status === "PURCHASED").length;
-    return Math.round((purchasedCount / list.items.length) * 100);
+    const completedCount = list.items.filter(
+      (item) => item.status === "PURCHASED" || item.status === "SKIPPED",
+    ).length;
+    return Math.round((completedCount / list.items.length) * 100);
+  }, [list]);
+
+  const purchasedCount = useMemo(() => {
+    if (!list) return 0;
+    return list.items.filter((item) => item.status === "PURCHASED").length;
   }, [list]);
 
   // Sort items: PENDING first, then PURCHASED, then SKIPPED
@@ -107,10 +123,17 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
     toast.success(t("shopping.skip"));
   };
 
+  const handleMarkPending = async (item: ShoppingItem) => {
+    if (!list) return;
+    await markItemPending(list.id, item.id);
+    toast.success(t("shopping.markPending"));
+  };
+
   const handleArchive = async () => {
     if (!list) return;
     await archiveShoppingList(list.id);
     toast.success(t("shopping.archiveSuccess"));
+    setArchiveOpen(false);
     router.push("/shopping");
   };
 
@@ -124,7 +147,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
   if (!list) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">{t("shopping.emptyState")}</p>
+        <p className="text-muted-foreground">{t("shopping.notFound")}</p>
         <Button variant="link" onClick={() => router.push("/shopping")}>
           {t("shopping.backToList")}
         </Button>
@@ -140,9 +163,11 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
           <ArrowLeft className="h-4 w-4" /> {t("shopping.backToList")}
         </Button>
 
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-4">
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-foreground">{list.name}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-foreground">{list.name}</h1>
+            </div>
             {wallet && (
               <div className="flex items-center gap-2">
                 <Badge variant="secondary">{wallet.name}</Badge>
@@ -151,7 +176,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Button
               onClick={() => {
                 setEditItem(null);
@@ -162,9 +187,18 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
             </Button>
 
             {list.status === "ACTIVE" && (
-              <Button variant="outline" onClick={handleArchive}>
-                <Archive className="h-4 w-4 mr-2" /> {t("shopping.archive")}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setArchiveOpen(true)}>
+                    {t("shopping.archive")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
 
             {pendingItems.length > 0 && (
@@ -183,7 +217,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">
                 {t("shopping.progress", {
-                  purchased: list.items.filter((i) => i.status === "PURCHASED").length,
+                  purchased: purchasedCount,
                   total: list.items.length,
                 })}
               </span>
@@ -218,7 +252,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
       {/* Items list */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t("shopping.title")}</CardTitle>
+          <CardTitle className="text-base">{t("shopping.itemsSection")}</CardTitle>
         </CardHeader>
         <CardContent>
           {list.items.length === 0 ? (
@@ -236,6 +270,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
                   onRemove={setDeleteItemTarget}
                   onPurchase={setPurchaseItem}
                   onSkip={handleSkipItem}
+                  onMarkPending={handleMarkPending}
                 />
               ))}
             </div>
@@ -288,6 +323,20 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
             <AlertDialogAction onClick={handlePurchaseAll}>
               {t("shopping.purchaseConfirm")}
             </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Archive confirmation */}
+      <AlertDialog open={archiveOpen} onOpenChange={setArchiveOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("shopping.archive")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("shopping.archiveSuccess")}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleArchive}>{t("shopping.archive")}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

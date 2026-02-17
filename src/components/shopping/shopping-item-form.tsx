@@ -90,10 +90,10 @@ export function ShoppingItemForm({
   const onSubmit = async (data: ShoppingItemFormInput) => {
     try {
       if (item) {
-        updateItem(listId, item.id, data);
+        await updateItem(listId, item.id, data);
         toast.success(t("shopping.updateSuccess"));
       } else {
-        addItem(listId, data);
+        await addItem(listId, data);
         toast.success(t("shopping.addSuccess"));
       }
       onOpenChange(false);

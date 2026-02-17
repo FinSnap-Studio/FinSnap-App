@@ -55,7 +55,7 @@ export function ShoppingPurchaseDialog({
     if (!item || !list) return;
 
     try {
-      purchaseItem(list.id, item.id, data.actualPrice);
+      await purchaseItem(list.id, item.id, data.actualPrice);
       toast.success(t("shopping.purchaseSuccess"));
       onOpenChange(false);
     } catch {

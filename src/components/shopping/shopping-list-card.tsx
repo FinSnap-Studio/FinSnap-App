@@ -59,7 +59,13 @@ export function ShoppingListCard({ list, onEdit, onDelete, onArchive }: Shopping
     [list.items],
   );
 
-  const progress = list.items.length > 0 ? (purchasedCount / list.items.length) * 100 : 0;
+  const completedCount = useMemo(
+    () =>
+      list.items.filter((item) => item.status === "PURCHASED" || item.status === "SKIPPED").length,
+    [list.items],
+  );
+
+  const progress = list.items.length > 0 ? (completedCount / list.items.length) * 100 : 0;
 
   const statusConfig = {
     ACTIVE: {
