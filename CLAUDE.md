@@ -72,7 +72,7 @@ All domain types and form input types are in `src/types/index.ts`. Key types: `W
 
 ### Forms & Validation
 
-React Hook Form + Zod v4. Schemas live in `src/lib/validations/` (one per domain).
+React Hook Form + Zod v4. Schemas live in `src/lib/validations/` (one per domain). Use `useWatch({ control: form.control, name })` instead of `form.watch()` for React Compiler compatibility.
 
 **Zod v4 conventions:**
 
@@ -104,7 +104,7 @@ shadcn/ui components in `src/components/ui/`. Feature components organized by do
 
 ### Next.js Optimizations
 
-**Package imports:** `optimizePackageImports` enabled in `next.config.mjs` for `lucide-react`, `recharts`, and `date-fns` to reduce bundle size and improve tree-shaking.
+**Package imports:** `lucide-react`, `recharts`, and `date-fns` are in Next.js 16's default `optimizePackageImports` list — no explicit config needed. Turbopack is the default bundler in Next.js 16.
 
 ## MCP Tools
 
