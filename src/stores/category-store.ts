@@ -4,6 +4,7 @@ import { Category, CategoryFormInput, TransactionType } from "@/types";
 import { MOCK_CATEGORIES } from "@/data/mock-data";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
+import { MOCK_USER_ID } from "@/lib/constants";
 
 interface CategoryStore {
   categories: Category[];
@@ -39,7 +40,7 @@ export const useCategoryStore = create<CategoryStore>()(
           id: generateId(),
           ...input,
           isDefault: false,
-          userId: "user-mock-001",
+          userId: MOCK_USER_ID,
           createdAt: now,
         };
         set((s) => ({ categories: [category, ...s.categories] }));

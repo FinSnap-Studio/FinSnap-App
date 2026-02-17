@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { Debt, DebtFormInput, DebtPaymentInput, DebtType, DebtStatus } from "@/types";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
+import { MOCK_USER_ID } from "@/lib/constants";
 import { useCategoryStore } from "./category-store";
 import { useTransactionStore } from "./transaction-store";
 import { useWalletStore } from "./wallet-store";
@@ -36,10 +37,6 @@ interface DebtStore {
   deleteDebt: (id: string) => Promise<boolean>;
   makePayment: (debtId: string, input: DebtPaymentInput) => Promise<void>;
   markAsSettled: (debtId: string) => Promise<void>;
-  getDebtsByType: (type: DebtType) => Debt[];
-  getActiveDebts: () => Debt[];
-  getOverdueDebts: () => Debt[];
-  getReminders: () => Debt[];
 }
 
 export const useDebtStore = create<DebtStore>()(
@@ -79,7 +76,7 @@ export const useDebtStore = create<DebtStore>()(
           status: "ACTIVE",
           walletId: input.walletId,
           linkedTransactionIds: [],
-          userId: "user-mock-001",
+          userId: MOCK_USER_ID,
           createdAt: now,
           updatedAt: now,
         };
@@ -175,31 +172,6 @@ export const useDebtStore = create<DebtStore>()(
         }));
       },
 
-      getDebtsByType: (type) => {
-        return get().debts.filter((d) => d.type === type);
-      },
-
-      getActiveDebts: () => {
-        return get().debts.filter((d) => d.status !== "SETTLED");
-      },
-
-      getOverdueDebts: () => {
-        return get().debts.filter((d) => d.status === "OVERDUE");
-      },
-
-      getReminders: () => {
-        const now = new Date();
-        const sevenDays = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        return get().debts.filter((d) => {
-          if (d.status === "SETTLED") return false;
-          if (d.status === "OVERDUE") return true;
-          if (d.dueDate) {
-            const due = new Date(d.dueDate);
-            return due <= sevenDays;
-          }
-          return false;
-        });
-      },
     }),
     {
       name: STORAGE_KEYS.debts,

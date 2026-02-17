@@ -11,6 +11,7 @@ interface AuthStore {
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
   checkAuth: () => void;
+  updateProfile: (data: { name: string; email: string }) => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -44,6 +45,12 @@ export const useAuthStore = create<AuthStore>()(
       logout: () => {
         set({ user: null, isAuthenticated: false, isLoading: false });
         useAuthStore.persist.clearStorage();
+      },
+
+      updateProfile: (data) => {
+        set((s) => ({
+          user: s.user ? { ...s.user, ...data } : null,
+        }));
       },
 
       // TODO: Replace → NextAuth useSession

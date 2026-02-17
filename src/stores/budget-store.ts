@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { Budget, BudgetFormInput } from "@/types";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
+import { MOCK_USER_ID } from "@/lib/constants";
 import { useTransactionStore } from "./transaction-store";
 
 interface BudgetStore {
@@ -16,7 +17,6 @@ interface BudgetStore {
   deleteBudget: (id: string) => Promise<void>;
   setMonth: (month: number, year: number) => void;
   recalculateSpent: (categoryId: string) => void;
-  getBudgetsByMonth: () => Budget[];
 }
 
 export const useBudgetStore = create<BudgetStore>()(
@@ -44,7 +44,7 @@ export const useBudgetStore = create<BudgetStore>()(
           currency: input.currency,
           month: input.month,
           year: input.year,
-          userId: "user-mock-001",
+          userId: MOCK_USER_ID,
           categoryId: input.categoryId,
           createdAt: now,
           updatedAt: now,
@@ -103,12 +103,6 @@ export const useBudgetStore = create<BudgetStore>()(
         set({ budgets: updatedBudgets });
       },
 
-      getBudgetsByMonth: () => {
-        const { budgets, selectedMonth, selectedYear } = get();
-        return budgets.filter(
-          (b) => b.month === selectedMonth && b.year === selectedYear
-        );
-      },
     }),
     {
       name: STORAGE_KEYS.budgets,

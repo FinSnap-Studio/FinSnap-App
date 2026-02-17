@@ -3,8 +3,12 @@ import { persist } from "zustand/middleware";
 import { RecurringTransaction, RecurringTransactionFormInput } from "@/types";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
+import { MOCK_USER_ID } from "@/lib/constants";
+import { resolveTransferFields } from "@/lib/transaction-helpers";
 import { useTransactionStore } from "./transaction-store";
 import { useWalletStore } from "./wallet-store";
+
+const MAX_BATCH_SIZE = 100;
 
 interface ProcessResult {
   processed: number;
@@ -62,15 +66,7 @@ export const useRecurringStore = create<RecurringStore>()(
         const now = new Date().toISOString();
         const walletStore = useWalletStore.getState();
         const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
-
-        let toCurrency = null;
-        let toAmount = null;
-        if (input.type === "TRANSFER" && input.toWalletId) {
-          toCurrency = walletStore.getWalletCurrency(input.toWalletId);
-          if (toCurrency !== sourceCurrency && input.toAmount) {
-            toAmount = input.toAmount;
-          }
-        }
+        const { toCurrency, toAmount } = resolveTransferFields(walletStore, input);
 
         const startDate = input.startDate.toISOString();
         const recurring: RecurringTransaction = {
@@ -92,7 +88,7 @@ export const useRecurringStore = create<RecurringStore>()(
           nextRunDate: startDate,
           lastRunDate: null,
           isActive: true,
-          userId: "user-mock-001",
+          userId: MOCK_USER_ID,
           createdAt: now,
           updatedAt: now,
         };
@@ -105,15 +101,7 @@ export const useRecurringStore = create<RecurringStore>()(
       updateRecurring: async (id, input) => {
         const walletStore = useWalletStore.getState();
         const sourceCurrency = walletStore.getWalletCurrency(input.walletId);
-
-        let toCurrency = null;
-        let toAmount = null;
-        if (input.type === "TRANSFER" && input.toWalletId) {
-          toCurrency = walletStore.getWalletCurrency(input.toWalletId);
-          if (toCurrency !== sourceCurrency && input.toAmount) {
-            toAmount = input.toAmount;
-          }
-        }
+        const { toCurrency, toAmount } = resolveTransferFields(walletStore, input);
 
         const now = new Date().toISOString();
         set((s) => ({
@@ -178,7 +166,7 @@ export const useRecurringStore = create<RecurringStore>()(
           let nextRun = new Date(rec.nextRunDate);
           let count = 0;
 
-          while (nextRun <= today) {
+          while (nextRun <= today && count < MAX_BATCH_SIZE) {
             // Check end date
             if (rec.endDate && nextRun > new Date(rec.endDate)) break;
 
@@ -199,6 +187,7 @@ export const useRecurringStore = create<RecurringStore>()(
           }
 
           if (count > 0) {
+            const now = new Date().toISOString();
             result.processed++;
             result.created += count;
             result.details.push({ name: rec.name, count });
@@ -206,8 +195,8 @@ export const useRecurringStore = create<RecurringStore>()(
             updatedRecurrings[i] = {
               ...rec,
               nextRunDate: nextRun.toISOString(),
-              lastRunDate: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
+              lastRunDate: now,
+              updatedAt: now,
             };
           }
         }

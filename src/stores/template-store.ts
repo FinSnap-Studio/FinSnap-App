@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { TransactionTemplate, TransactionTemplateFormInput } from "@/types";
 import { generateId } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/storage";
+import { MOCK_USER_ID } from "@/lib/constants";
 
 interface TemplateStore {
   templates: TransactionTemplate[];
@@ -39,7 +40,7 @@ export const useTemplateStore = create<TemplateStore>()(
           categoryId: input.categoryId || null,
           toWalletId: input.toWalletId || null,
           toAmount: input.toAmount ?? null,
-          userId: "user-mock-001",
+          userId: MOCK_USER_ID,
           createdAt: now,
           updatedAt: now,
         };
