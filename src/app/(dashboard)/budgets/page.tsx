@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AlertTriangle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -22,11 +22,17 @@ export default function BudgetsPage() {
   const categories = useCategoryStore((s) => s.categories);
   const [formOpen, setFormOpen] = useState(false);
 
-  const budgets = allBudgets.filter((b) => b.month === selectedMonth && b.year === selectedYear);
-  const limitBudgets = budgets.filter((b) => {
-    const status = getBudgetStatus(b.spent, b.amount);
-    return status === "warning" || status === "danger";
-  });
+  const budgets = useMemo(
+    () => allBudgets.filter((b) => b.month === selectedMonth && b.year === selectedYear),
+    [allBudgets, selectedMonth, selectedYear]
+  );
+  const limitBudgets = useMemo(
+    () => budgets.filter((b) => {
+      const status = getBudgetStatus(b.spent, b.amount);
+      return status === "warning" || status === "danger";
+    }),
+    [budgets]
+  );
 
   return (
     <div className="space-y-6">
@@ -60,7 +66,7 @@ export default function BudgetsPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {[2024, 2025, 2026, 2027, 2028, 2029, 2030].map((y) => (
+            {Array.from({ length: 7 }, (_, i) => new Date().getFullYear() - 2 + i).map((y) => (
               <SelectItem key={y} value={String(y)}>{y}</SelectItem>
             ))}
           </SelectContent>

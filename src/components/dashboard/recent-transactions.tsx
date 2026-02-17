@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowLeftRight, ClipboardList } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,6 +34,11 @@ export function RecentTransactions() {
 
   const transactions = useRecentTransactions(7);
 
+  const categoryMap = useMemo(
+    () => new Map(categories.map((c) => [c.id, c])),
+    [categories]
+  );
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -53,7 +59,7 @@ export function RecentTransactions() {
           <div className="space-y-3">
             {transactions.map((tx) => {
               const wallet = wallets.find((w) => w.id === tx.walletId);
-              const category = categories.find((c) => c.id === tx.categoryId);
+              const category = tx.categoryId ? categoryMap.get(tx.categoryId) : undefined;
               return (
                 <div key={tx.id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3 min-w-0">

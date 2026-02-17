@@ -17,7 +17,7 @@ export function BalanceSummary() {
   const transactions = useTransactionStore((s) => s.transactions);
   const { t, locale } = useTranslation();
 
-  const now = new Date();
+  const now = useMemo(() => new Date(), []);
 
   const balances = useMemo(() => {
     const result: Record<string, number> = {};
@@ -55,7 +55,7 @@ export function BalanceSummary() {
     const prevNet = prevIncome - prevExpense;
     if (prevNet === 0) return null;
     return ((curNet - prevNet) / Math.abs(prevNet)) * 100;
-  }, [transactions]);
+  }, [transactions, now]);
 
   if (isLoading) {
     return (

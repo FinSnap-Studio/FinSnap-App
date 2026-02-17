@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,8 +14,8 @@ export default function CategoriesPage() {
   const categories = useCategoryStore((s) => s.categories);
   const [formOpen, setFormOpen] = useState(false);
 
-  const expenseCategories = categories.filter((c) => c.type === "EXPENSE");
-  const incomeCategories = categories.filter((c) => c.type === "INCOME");
+  const expenseCategories = useMemo(() => categories.filter((c) => c.type === "EXPENSE"), [categories]);
+  const incomeCategories = useMemo(() => categories.filter((c) => c.type === "INCOME"), [categories]);
 
   return (
     <div className="space-y-6">

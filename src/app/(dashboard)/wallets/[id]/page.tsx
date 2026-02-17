@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useMemo } from "react";
 import { ArrowLeft, TrendingUp, TrendingDown, ArrowLeftRight, ClipboardList } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -40,30 +41,26 @@ export default function WalletDetailPage() {
   const typeKey = WALLET_TYPES.find((wt) => wt.value === wallet.type)?.label;
   const typeLabel = typeKey ? t(typeKey) : wallet.type;
 
-  const now = new Date();
-  const monthIncome = transactions
-    .filter((tx) => {
-      const d = new Date(tx.date);
-      return (
-        tx.type === "INCOME" &&
-        tx.walletId === walletId &&
-        d.getMonth() === now.getMonth() &&
-        d.getFullYear() === now.getFullYear()
-      );
-    })
-    .reduce((sum, tx) => sum + tx.amount, 0);
+  const categoryMap = useMemo(
+    () => new Map(categories.map((c) => [c.id, c])),
+    [categories]
+  );
 
-  const monthExpense = transactions
-    .filter((tx) => {
+  const { monthIncome, monthExpense } = useMemo(() => {
+    const now = new Date();
+    const curMonth = now.getMonth();
+    const curYear = now.getFullYear();
+    let income = 0;
+    let expense = 0;
+    for (const tx of transactions) {
+      if (tx.walletId !== walletId) continue;
       const d = new Date(tx.date);
-      return (
-        tx.type === "EXPENSE" &&
-        tx.walletId === walletId &&
-        d.getMonth() === now.getMonth() &&
-        d.getFullYear() === now.getFullYear()
-      );
-    })
-    .reduce((sum, tx) => sum + tx.amount, 0);
+      if (d.getMonth() !== curMonth || d.getFullYear() !== curYear) continue;
+      if (tx.type === "INCOME") income += tx.amount;
+      else if (tx.type === "EXPENSE") expense += tx.amount;
+    }
+    return { monthIncome: income, monthExpense: expense };
+  }, [transactions, walletId]);
 
   return (
     <div className="space-y-6">
@@ -126,7 +123,7 @@ export default function WalletDetailPage() {
           ) : (
             <div className="space-y-3">
               {transactions.map((tx) => {
-                const category = categories.find((c) => c.id === tx.categoryId);
+                const category = tx.categoryId ? categoryMap.get(tx.categoryId) : undefined;
                 const toWallet = wallets.find((w) => w.id === tx.toWalletId);
                 const sourceWallet = wallets.find((w) => w.id === tx.walletId);
 
