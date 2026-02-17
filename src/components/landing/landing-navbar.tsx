@@ -4,12 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Wallet, Menu, Sun, Moon, Palette, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,8 +29,7 @@ export function LandingNavbar() {
   const { t } = useTranslation();
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
-  const { theme, toggleTheme, colorTheme, setColorTheme, locale, setLocale } =
-    useUIStore();
+  const { theme, toggleTheme, colorTheme, setColorTheme, locale, setLocale } = useUIStore();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
@@ -54,20 +48,17 @@ export function LandingNavbar() {
 
   const handleTryDemo = useCallback(async () => {
     setDemoLoading(true);
-    seedDemoData();
+    await seedDemoData();
     await useAuthStore.getState().login("demo@finsnap.app", "demo");
     router.push("/dashboard");
   }, [router]);
 
-  const currentFlag =
-    LOCALE_OPTIONS.find((o) => o.code === locale)?.flag ?? "🌐";
+  const currentFlag = LOCALE_OPTIONS.find((o) => o.code === locale)?.flag ?? "🌐";
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/80 backdrop-blur-md border-b shadow-sm"
-          : "bg-transparent"
+        scrolled ? "bg-background/80 backdrop-blur-md border-b shadow-sm" : "bg-transparent"
       }`}
     >
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -97,11 +88,7 @@ export function LandingNavbar() {
         <div className="flex items-center gap-1">
           {/* Theme toggle */}
           <Button variant="ghost" size="icon-sm" onClick={toggleTheme}>
-            {theme === "light" ? (
-              <Moon className="size-4" />
-            ) : (
-              <Sun className="size-4" />
-            )}
+            {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
           </Button>
 
           {/* Color theme dropdown */}
@@ -112,9 +99,7 @@ export function LandingNavbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-auto">
-              <DropdownMenuLabel className="text-xs">
-                {t("settings.colorTheme")}
-              </DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs">{t("settings.colorTheme")}</DropdownMenuLabel>
               <div className="flex gap-1.5 px-2 pb-2">
                 {COLOR_THEMES.map((ct) => (
                   <button
@@ -151,10 +136,7 @@ export function LandingNavbar() {
               </Button>
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  onClick={() => router.push("/login")}
-                >
+                <Button variant="ghost" onClick={() => router.push("/login")}>
                   {t("landing.nav.signIn")}
                 </Button>
                 <Button onClick={handleTryDemo} disabled={demoLoading}>
@@ -165,51 +147,59 @@ export function LandingNavbar() {
           </div>
 
           {/* Mobile Hamburger */}
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="size-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-72 p-6">
-            <SheetTitle className="flex items-center gap-2 font-bold text-lg">
-              <Wallet className="size-5 text-primary" />
-              FinSnap
-            </SheetTitle>
-            <div className="flex flex-col gap-1 mt-6">
-              {NAV_LINKS.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => scrollTo(link.href)}
-                  className="px-3 py-2.5 text-left text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
-                >
-                  {t(link.key)}
-                </button>
-              ))}
-            </div>
-
-            {/* Mobile Auth CTA */}
-            <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
-              {isAuthenticated ? (
-                <Button onClick={() => { setOpen(false); router.push("/dashboard"); }}>
-                  {t("landing.nav.goToDashboard")}
-                </Button>
-              ) : (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => { setOpen(false); router.push("/login"); }}
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="size-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72 p-6">
+              <SheetTitle className="flex items-center gap-2 font-bold text-lg">
+                <Wallet className="size-5 text-primary" />
+                FinSnap
+              </SheetTitle>
+              <div className="flex flex-col gap-1 mt-6">
+                {NAV_LINKS.map((link) => (
+                  <button
+                    key={link.href}
+                    onClick={() => scrollTo(link.href)}
+                    className="px-3 py-2.5 text-left text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
                   >
-                    {t("landing.nav.signIn")}
+                    {t(link.key)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Mobile Auth CTA */}
+              <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
+                {isAuthenticated ? (
+                  <Button
+                    onClick={() => {
+                      setOpen(false);
+                      router.push("/dashboard");
+                    }}
+                  >
+                    {t("landing.nav.goToDashboard")}
                   </Button>
-                  <Button onClick={handleTryDemo} disabled={demoLoading}>
-                    {demoLoading ? t("common.loading") : t("landing.nav.tryDemo")}
-                  </Button>
-                </>
-              )}
-            </div>
-          </SheetContent>
-        </Sheet>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setOpen(false);
+                        router.push("/login");
+                      }}
+                    >
+                      {t("landing.nav.signIn")}
+                    </Button>
+                    <Button onClick={handleTryDemo} disabled={demoLoading}>
+                      {demoLoading ? t("common.loading") : t("landing.nav.tryDemo")}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </nav>
     </header>

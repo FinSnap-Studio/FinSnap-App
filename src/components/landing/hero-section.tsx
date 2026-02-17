@@ -16,7 +16,7 @@ export function HeroSection() {
 
   const handleTryDemo = useCallback(async () => {
     setDemoLoading(true);
-    seedDemoData();
+    await seedDemoData();
     await useAuthStore.getState().login("demo@finsnap.app", "demo");
     router.push("/dashboard");
   }, [router]);
@@ -53,18 +53,10 @@ export function HeroSection() {
             </Button>
           ) : (
             <>
-              <Button
-                size="lg"
-                onClick={handleTryDemo}
-                disabled={demoLoading}
-              >
+              <Button size="lg" onClick={handleTryDemo} disabled={demoLoading}>
                 {demoLoading ? t("common.loading") : t("landing.hero.tryDemo")}
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => router.push("/login")}
-              >
+              <Button size="lg" variant="outline" onClick={() => router.push("/login")}>
                 {t("landing.hero.signIn")}
               </Button>
             </>

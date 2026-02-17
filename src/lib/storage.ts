@@ -42,10 +42,11 @@ export function storageClearAllData(): void {
  * Seed localStorage with all mock data for "Try Demo" flow.
  * Overwrites any existing data so the demo always starts fresh.
  */
-export function seedDemoData(): void {
+export async function seedDemoData(): Promise<void> {
   // Lazy import to avoid pulling mock-data into every store bundle
-  const { MOCK_WALLETS, MOCK_TRANSACTIONS, MOCK_BUDGETS, MOCK_CATEGORIES } =
-    require("@/data/mock-data");
+  const { MOCK_WALLETS, MOCK_TRANSACTIONS, MOCK_BUDGETS, MOCK_CATEGORIES } = await import(
+    "@/data/mock-data"
+  );
 
   storageSet(STORAGE_KEYS.categories, MOCK_CATEGORIES);
   storageSet(STORAGE_KEYS.wallets, MOCK_WALLETS);
