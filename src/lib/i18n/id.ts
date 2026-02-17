@@ -405,6 +405,7 @@ export const id = {
   "dashboard.debtReminders": "Pengingat Hutang/Piutang",
   "dashboard.viewDebts": "Lihat Semua",
   "validation.personNameRequired": "Nama orang wajib diisi",
+  "validation.personNameMax": "Maksimal 50 karakter",
 
   // Receipt OCR
   "receipt.snapReceipt": "Snap Struk",

@@ -3,12 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
   Wallet,
-  ArrowLeftRight,
-  Handshake,
-  PiggyBank,
-  Tag,
   ChevronsUpDown,
   LogOut,
   Settings,
@@ -34,18 +29,9 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { NAV_ITEMS } from "@/lib/constants";
+import { NAV_ITEMS, NAV_ICON_MAP } from "@/lib/constants";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTranslation } from "@/hooks/use-translation";
-
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  LayoutDashboard,
-  Wallet,
-  ArrowLeftRight,
-  Handshake,
-  PiggyBank,
-  Tag,
-};
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -86,7 +72,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV_ITEMS.map((item) => {
-                const Icon = iconMap[item.icon];
+                const Icon = NAV_ICON_MAP[item.icon];
                 const isActive = pathname.startsWith(item.href);
                 return (
                   <SidebarMenuItem key={item.href}>

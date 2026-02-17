@@ -407,6 +407,7 @@ export const en: Record<TranslationKey, string> = {
   "dashboard.debtReminders": "Debt Reminders",
   "dashboard.viewDebts": "View All",
   "validation.personNameRequired": "Person name is required",
+  "validation.personNameMax": "Maximum 50 characters",
 
   // Receipt OCR
   "receipt.snapReceipt": "Snap Receipt",

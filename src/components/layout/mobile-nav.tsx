@@ -2,26 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Wallet,
-  ArrowLeftRight,
-  Handshake,
-  PiggyBank,
-  Tag,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NAV_ITEMS } from "@/lib/constants";
+import { NAV_ITEMS, NAV_ICON_MAP } from "@/lib/constants";
 import { useTranslation } from "@/hooks/use-translation";
-
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  LayoutDashboard,
-  Wallet,
-  ArrowLeftRight,
-  Handshake,
-  PiggyBank,
-  Tag,
-};
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -31,7 +14,7 @@ export function MobileNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-30 h-16 bg-card border-t md:hidden">
       <div className="flex items-center justify-around h-full">
         {NAV_ITEMS.map((item) => {
-          const Icon = iconMap[item.icon];
+          const Icon = NAV_ICON_MAP[item.icon];
           const isActive = pathname.startsWith(item.href);
           return (
             <Link
