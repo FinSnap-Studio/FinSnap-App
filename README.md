@@ -41,6 +41,7 @@
 | **Icons**            | [Lucide React](https://lucide.dev/)                                         |
 | **Date Utilities**   | [date-fns 4](https://date-fns.org/)                                         |
 | **Notifications**    | [Sonner](https://sonner.emilkowal.dev/)                                     |
+| **Code Formatting**  | [Biome](https://biomejs.dev/)                                               |
 
 ---
 
@@ -69,12 +70,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Available Scripts
 
-| Command         | Description              |
-| --------------- | ------------------------ |
-| `npm run dev`   | Start development server |
-| `npm run build` | Create production build  |
-| `npm start`     | Start production server  |
-| `npm run lint`  | Run ESLint               |
+| Command          | Description              |
+| ---------------- | ------------------------ |
+| `npm run dev`    | Start development server |
+| `npm run build`  | Create production build  |
+| `npm start`      | Start production server  |
+| `npm run lint`   | Run ESLint               |
+| `npm run format` | Format code with Biome   |
 
 ---
 
