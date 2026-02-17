@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { Wallet, WalletFormInput } from "@/types";
 import { type CurrencyCode } from "@/lib/currencies";
 import { generateId } from "@/lib/utils";
@@ -19,77 +19,78 @@ interface WalletStore {
 }
 
 export const useWalletStore = create<WalletStore>()(
-  persist(
-    (set, get) => ({
-      wallets: [],
-      isLoading: false,
+  devtools(
+    persist(
+      (set, get) => ({
+        wallets: [],
+        isLoading: false,
 
-      // TODO: Replace → GET /api/wallets
-      fetchWallets: async () => {
-        set({ isLoading: true });
-        await useWalletStore.persist.rehydrate();
-        set({ isLoading: false });
-      },
+        // TODO: Replace → GET /api/wallets
+        fetchWallets: async () => {
+          set({ isLoading: true });
+          await useWalletStore.persist.rehydrate();
+          set({ isLoading: false });
+        },
 
-      // TODO: Replace → POST /api/wallets
-      addWallet: async (input) => {
-        const now = new Date().toISOString();
-        const wallet: Wallet = {
-          id: generateId(),
-          ...input,
-          isActive: true,
-          userId: MOCK_USER_ID,
-          createdAt: now,
-          updatedAt: now,
-        };
-        set((s) => ({ wallets: [...s.wallets, wallet] }));
-        return wallet;
-      },
+        // TODO: Replace → POST /api/wallets
+        addWallet: async (input) => {
+          const now = new Date().toISOString();
+          const wallet: Wallet = {
+            id: generateId(),
+            ...input,
+            isActive: true,
+            userId: MOCK_USER_ID,
+            createdAt: now,
+            updatedAt: now,
+          };
+          set((s) => ({ wallets: [...s.wallets, wallet] }));
+          return wallet;
+        },
 
-      // TODO: Replace → PATCH /api/wallets/[id]
-      updateWallet: async (id, input) => {
-        set((s) => ({
-          wallets: s.wallets.map((w) =>
-            w.id === id
-              ? { ...w, ...input, updatedAt: new Date().toISOString() }
-              : w
-          ),
-        }));
-      },
+        // TODO: Replace → PATCH /api/wallets/[id]
+        updateWallet: async (id, input) => {
+          set((s) => ({
+            wallets: s.wallets.map((w) =>
+              w.id === id ? { ...w, ...input, updatedAt: new Date().toISOString() } : w,
+            ),
+          }));
+        },
 
-      // TODO: Replace → DELETE /api/wallets/[id] (soft delete)
-      deleteWallet: async (id) => {
-        set((s) => ({
-          wallets: s.wallets.map((w) =>
-            w.id === id ? { ...w, isActive: false, updatedAt: new Date().toISOString() } : w
-          ),
-        }));
-      },
+        // TODO: Replace → DELETE /api/wallets/[id] (soft delete)
+        deleteWallet: async (id) => {
+          set((s) => ({
+            wallets: s.wallets.map((w) =>
+              w.id === id ? { ...w, isActive: false, updatedAt: new Date().toISOString() } : w,
+            ),
+          }));
+        },
 
-      // Will be removed on API migration (server handles balance)
-      updateBalance: (id, amount, op) => {
-        set((s) => ({
-          wallets: s.wallets.map((w) => {
-            if (w.id !== id) return w;
-            const newBalance = op === "add" ? w.balance + amount : w.balance - amount;
-            return { ...w, balance: newBalance, updatedAt: new Date().toISOString() };
-          }),
-        }));
-      },
+        // Will be removed on API migration (server handles balance)
+        updateBalance: (id, amount, op) => {
+          set((s) => ({
+            wallets: s.wallets.map((w) => {
+              if (w.id !== id) return w;
+              const newBalance = op === "add" ? w.balance + amount : w.balance - amount;
+              return { ...w, balance: newBalance, updatedAt: new Date().toISOString() };
+            }),
+          }));
+        },
 
-      getWalletById: (id) => {
-        return get().wallets.find((w) => w.id === id);
-      },
+        getWalletById: (id) => {
+          return get().wallets.find((w) => w.id === id);
+        },
 
-      getWalletCurrency: (id) => {
-        const wallet = get().wallets.find((w) => w.id === id);
-        return wallet?.currency ?? "IDR";
+        getWalletCurrency: (id) => {
+          const wallet = get().wallets.find((w) => w.id === id);
+          return wallet?.currency ?? "IDR";
+        },
+      }),
+      {
+        name: STORAGE_KEYS.wallets,
+        skipHydration: true,
+        partialize: (state) => ({ wallets: state.wallets }),
       },
-    }),
-    {
-      name: STORAGE_KEYS.wallets,
-      skipHydration: true,
-      partialize: (state) => ({ wallets: state.wallets }),
-    }
-  )
+    ),
+    { name: "WalletStore", enabled: process.env.NODE_ENV === "development" },
+  ),
 );
