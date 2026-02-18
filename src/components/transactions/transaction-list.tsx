@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { ArrowLeftRight, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeftRight, MoreHorizontal, Pencil, Receipt, Trash2 } from "lucide-react";
 import { IconRenderer } from "@/lib/icon-map";
 import { toast } from "sonner";
 import {
@@ -79,7 +79,8 @@ export function TransactionList() {
 
   if (allTransactions.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <Receipt className="h-12 w-12 text-muted-foreground mb-4" />
         <p className="text-muted-foreground">{t("transaction.noTransactions")}</p>
       </div>
     );

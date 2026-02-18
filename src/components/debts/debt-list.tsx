@@ -1,5 +1,6 @@
 "use client";
 
+import { HandCoins } from "lucide-react";
 import { Debt } from "@/types";
 import { DebtCard } from "./debt-card";
 import { useTranslation } from "@/hooks/use-translation";
@@ -25,7 +26,8 @@ export function DebtList({
 
   if (debts.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <HandCoins className="h-12 w-12 text-muted-foreground mb-4" />
         <p className="text-muted-foreground">{t("debt.emptyState")}</p>
       </div>
     );

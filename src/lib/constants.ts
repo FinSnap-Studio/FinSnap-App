@@ -75,6 +75,16 @@ export const NAV_ITEMS = [
   { label: "nav.categories" as TranslationKey, href: "/categories", icon: "Tag" },
 ] as const;
 
+// 5-item subset for mobile bottom nav: [Dashboard, Transactions, Budgets, Wallets, Shopping]
+// Debts & Categories accessible via sidebar drawer (hamburger in header)
+export const MOBILE_NAV_ITEMS = [
+  NAV_ITEMS[0], // Dashboard
+  NAV_ITEMS[2], // Transactions
+  NAV_ITEMS[5], // Budgets
+  NAV_ITEMS[1], // Wallets
+  NAV_ITEMS[4], // Shopping
+] as const;
+
 export const MONTH_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 
 // Mock user ID — single source of truth until real auth is implemented

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Search, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,6 +32,19 @@ export function TransactionFilters() {
   const { t, locale } = useTranslation();
 
   const [searchValue, setSearchValue] = useState(filters.search || "");
+
+  const activeCount = useMemo(
+    () =>
+      [
+        filters.type !== "ALL",
+        filters.walletId,
+        filters.categoryId,
+        filters.dateFrom,
+        filters.dateTo,
+        filters.search,
+      ].filter(Boolean).length,
+    [filters],
+  );
 
   // Debounce search
   useEffect(() => {
@@ -163,13 +177,22 @@ export function TransactionFilters() {
         {/* Reset */}
         <Button
           variant="ghost"
-          size="icon"
+          size={activeCount > 0 ? "sm" : "icon"}
           onClick={() => {
             resetFilters();
             setSearchValue("");
           }}
+          className={activeCount > 0 ? "gap-1.5" : ""}
         >
           <X className="h-4 w-4" />
+          {activeCount > 0 && (
+            <>
+              <span className="text-sm">{t("common.reset")}</span>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-xs">
+                {activeCount}
+              </Badge>
+            </>
+          )}
         </Button>
       </div>
     </div>

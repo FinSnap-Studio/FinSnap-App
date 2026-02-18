@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MoreHorizontal, Eye, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,8 +58,9 @@ export function WalletCard({ wallet }: WalletCardProps) {
   return (
     <>
       <Card
-        className="relative overflow-hidden"
+        className="relative overflow-hidden cursor-pointer transition-all hover:shadow-md"
         style={{ borderLeftWidth: 4, borderLeftColor: wallet.color }}
+        onClick={() => router.push(`/wallets/${wallet.id}`)}
       >
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
@@ -75,15 +76,12 @@ export function WalletCard({ wallet }: WalletCardProps) {
               </div>
             </div>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => router.push(`/wallets/${wallet.id}`)}>
-                  <Eye className="h-4 w-4 mr-2" /> {t("common.viewDetail")}
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setEditOpen(true)}>
                   <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
                 </DropdownMenuItem>

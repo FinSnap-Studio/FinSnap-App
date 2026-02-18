@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Sun, Moon, Wallet, Settings, LogOut, Check } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useTranslation } from "@/hooks/use-translation";
 import { COLOR_THEMES } from "@/lib/themes";
 import { LOCALE_OPTIONS } from "@/lib/i18n";
+import { NAV_ITEMS } from "@/lib/constants";
 
 export function Header() {
   const { theme, toggleTheme, colorTheme, setColorTheme, setLocale, locale, initTheme } =
@@ -28,6 +29,8 @@ export function Header() {
   const { user, logout } = useAuthStore();
   const { t } = useTranslation();
   const router = useRouter();
+  const pathname = usePathname();
+  const pageTitle = NAV_ITEMS.find((item) => pathname.startsWith(item.href))?.label;
 
   useEffect(() => {
     initTheme();
@@ -41,11 +44,11 @@ export function Header() {
   return (
     <header className="sticky top-0 z-20 h-16 flex items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
       <div className="flex items-center gap-2">
-        <SidebarTrigger className="hidden md:flex" />
+        <SidebarTrigger />
         <Separator orientation="vertical" className="mr-2 h-4 hidden md:block" />
         <div className="md:hidden flex items-center gap-2">
           <Wallet className="h-5 w-5 text-primary" />
-          <span className="font-bold text-foreground">FinSnap</span>
+          <span className="font-bold text-foreground">{pageTitle ? t(pageTitle) : "FinSnap"}</span>
         </div>
       </div>
 

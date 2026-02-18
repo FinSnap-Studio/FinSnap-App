@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +26,7 @@ import {
 import { Budget } from "@/types";
 import { useBudgetStore } from "@/stores/budget-store";
 import { useCategoryStore } from "@/stores/category-store";
-import { formatCurrency, getBudgetStatus } from "@/lib/utils";
+import { cn, formatCurrency, getBudgetStatus } from "@/lib/utils";
 import { IconRenderer } from "@/lib/icon-map";
 import { useTranslation } from "@/hooks/use-translation";
 import { BudgetForm } from "./budget-form";
@@ -59,8 +60,12 @@ export function BudgetCard({ budget }: BudgetCardProps) {
       classes: "bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-400",
     },
   };
-  const barColor =
-    status === "danger" ? "bg-red-500" : status === "warning" ? "bg-yellow-500" : "bg-green-500";
+  const barIndicatorClass =
+    status === "danger"
+      ? "[&>div]:bg-red-500"
+      : status === "warning"
+        ? "[&>div]:bg-yellow-500"
+        : "[&>div]:bg-green-500";
 
   const handleDelete = async () => {
     try {
@@ -111,12 +116,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
           </div>
 
           <div className="mt-3 space-y-2">
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all ${barColor}`}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
+            <Progress value={pct} className={cn("h-2", barIndicatorClass)} />
             <p className="text-sm text-muted-foreground">
               {formatCurrency(budget.spent, budget.currency)} /{" "}
               {formatCurrency(budget.amount, budget.currency)}
