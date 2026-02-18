@@ -34,12 +34,12 @@ No test framework is configured.
 ### Routing (Next.js App Router)
 
 - `src/app/(auth)/` — login, register (public)
-- `src/app/(dashboard)/` — all protected pages: dashboard, wallets, wallets/[id], transactions, budgets, categories, settings
+- `src/app/(dashboard)/` — all protected pages: dashboard, wallets, wallets/[id], transactions, budgets, categories, debts, shopping, shopping/[id], settings
 - Dashboard layout (`(dashboard)/layout.tsx`) is a `"use client"` component that checks auth, fetches all store data on mount, and renders sidebar/header/mobile-nav
 
 ### State Management (Zustand)
 
-Eight stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`, `budget-store`, `category-store`, `template-store`, `recurring-store`, `debt-store`, `ui-store`.
+Ten stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`, `budget-store`, `category-store`, `template-store`, `recurring-store`, `debt-store`, `shopping-store`, `ui-store`.
 
 **Persistence:** All data stores use Zustand's `persist` middleware with:
 
@@ -58,6 +58,7 @@ Eight stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`
 - **`src/lib/constants.ts`** — `MOCK_USER_ID` (user ID until auth backend exists)
 - **`src/lib/transaction-helpers.ts`** — `applyTransactionEffect`, `reverseTransactionEffect`, `resolveTransferFields` (centralized transaction effect logic)
 - **`src/lib/nav-icon-map.ts`** — `NAV_ICON_MAP` for i18n-consistent navigation icons
+- **`shopping-store`** — `purchaseItem` auto-creates an EXPENSE transaction via `useTransactionStore.getState().addTransaction()` as a side effect
 
 ### Performance Patterns
 
@@ -100,7 +101,7 @@ Custom translation system in `src/lib/i18n/` with `createT(locale)` returning a 
 
 ### UI Components
 
-shadcn/ui components in `src/components/ui/`. Feature components organized by domain: `src/components/{landing,layout,dashboard,wallets,transactions,budgets,categories}/`.
+shadcn/ui components in `src/components/ui/`. Feature components organized by domain: `src/components/{landing,layout,dashboard,wallets,transactions,budgets,categories,debts,shopping,templates}/`.
 
 ### Next.js Optimizations
 
@@ -160,3 +161,4 @@ Hard-won lessons — always verify these before writing code that touches these 
 - Wrap Zod schemas and filtered arrays in `useMemo`
 - No component creation inside render functions (React Compiler `static-components` rule)
 - Bare `catch {}` when error variable is unused
+- **`<SelectItem value="">` throws at runtime** — Radix UI reserves `""` as the "clear selection" sentinel. For "no selection" options (e.g. "No Category"), use `value="__none__"` and map in both directions: `value={field.value || "__none__"}` on `<Select>`, and `onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)}`
