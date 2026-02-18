@@ -42,3 +42,6 @@ next-env.d.ts
 
 # ai docs
 .ai-docs
+
+# serwist (generated service worker)
+public/sw.js
