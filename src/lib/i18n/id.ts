@@ -36,6 +36,8 @@ export const id = {
   "common.year": "Tahun",
   "common.currency": "Mata Uang",
   "common.selectDate": "Pilih tanggal",
+  "common.offlineBanner": "Kamu sedang offline — data tetap tersedia",
+  "common.backOnline": "Koneksi kembali tersedia",
 
   // Nav
   "nav.dashboard": "Dashboard",
@@ -250,6 +252,10 @@ export const id = {
   "settings.addDefaultCategoriesSuccess": "Kategori default berhasil ditambahkan",
   "settings.defaultCategoriesExist": "Semua kategori default sudah ada",
   "settings.logoutButton": "Keluar dari Akun",
+  "settings.installApp": "Pasang Aplikasi",
+  "settings.installAppDesc":
+    "Tambahkan FinSnap ke layar utama untuk akses lebih cepat tanpa browser",
+  "settings.installAppButton": "Pasang Sekarang",
 
   // Theme descriptions
   "theme.slate.desc": "Netral klasik, default",

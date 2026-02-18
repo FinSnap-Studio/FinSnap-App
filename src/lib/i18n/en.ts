@@ -38,6 +38,8 @@ export const en: Record<TranslationKey, string> = {
   "common.year": "Year",
   "common.currency": "Currency",
   "common.selectDate": "Select date",
+  "common.offlineBanner": "You are offline — your data is still available",
+  "common.backOnline": "You are back online",
 
   // Nav
   "nav.dashboard": "Dashboard",
@@ -251,6 +253,9 @@ export const en: Record<TranslationKey, string> = {
   "settings.addDefaultCategoriesSuccess": "Default categories added successfully",
   "settings.defaultCategoriesExist": "All default categories already exist",
   "settings.logoutButton": "Sign Out",
+  "settings.installApp": "Install App",
+  "settings.installAppDesc": "Add FinSnap to your home screen for quick access without a browser",
+  "settings.installAppButton": "Install Now",
 
   // Theme descriptions
   "theme.slate.desc": "Classic neutral, default",
