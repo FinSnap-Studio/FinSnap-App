@@ -25,7 +25,6 @@ export const useCategoryStore = create<CategoryStore>()(
 
         // TODO: Replace → GET /api/categories
         fetchCategories: async () => {
-          set({ isLoading: true });
           await useCategoryStore.persist.rehydrate();
           // Seed defaults if first visit (same behavior as before)
           if (get().categories.length === 0) {

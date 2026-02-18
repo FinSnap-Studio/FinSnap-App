@@ -57,7 +57,6 @@ export const useRecurringStore = create<RecurringStore>()(
 
         // TODO: Replace → GET /api/recurring
         fetchRecurring: async () => {
-          set({ isLoading: true });
           await useRecurringStore.persist.rehydrate();
           set({ isLoading: false });
         },

@@ -30,7 +30,6 @@ export const useBudgetStore = create<BudgetStore>()(
 
         // TODO: Replace → GET /api/budgets?month=X&year=Y
         fetchBudgets: async (_month, _year) => {
-          set({ isLoading: true });
           await useBudgetStore.persist.rehydrate();
           set({ isLoading: false });
         },

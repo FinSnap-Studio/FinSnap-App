@@ -43,7 +43,6 @@ export const useTransactionStore = create<TransactionStore>()(
 
         // TODO: Replace → GET /api/transactions
         fetchTransactions: async () => {
-          set({ isLoading: true });
           await useTransactionStore.persist.rehydrate();
           set({ isLoading: false });
         },

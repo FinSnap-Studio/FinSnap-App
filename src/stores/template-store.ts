@@ -23,7 +23,6 @@ export const useTemplateStore = create<TemplateStore>()(
 
         // TODO: Replace → GET /api/templates
         fetchTemplates: async () => {
-          set({ isLoading: true });
           await useTemplateStore.persist.rehydrate();
           set({ isLoading: false });
         },

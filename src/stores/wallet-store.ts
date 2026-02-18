@@ -27,7 +27,6 @@ export const useWalletStore = create<WalletStore>()(
 
         // TODO: Replace → GET /api/wallets
         fetchWallets: async () => {
-          set({ isLoading: true });
           await useWalletStore.persist.rehydrate();
           set({ isLoading: false });
         },

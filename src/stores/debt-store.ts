@@ -49,7 +49,6 @@ export const useDebtStore = create<DebtStore>()(
 
         // TODO: Replace → GET /api/debts
         fetchDebts: async () => {
-          set({ isLoading: true });
           await useDebtStore.persist.rehydrate();
           // Recalculate statuses on load (for overdue detection)
           const { debts } = get();
