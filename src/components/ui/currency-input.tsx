@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
   type ChangeEvent,
+  type PointerEvent,
 } from "react";
 import { cn } from "@/lib/utils";
 import { type CurrencyCode, getCurrencyInfo } from "@/lib/currencies";
@@ -147,6 +148,13 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
       onBlur?.();
     };
 
+    const handle000Press = (e: PointerEvent<HTMLButtonElement>) => {
+      e.preventDefault(); // prevent input from losing focus
+      if (value > 0) {
+        onChange(value * 1000);
+      }
+    };
+
     // Dynamic padding based on symbol length
     const symbolLen = info.symbol.length;
     const paddingClass = symbolLen <= 1 ? "pl-7" : symbolLen <= 2 ? "pl-10" : "pl-13";
@@ -175,9 +183,18 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
             "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
             "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
             paddingClass,
+            "pr-14 md:pr-3",
             className,
           )}
         />
+        <button
+          type="button"
+          onPointerDown={handle000Press}
+          disabled={disabled || value === 0}
+          className="absolute right-2 top-1/2 -translate-y-1/2 md:hidden h-6 px-2 rounded text-xs font-mono font-medium bg-muted hover:bg-muted/80 text-muted-foreground border disabled:opacity-40"
+        >
+          000
+        </button>
       </div>
     );
   },
