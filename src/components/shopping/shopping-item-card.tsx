@@ -13,7 +13,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CheckCircle2, Circle, Minus, MoreVertical } from "lucide-react";
+import {
+  CheckCircle2,
+  Circle,
+  Minus,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  RotateCcw,
+} from "lucide-react";
 import { useMemo } from "react";
 
 interface ShoppingItemCardProps {
@@ -98,25 +106,22 @@ export function ShoppingItemCard({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4" />
+                    <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {item.status === "PENDING" ? (
                     <>
                       <DropdownMenuItem onClick={() => onEdit(item)}>
-                        {t("common.edit")}
+                        <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => onRemove(item)}
-                        className="text-destructive"
-                      >
-                        {t("common.delete")}
+                      <DropdownMenuItem onClick={() => onRemove(item)} className="text-destructive">
+                        <Trash2 className="h-4 w-4 mr-2" /> {t("common.delete")}
                       </DropdownMenuItem>
                     </>
                   ) : (
                     <DropdownMenuItem onClick={() => onMarkPending(item)}>
-                      {t("shopping.markPending")}
+                      <RotateCcw className="h-4 w-4 mr-2" /> {t("shopping.markPending")}
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>

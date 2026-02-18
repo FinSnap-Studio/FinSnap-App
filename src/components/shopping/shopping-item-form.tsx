@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ShoppingItem, ShoppingItemFormInput } from "@/types";
 import type { CurrencyCode } from "@/lib/currencies";
+import { formatCurrency } from "@/lib/utils";
 import { useShoppingStore } from "@/stores/shopping-store";
 import { useCategoryStore } from "@/stores/category-store";
 import { useTranslation } from "@/hooks/use-translation";
@@ -29,6 +30,7 @@ interface ShoppingItemFormProps {
   listId: string;
   item?: ShoppingItem | null;
   currency: CurrencyCode;
+  defaultCategoryId?: string | null;
 }
 
 export function ShoppingItemForm({
@@ -37,6 +39,7 @@ export function ShoppingItemForm({
   listId,
   item,
   currency,
+  defaultCategoryId,
 }: ShoppingItemFormProps) {
   const { t } = useTranslation();
   const addItem = useShoppingStore((state) => state.addItem);
@@ -65,6 +68,10 @@ export function ShoppingItemForm({
     },
   });
 
+  const watchedQuantity = useWatch({ control, name: "quantity" });
+  const watchedPrice = useWatch({ control, name: "estimatedPrice" });
+  const totalPreview = (watchedQuantity || 1) * (watchedPrice || 0);
+
   useEffect(() => {
     if (open) {
       if (item) {
@@ -80,12 +87,12 @@ export function ShoppingItemForm({
           name: "",
           quantity: 1,
           estimatedPrice: 0,
-          categoryId: "",
+          categoryId: defaultCategoryId || "",
           notes: "",
         });
       }
     }
-  }, [open, item, reset]);
+  }, [open, item, reset, defaultCategoryId]);
 
   const onSubmit = async (data: ShoppingItemFormInput) => {
     try {
@@ -147,7 +154,7 @@ export function ShoppingItemForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="estimatedPrice">{t("shopping.estimatedPrice")}</Label>
+            <Label htmlFor="estimatedPrice">{t("shopping.estimatedPricePerItem")}</Label>
             <Controller
               name="estimatedPrice"
               control={control}
@@ -161,6 +168,14 @@ export function ShoppingItemForm({
                 />
               )}
             />
+            {(watchedQuantity || 1) > 1 && (
+              <p className="text-xs text-muted-foreground">
+                {t("shopping.estimatedTotalPreview", {
+                  total: formatCurrency(totalPreview, currency),
+                  quantity: watchedQuantity,
+                })}
+              </p>
+            )}
             {errors.estimatedPrice && (
               <p className="text-sm text-destructive">{errors.estimatedPrice.message}</p>
             )}
@@ -172,11 +187,15 @@ export function ShoppingItemForm({
               name="categoryId"
               control={control}
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select
+                  value={field.value || "__none__"}
+                  onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)}
+                >
                   <SelectTrigger id="categoryId">
                     <SelectValue placeholder={t("transaction.selectCategory")} />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="__none__">{t("shopping.noCategory")}</SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category.id} value={category.id}>
                         {category.name}

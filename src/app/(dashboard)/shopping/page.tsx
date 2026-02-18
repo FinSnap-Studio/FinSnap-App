@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Plus } from "lucide-react";
+import { Plus, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -99,9 +99,18 @@ export default function ShoppingPage() {
 
         <TabsContent value="active" className="mt-4">
           {activeLists.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              {t("shopping.emptyState")}
-            </p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <ShoppingCart className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">{t("shopping.emptyState")}</p>
+              <Button
+                onClick={() => {
+                  setEditList(null);
+                  setFormOpen(true);
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" /> {t("shopping.addList")}
+              </Button>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {activeLists.map((list) => (
@@ -119,9 +128,10 @@ export default function ShoppingPage() {
 
         <TabsContent value="completed" className="mt-4">
           {completedLists.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              {t("shopping.emptyState")}
-            </p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <ShoppingCart className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">{t("shopping.emptyStateCompleted")}</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {completedLists.map((list) => (
@@ -139,9 +149,10 @@ export default function ShoppingPage() {
 
         <TabsContent value="archived" className="mt-4">
           {archivedLists.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              {t("shopping.emptyState")}
-            </p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <ShoppingCart className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">{t("shopping.emptyStateArchived")}</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {archivedLists.map((list) => (
@@ -172,7 +183,9 @@ export default function ShoppingPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>{t("common.delete")}</AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+              {t("common.delete")}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

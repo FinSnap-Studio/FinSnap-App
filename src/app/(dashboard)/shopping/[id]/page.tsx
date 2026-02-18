@@ -77,6 +77,10 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
     return list.items.filter((item) => item.status === "PENDING");
   }, [list]);
 
+  const remainingEstimate = useMemo(() => {
+    return pendingItems.reduce((sum, item) => sum + item.estimatedPrice * item.quantity, 0);
+  }, [pendingItems]);
+
   // Progress includes both PURCHASED and SKIPPED
   const progress = useMemo(() => {
     if (!list || list.items.length === 0) return 0;
@@ -202,7 +206,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
             )}
 
             {pendingItems.length > 0 && (
-              <Button variant="default" onClick={() => setPurchaseAllOpen(true)}>
+              <Button variant="outline" onClick={() => setPurchaseAllOpen(true)}>
                 <ShoppingCart className="h-4 w-4 mr-2" /> {t("shopping.purchaseAll")}
               </Button>
             )}
@@ -240,10 +244,10 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">
-                {t("shopping.itemsRemaining", { count: pendingItems.length })}
+              <p className="text-xs text-muted-foreground">{t("shopping.remainingEstimate")}</p>
+              <p className="text-lg font-bold text-foreground">
+                {formatCurrency(remainingEstimate, list.currency)}
               </p>
-              <p className="text-lg font-bold text-foreground">{pendingItems.length}</p>
             </div>
           </div>
         </CardContent>
@@ -285,6 +289,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
         listId={list.id}
         item={editItem}
         currency={list.currency}
+        defaultCategoryId={list.defaultCategoryId}
       />
 
       <ShoppingPurchaseDialog
@@ -306,7 +311,9 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRemoveItem}>{t("common.delete")}</AlertDialogAction>
+            <AlertDialogAction onClick={handleRemoveItem} className="bg-red-600 hover:bg-red-700">
+              {t("common.delete")}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -332,7 +339,7 @@ export default function ShoppingListDetailPage({ params }: { params: Promise<{ i
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("shopping.archive")}</AlertDialogTitle>
-            <AlertDialogDescription>{t("shopping.archiveSuccess")}</AlertDialogDescription>
+            <AlertDialogDescription>{t("shopping.archiveConfirmDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>

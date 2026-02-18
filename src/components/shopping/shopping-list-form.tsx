@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { ShoppingList, ShoppingListFormInput } from "@/types";
 import { useShoppingStore } from "@/stores/shopping-store";
 import { useWalletStore } from "@/stores/wallet-store";
+import { useCategoryStore } from "@/stores/category-store";
 import { useTranslation } from "@/hooks/use-translation";
 import { createShoppingListSchema } from "@/lib/validations/shopping";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -33,6 +34,11 @@ export function ShoppingListForm({ open, onOpenChange, list }: ShoppingListFormP
   const updateShoppingList = useShoppingStore((state) => state.updateShoppingList);
   const allWallets = useWalletStore((state) => state.wallets);
   const wallets = useMemo(() => allWallets.filter((w) => w.isActive), [allWallets]);
+  const allCategories = useCategoryStore((state) => state.categories);
+  const categories = useMemo(
+    () => allCategories.filter((c) => c.type === "EXPENSE"),
+    [allCategories],
+  );
 
   const schema = useMemo(() => createShoppingListSchema(t), [t]);
   const {
@@ -46,6 +52,7 @@ export function ShoppingListForm({ open, onOpenChange, list }: ShoppingListFormP
     defaultValues: {
       name: "",
       walletId: wallets[0]?.id || "",
+      defaultCategoryId: "",
     },
   });
 
@@ -55,11 +62,13 @@ export function ShoppingListForm({ open, onOpenChange, list }: ShoppingListFormP
         reset({
           name: list.name,
           walletId: list.walletId,
+          defaultCategoryId: list.defaultCategoryId || "",
         });
       } else {
         reset({
           name: "",
           walletId: wallets[0]?.id || "",
+          defaultCategoryId: "",
         });
       }
     }
@@ -124,9 +133,38 @@ export function ShoppingListForm({ open, onOpenChange, list }: ShoppingListFormP
                 </Select>
               )}
             />
+            {list && (
+              <p className="text-xs text-muted-foreground">{t("shopping.walletCannotChange")}</p>
+            )}
             {errors.walletId && (
               <p className="text-sm text-destructive">{errors.walletId.message}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="defaultCategoryId">{t("shopping.defaultCategory")}</Label>
+            <Controller
+              name="defaultCategoryId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value || "__none__"}
+                  onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)}
+                >
+                  <SelectTrigger id="defaultCategoryId">
+                    <SelectValue placeholder={t("shopping.noCategory")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">{t("shopping.noCategory")}</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

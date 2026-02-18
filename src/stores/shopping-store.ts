@@ -52,7 +52,6 @@ export const useShoppingStore = create<ShoppingStore>()(
 
         // TODO: Replace → GET /api/shopping-lists
         fetchShoppingLists: async () => {
-          set({ isLoading: true });
           await useShoppingStore.persist.rehydrate();
           set({ isLoading: false });
         },
@@ -70,6 +69,7 @@ export const useShoppingStore = create<ShoppingStore>()(
             currency,
             status: "ACTIVE",
             items: [],
+            defaultCategoryId: input.defaultCategoryId || null,
             userId: MOCK_USER_ID,
             createdAt: now,
             updatedAt: now,
@@ -87,6 +87,9 @@ export const useShoppingStore = create<ShoppingStore>()(
               return {
                 ...list,
                 ...(input.name !== undefined && { name: input.name }),
+                ...(input.defaultCategoryId !== undefined && {
+                  defaultCategoryId: input.defaultCategoryId || null,
+                }),
                 updatedAt: new Date().toISOString(),
               };
             }),
@@ -265,20 +268,24 @@ export const useShoppingStore = create<ShoppingStore>()(
           const pendingItems = list.items.filter((item) => item.status === "PENDING");
           if (pendingItems.length === 0) return 0;
 
-          const totalAmount = pendingItems.reduce(
-            (sum, item) => sum + item.estimatedPrice * item.quantity,
-            0,
-          );
-          const description = `${list.name} (${pendingItems.length} items)`;
+          // Create one transaction per item so each gets its own categoryId
+          // and markItemPending() can delete them independently without corrupting siblings
+          const txStore = useTransactionStore.getState();
+          const purchasedMap = new Map<string, { txId: string; amount: number }>();
 
-          const tx = await useTransactionStore.getState().addTransaction({
-            amount: totalAmount,
-            type: "EXPENSE",
-            description,
-            date: new Date(),
-            walletId: list.walletId,
-            categoryId: "",
-          });
+          for (const item of pendingItems) {
+            const amount = item.estimatedPrice * item.quantity;
+            const description = `${item.name}${item.quantity > 1 ? ` x${item.quantity}` : ""} — ${list.name}`;
+            const tx = await txStore.addTransaction({
+              amount,
+              type: "EXPENSE",
+              description,
+              date: new Date(),
+              walletId: list.walletId,
+              categoryId: item.categoryId || "",
+            });
+            purchasedMap.set(item.id, { txId: tx.id, amount });
+          }
 
           const now = new Date().toISOString();
           set((s) => ({
@@ -287,12 +294,13 @@ export const useShoppingStore = create<ShoppingStore>()(
               const updated = {
                 ...l,
                 items: l.items.map((item) => {
-                  if (item.status !== "PENDING") return item;
+                  const purchased = purchasedMap.get(item.id);
+                  if (!purchased) return item;
                   return {
                     ...item,
                     status: "PURCHASED" as ShoppingItemStatus,
-                    actualPrice: item.estimatedPrice * item.quantity,
-                    linkedTransactionId: tx.id,
+                    actualPrice: purchased.amount,
+                    linkedTransactionId: purchased.txId,
                     updatedAt: now,
                   };
                 }),

@@ -266,6 +266,7 @@ export interface ShoppingList {
   currency: CurrencyCode;
   status: ShoppingListStatus;
   items: ShoppingItem[];
+  defaultCategoryId: string | null;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -274,6 +275,7 @@ export interface ShoppingList {
 export interface ShoppingListFormInput {
   name: string;
   walletId: string;
+  defaultCategoryId?: string;
 }
 
 export interface ShoppingItemFormInput {

@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Wallet } from "lucide-react";
+import { MoreHorizontal, Pencil, Archive, Trash2, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -99,7 +99,7 @@ export function ShoppingListCard({ list, onEdit, onDelete, onArchive }: Shopping
       )}
       onClick={handleCardClick}
     >
-      <CardContent className="p-6">
+      <CardContent className="p-4">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
@@ -118,7 +118,7 @@ export function ShoppingListCard({ list, onEdit, onDelete, onArchive }: Shopping
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={handleMenuClick}>
               <Button variant="ghost" size="icon">
-                <MoreVertical className="h-4 w-4" />
+                <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -128,7 +128,7 @@ export function ShoppingListCard({ list, onEdit, onDelete, onArchive }: Shopping
                   onEdit(list);
                 }}
               >
-                {t("common.edit")}
+                <Pencil className="h-4 w-4 mr-2" /> {t("common.edit")}
               </DropdownMenuItem>
               {list.status === "ACTIVE" && (
                 <DropdownMenuItem
@@ -137,7 +137,7 @@ export function ShoppingListCard({ list, onEdit, onDelete, onArchive }: Shopping
                     onArchive(list);
                   }}
                 >
-                  {t("shopping.archive")}
+                  <Archive className="h-4 w-4 mr-2" /> {t("shopping.archive")}
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem
@@ -147,7 +147,7 @@ export function ShoppingListCard({ list, onEdit, onDelete, onArchive }: Shopping
                 }}
                 className="text-destructive"
               >
-                {t("common.delete")}
+                <Trash2 className="h-4 w-4 mr-2" /> {t("common.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

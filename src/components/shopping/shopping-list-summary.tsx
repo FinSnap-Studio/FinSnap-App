@@ -39,10 +39,7 @@ export function ShoppingListSummary({ lists }: ShoppingListSummaryProps) {
     [activeLists],
   );
 
-  const currencies = useMemo(
-    () => [...new Set(activeLists.map((l) => l.currency))],
-    [activeLists],
-  );
+  const currencies = useMemo(() => [...new Set(activeLists.map((l) => l.currency))], [activeLists]);
   const isMixedCurrency = currencies.length > 1;
   const currency = currencies[0] || "IDR";
 
