@@ -41,7 +41,9 @@ No test framework is configured.
 
 Ten stores in `src/stores/`: `auth-store`, `wallet-store`, `transaction-store`, `budget-store`, `category-store`, `template-store`, `recurring-store`, `debt-store`, `shopping-store`, `ui-store`.
 
-**Persistence:** All data stores use Zustand's `persist` middleware with:
+**Persistence:** Nine data stores use Zustand's `persist` middleware. `ui-store` manages its own localStorage keys directly (theme, color-theme, currency, locale) without `persist` middleware.
+
+Data stores use `persist` with:
 
 - `skipHydration: true` (except `auth-store`) — `fetchXxx()` methods call `await useXxxStore.persist.rehydrate()`
 - `partialize` to persist only data arrays (e.g., `{ wallets: state.wallets }`)
@@ -102,6 +104,19 @@ Custom translation system in `src/lib/i18n/` with `createT(locale)` returning a 
 ### UI Components
 
 shadcn/ui components in `src/components/ui/`. Feature components organized by domain: `src/components/{landing,layout,dashboard,wallets,transactions,budgets,categories,debts,shopping,templates}/`.
+
+### PWA (Progressive Web App)
+
+Powered by `@serwist/next`. Service worker source at `src/app/sw.ts`, compiled to `public/sw.js`.
+
+- **Precaching:** All static routes precached with git revision as cache key (see `STATIC_ROUTES` in `next.config.ts`)
+- **Runtime caching:** Images cached with `CacheFirst` strategy (30-day expiry, 64 entries max), plus Serwist defaults
+- **Offline fallback:** `/~offline` page served when network is unavailable (`src/app/~offline/page.tsx`)
+- **Disabled in dev:** `disable: process.env.NODE_ENV === "development"` in next.config.ts
+- **Manifest:** `src/app/manifest.ts` (Next.js metadata route)
+- **Install prompt hook:** `src/hooks/use-install-prompt.ts` — captures `beforeinstallprompt` event
+- **Online status hook:** `src/hooks/use-online-status.ts` — tracks navigator.onLine
+- **Offline banner:** `src/components/layout/offline-banner.tsx`
 
 ### Next.js Optimizations
 
