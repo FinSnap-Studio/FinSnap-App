@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Plus, ArrowLeftRight } from "lucide-react";
+import { Plus, ArrowLeftRight, Wallet as WalletIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWalletStore } from "@/stores/wallet-store";
 import { WalletCard } from "@/components/wallets/wallet-card";
@@ -31,8 +31,12 @@ export default function WalletsPage() {
       </div>
 
       {wallets.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">{t("wallet.emptyState")}</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <WalletIcon className="h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-muted-foreground mb-4">{t("wallet.emptyState")}</p>
+          <Button onClick={() => setFormOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" /> {t("wallet.addWallet")}
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

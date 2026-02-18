@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCategoryStore } from "@/stores/category-store";
@@ -43,7 +43,13 @@ export default function CategoriesPage() {
         </TabsList>
         <TabsContent value="EXPENSE" className="mt-4">
           {expenseCategories.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">{t("category.noExpense")}</p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Tag className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">{t("category.noExpense")}</p>
+              <Button onClick={() => setFormOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" /> {t("category.addCategory")}
+              </Button>
+            </div>
           ) : (
             <div className="space-y-2">
               {expenseCategories.map((cat) => (
@@ -54,7 +60,13 @@ export default function CategoriesPage() {
         </TabsContent>
         <TabsContent value="INCOME" className="mt-4">
           {incomeCategories.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">{t("category.noIncome")}</p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Tag className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">{t("category.noIncome")}</p>
+              <Button onClick={() => setFormOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" /> {t("category.addCategory")}
+              </Button>
+            </div>
           ) : (
             <div className="space-y-2">
               {incomeCategories.map((cat) => (

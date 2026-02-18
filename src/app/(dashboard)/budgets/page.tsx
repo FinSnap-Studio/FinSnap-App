@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AlertTriangle, Plus } from "lucide-react";
+import { AlertTriangle, Plus, PiggyBank } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -25,6 +25,9 @@ export default function BudgetsPage() {
   const selectedMonth = useBudgetStore((s) => s.selectedMonth);
   const selectedYear = useBudgetStore((s) => s.selectedYear);
   const setMonth = useBudgetStore((s) => s.setMonth);
+  const now = useMemo(() => new Date(), []);
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
   const categories = useCategoryStore((s) => s.categories);
   const [formOpen, setFormOpen] = useState(false);
 
@@ -63,6 +66,9 @@ export default function BudgetsPage() {
             {MONTH_VALUES.map((m) => (
               <SelectItem key={m} value={String(m)}>
                 {getMonthName(m, locale)}
+                {m === currentMonth && selectedYear === currentYear
+                  ? ` ${t("budget.currentMonth")}`
+                  : ""}
               </SelectItem>
             ))}
           </SelectContent>
@@ -119,8 +125,12 @@ export default function BudgetsPage() {
       )}
 
       {budgets.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">{t("budget.emptyState")}</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <PiggyBank className="h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-muted-foreground mb-4">{t("budget.emptyState")}</p>
+          <Button onClick={() => setFormOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" /> {t("budget.addBudget")}
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

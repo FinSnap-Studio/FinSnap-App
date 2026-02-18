@@ -38,11 +38,24 @@ import { useTransactionStore } from "@/stores/transaction-store";
 import { useWalletStore } from "@/stores/wallet-store";
 import { useBudgetStore } from "@/stores/budget-store";
 import { useCategoryStore } from "@/stores/category-store";
+import { useTemplateStore } from "@/stores/template-store";
+import { useRecurringStore } from "@/stores/recurring-store";
+import { useDebtStore } from "@/stores/debt-store";
+import { useShoppingStore } from "@/stores/shopping-store";
 import { COLOR_THEMES } from "@/lib/themes";
 import { LOCALE_OPTIONS } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/use-translation";
 import { storageClearAllData } from "@/lib/storage";
-import { MOCK_WALLETS, MOCK_TRANSACTIONS, MOCK_BUDGETS, MOCK_CATEGORIES } from "@/data/mock-data";
+import {
+  MOCK_WALLETS,
+  MOCK_TRANSACTIONS,
+  MOCK_BUDGETS,
+  MOCK_CATEGORIES,
+  MOCK_TEMPLATES,
+  MOCK_RECURRING,
+  MOCK_DEBTS,
+  MOCK_SHOPPING_LISTS,
+} from "@/data/mock-data";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -79,6 +92,10 @@ export default function SettingsPage() {
     useWalletStore.setState({ wallets: [] });
     useBudgetStore.setState({ budgets: [] });
     useCategoryStore.setState({ categories: [] });
+    useTemplateStore.setState({ templates: [] });
+    useRecurringStore.setState({ recurrings: [] });
+    useDebtStore.setState({ debts: [] });
+    useShoppingStore.setState({ shoppingLists: [] });
     toast.success(t("settings.clearDataSuccess"));
   };
 
@@ -114,6 +131,38 @@ export default function SettingsPage() {
     const newBudgets = MOCK_BUDGETS.filter((b) => !existingBudgetIds.has(b.id));
     if (newBudgets.length > 0) {
       useBudgetStore.setState({ budgets: [...budgets, ...newBudgets] });
+    }
+
+    // Merge mock templates (skip duplicate by ID)
+    const templates = useTemplateStore.getState().templates;
+    const existingTemplateIds = new Set(templates.map((t) => t.id));
+    const newTemplates = MOCK_TEMPLATES.filter((t) => !existingTemplateIds.has(t.id));
+    if (newTemplates.length > 0) {
+      useTemplateStore.setState({ templates: [...templates, ...newTemplates] });
+    }
+
+    // Merge mock recurring (skip duplicate by ID)
+    const recurrings = useRecurringStore.getState().recurrings;
+    const existingRecIds = new Set(recurrings.map((r) => r.id));
+    const newRec = MOCK_RECURRING.filter((r) => !existingRecIds.has(r.id));
+    if (newRec.length > 0) {
+      useRecurringStore.setState({ recurrings: [...recurrings, ...newRec] });
+    }
+
+    // Merge mock debts (skip duplicate by ID)
+    const debts = useDebtStore.getState().debts;
+    const existingDebtIds = new Set(debts.map((d) => d.id));
+    const newDebts = MOCK_DEBTS.filter((d) => !existingDebtIds.has(d.id));
+    if (newDebts.length > 0) {
+      useDebtStore.setState({ debts: [...debts, ...newDebts] });
+    }
+
+    // Merge mock shopping lists (skip duplicate by ID)
+    const shoppingLists = useShoppingStore.getState().shoppingLists;
+    const existingSlIds = new Set(shoppingLists.map((s) => s.id));
+    const newSl = MOCK_SHOPPING_LISTS.filter((s) => !existingSlIds.has(s.id));
+    if (newSl.length > 0) {
+      useShoppingStore.setState({ shoppingLists: [...shoppingLists, ...newSl] });
     }
 
     toast.success(t("settings.addDemoSuccess"));
