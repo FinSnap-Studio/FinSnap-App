@@ -21,12 +21,14 @@ import { createLoginSchema } from "@/lib/validations/auth";
 import { LoginFormInput } from "@/types";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTranslation } from "@/hooks/use-translation";
+import { useInstallPrompt } from "@/hooks/use-install-prompt";
 
 export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+  const { promptInstall } = useInstallPrompt();
 
   const schema = useMemo(() => createLoginSchema(t), [t]);
   const {
@@ -44,6 +46,7 @@ export default function LoginPage() {
       const success = await login(data.email, data.password);
       if (success) {
         toast.success(t("auth.loginSuccess"));
+        promptInstall();
         router.push("/dashboard");
       }
     } catch {

@@ -13,6 +13,8 @@ import {
   Languages,
   Plus,
   RotateCcw,
+  Smartphone,
+  Download,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -45,6 +47,7 @@ import { useShoppingStore } from "@/stores/shopping-store";
 import { COLOR_THEMES } from "@/lib/themes";
 import { LOCALE_OPTIONS } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/use-translation";
+import { useInstallPrompt } from "@/hooks/use-install-prompt";
 import { storageClearAllData } from "@/lib/storage";
 import {
   MOCK_WALLETS,
@@ -72,6 +75,7 @@ export default function SettingsPage() {
   } = useUIStore();
   const { t } = useTranslation();
 
+  const { isInstallable, promptInstall } = useInstallPrompt();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [clearDataOpen, setClearDataOpen] = useState(false);
@@ -389,6 +393,25 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Install App */}
+      {isInstallable && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Smartphone className="h-5 w-5" />
+              {t("settings.installApp")}
+            </CardTitle>
+            <CardDescription>{t("settings.installAppDesc")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" onClick={promptInstall}>
+              <Download className="h-4 w-4 mr-2" />
+              {t("settings.installAppButton")}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       <Separator />
 

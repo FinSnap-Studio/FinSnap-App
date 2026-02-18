@@ -14,6 +14,7 @@ import { useShoppingStore } from "@/stores/shopping-store";
 import { AppSidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { OfflineBanner } from "@/components/layout/offline-banner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useTranslation } from "@/hooks/use-translation";
 import { toast } from "sonner";
@@ -101,6 +102,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
+        <OfflineBanner />
         <Header />
         <main className="p-4 md:p-6 pb-20 md:pb-6">{children}</main>
       </SidebarInset>
