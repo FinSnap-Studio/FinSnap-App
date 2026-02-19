@@ -2,17 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  LayoutDashboard,
-  Wallet,
-  ArrowLeftRight,
-  Handshake,
-  PiggyBank,
-  Tag,
-  ChevronsUpDown,
-  LogOut,
-  Settings,
-} from "lucide-react";
+import { Wallet, ChevronsUpDown, LogOut, Settings } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -34,18 +24,9 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { NAV_ITEMS } from "@/lib/constants";
+import { NAV_ITEMS, NAV_ICON_MAP } from "@/lib/constants";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTranslation } from "@/hooks/use-translation";
-
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  LayoutDashboard,
-  Wallet,
-  ArrowLeftRight,
-  Handshake,
-  PiggyBank,
-  Tag,
-};
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -86,15 +67,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV_ITEMS.map((item) => {
-                const Icon = iconMap[item.icon];
+                const Icon = NAV_ICON_MAP[item.icon];
                 const isActive = pathname.startsWith(item.href);
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive}
-                      tooltip={t(item.label)}
-                    >
+                    <SidebarMenuButton asChild isActive={isActive} tooltip={t(item.label)}>
                       <Link href={item.href}>
                         {Icon && <Icon />}
                         <span>{t(item.label)}</span>
@@ -124,9 +101,7 @@ export function AppSidebar() {
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">{user?.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {user?.email}
-                    </span>
+                    <span className="truncate text-xs text-muted-foreground">{user?.email}</span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4" />
                 </SidebarMenuButton>

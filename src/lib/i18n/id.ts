@@ -2,6 +2,7 @@ export const id = {
   // Common
   "common.save": "Simpan",
   "common.cancel": "Batal",
+  "common.reset": "Reset",
   "common.delete": "Hapus",
   "common.edit": "Edit",
   "common.back": "Kembali",
@@ -35,6 +36,8 @@ export const id = {
   "common.year": "Tahun",
   "common.currency": "Mata Uang",
   "common.selectDate": "Pilih tanggal",
+  "common.offlineBanner": "Kamu sedang offline — data tetap tersedia",
+  "common.backOnline": "Koneksi kembali tersedia",
 
   // Nav
   "nav.dashboard": "Dashboard",
@@ -157,8 +160,7 @@ export const id = {
   "transaction.selectWalletDest": "Pilih wallet tujuan",
   "transaction.selectCategory": "Pilih kategori",
   "transaction.descPlaceholder": "Catatan transaksi (opsional)",
-  "transaction.crossCurrencyRequired":
-    "Jumlah tujuan wajib diisi untuk transfer lintas mata uang",
+  "transaction.crossCurrencyRequired": "Jumlah tujuan wajib diisi untuk transfer lintas mata uang",
   "transaction.tableDate": "Tanggal",
   "transaction.tableCategory": "Kategori",
   "transaction.tableDesc": "Deskripsi",
@@ -173,14 +175,14 @@ export const id = {
   "budget.addBudget": "Tambah Budget",
   "budget.editBudget": "Edit Budget",
   "budget.deleteTitle": "Hapus Budget",
-  "budget.deleteDesc":
-    'Apakah kamu yakin ingin menghapus budget untuk "{name}"?',
+  "budget.deleteDesc": 'Apakah kamu yakin ingin menghapus budget untuk "{name}"?',
   "budget.deleteSuccess": "Budget berhasil dihapus",
   "budget.deleteError": "Gagal menghapus budget",
   "budget.updateSuccess": "Budget berhasil diupdate",
   "budget.addSuccess": "Budget berhasil ditambah",
   "budget.saveError": "Gagal menyimpan budget",
   "budget.emptyState": "Belum ada budget untuk bulan ini",
+  "budget.currentMonth": "(Sekarang)",
   "budget.limitAlert": "{count} budget mendekati atau melebihi limit",
   "budget.budgetAmount": "Jumlah Budget",
   "budget.selectExpenseCategory": "Pilih kategori pengeluaran",
@@ -217,8 +219,7 @@ export const id = {
   "settings.currency": "Mata Uang",
   "settings.currencyDesc": "Mata uang default untuk wallet dan budget baru",
   "settings.defaultCurrency": "Mata Uang Default",
-  "settings.currencyHint":
-    "Digunakan sebagai default saat membuat wallet atau budget baru",
+  "settings.currencyHint": "Digunakan sebagai default saat membuat wallet atau budget baru",
   "settings.language": "Bahasa",
   "settings.languageDesc": "Pilih bahasa tampilan aplikasi",
   "settings.appearance": "Tampilan",
@@ -230,8 +231,7 @@ export const id = {
   "settings.data": "Data",
   "settings.dataDesc": "Kelola data aplikasi",
   "settings.clearData": "Hapus semua data",
-  "settings.clearDataDesc":
-    "Menghapus semua data wallet, transaksi, budget, dan kategori",
+  "settings.clearDataDesc": "Menghapus semua data wallet, transaksi, budget, dan kategori",
   "settings.clearDataButton": "Hapus Data",
   "settings.clearDataTitle": "Hapus Semua Data",
   "settings.clearDataConfirm":
@@ -239,17 +239,23 @@ export const id = {
   "settings.clearDataSuccess": "Semua data berhasil dihapus",
   "settings.clearDataYes": "Ya, Hapus Semua",
   "settings.addDemoData": "Tambah data demo",
-  "settings.addDemoDataDesc": "Menambah contoh wallet, transaksi, dan budget ke data yang sudah ada",
+  "settings.addDemoDataDesc":
+    "Menambah contoh wallet, transaksi, dan budget ke data yang sudah ada",
   "settings.addDemoDataButton": "Tambah Demo",
   "settings.addDemoSuccess": "Data demo berhasil ditambahkan",
   "settings.addDemoTitle": "Tambah Data Demo",
-  "settings.addDemoConfirm": "Data demo (wallet, transaksi, budget) akan ditambahkan ke data yang sudah ada. Data lama tidak akan dihapus. Lanjutkan?",
+  "settings.addDemoConfirm":
+    "Data demo (wallet, transaksi, budget) akan ditambahkan ke data yang sudah ada. Data lama tidak akan dihapus. Lanjutkan?",
   "settings.addDefaultCategories": "Tambah kategori default",
   "settings.addDefaultCategoriesDesc": "Tambah 14 kategori default yang belum ada",
   "settings.addDefaultCategoriesButton": "Tambah Kategori",
   "settings.addDefaultCategoriesSuccess": "Kategori default berhasil ditambahkan",
   "settings.defaultCategoriesExist": "Semua kategori default sudah ada",
   "settings.logoutButton": "Keluar dari Akun",
+  "settings.installApp": "Pasang Aplikasi",
+  "settings.installAppDesc":
+    "Tambahkan FinSnap ke layar utama untuk akses lebih cepat tanpa browser",
+  "settings.installAppButton": "Pasang Sekarang",
 
   // Theme descriptions
   "theme.slate.desc": "Netral klasik, default",
@@ -405,6 +411,77 @@ export const id = {
   "dashboard.debtReminders": "Pengingat Hutang/Piutang",
   "dashboard.viewDebts": "Lihat Semua",
   "validation.personNameRequired": "Nama orang wajib diisi",
+  "validation.personNameMax": "Maksimal 50 karakter",
+
+  // Shopping
+  "nav.shopping": "Belanja",
+  "shopping.title": "Daftar Belanja",
+  "shopping.addList": "Buat Daftar",
+  "shopping.editList": "Edit Daftar",
+  "shopping.deleteList": "Hapus Daftar",
+  "shopping.deleteListDesc": 'Apakah kamu yakin ingin menghapus daftar "{name}"?',
+  "shopping.listName": "Nama Daftar",
+  "shopping.listNamePlaceholder": "cth. Belanja Indomaret",
+  "shopping.emptyState": "Belum ada daftar belanja",
+  "shopping.addSuccess": "Daftar berhasil ditambahkan",
+  "shopping.updateSuccess": "Daftar berhasil diupdate",
+  "shopping.deleteSuccess": "Daftar berhasil dihapus",
+  "shopping.saveError": "Gagal menyimpan daftar",
+  "shopping.tabActive": "Aktif",
+  "shopping.tabCompleted": "Selesai",
+  "shopping.tabArchived": "Diarsipkan",
+  "shopping.archive": "Arsipkan",
+  "shopping.archiveSuccess": "Daftar berhasil diarsipkan",
+  "shopping.estimatedTotal": "Estimasi Total",
+  "shopping.actualSpent": "Total Terpakai",
+  "shopping.itemsRemaining": "{count} item tersisa",
+  "shopping.progress": "{purchased}/{total} item",
+  "shopping.completeList": "Selesaikan Daftar",
+  "shopping.addItem": "Tambah Item",
+  "shopping.editItem": "Edit Item",
+  "shopping.removeItem": "Hapus Item",
+  "shopping.removeItemDesc": "Apakah kamu yakin ingin menghapus item ini?",
+  "shopping.itemName": "Nama Barang",
+  "shopping.itemNamePlaceholder": "cth. Sabun Mandi",
+  "shopping.quantity": "Jumlah",
+  "shopping.estimatedPrice": "Estimasi Harga",
+  "shopping.actualPrice": "Harga Sebenarnya",
+  "shopping.purchase": "Beli",
+  "shopping.purchaseConfirm": "Konfirmasi Pembelian",
+  "shopping.purchaseDesc": "Akan membuat transaksi pengeluaran otomatis",
+  "shopping.purchaseSuccess": "Item dibeli & transaksi tercatat",
+  "shopping.skip": "Lewati",
+  "shopping.purchased": "Dibeli",
+  "shopping.skipped": "Dilewati",
+  "shopping.pending": "Belum dibeli",
+  "shopping.purchaseAll": "Beli Semua Sisa",
+  "shopping.purchaseAllDesc": "Semua item tersisa akan dibeli dengan estimasi harga",
+  "shopping.purchasedCount": "{count} item berhasil dibeli",
+  "shopping.noItems": "Belum ada item",
+  "shopping.backToList": "Kembali ke daftar",
+  "shopping.totalLists": "Total Daftar Aktif",
+  "shopping.totalEstimated": "Total Estimasi",
+  "shopping.totalItems": "Total Item Tersisa",
+  "shopping.notFound": "Daftar belanja tidak ditemukan",
+  "shopping.itemsSection": "Item",
+  "shopping.wallet": "Dompet",
+  "shopping.markPending": "Tandai Belum Dibeli",
+  "shopping.mixedCurrencies": "Beberapa mata uang",
+  "shopping.archiveConfirmDesc":
+    "Daftar ini akan diarsipkan dan tidak lagi ditampilkan sebagai aktif.",
+  "shopping.emptyStateCompleted": "Belum ada daftar yang selesai",
+  "shopping.emptyStateArchived": "Belum ada daftar yang diarsipkan",
+  "shopping.remainingEstimate": "Estimasi Tersisa",
+  "shopping.noCategory": "Tanpa Kategori",
+  "shopping.defaultCategory": "Kategori Default",
+  "shopping.walletCannotChange": "Dompet tidak dapat diubah setelah daftar dibuat",
+  "shopping.estimatedPricePerItem": "Estimasi Harga (per item)",
+  "shopping.estimatedTotalPreview": "= {total} untuk {quantity} item",
+  "validation.shoppingListNameRequired": "Nama daftar wajib diisi",
+  "validation.shoppingListNameMax": "Maksimal 50 karakter",
+  "validation.shoppingItemNameRequired": "Nama barang wajib diisi",
+  "validation.shoppingItemNameMax": "Maksimal 100 karakter",
+  "validation.quantityMin": "Minimal 1",
 
   // Receipt OCR
   "receipt.snapReceipt": "Snap Struk",
@@ -416,6 +493,7 @@ export const id = {
   // Landing Page
   "landing.nav.features": "Fitur",
   "landing.nav.benefits": "Keunggulan",
+  "landing.nav.beforeAfter": "Sebelum & Sesudah",
   "landing.nav.pricing": "Harga",
   "landing.nav.developer": "Developer",
   "landing.nav.signIn": "Masuk",
@@ -428,6 +506,7 @@ export const id = {
   "landing.hero.desc":
     "Kelola semua wallet, lacak setiap transaksi, dan kendalikan budget bulananmu — semuanya di satu tempat, langsung dari browser.",
   "landing.hero.tryDemo": "Coba Demo",
+  "landing.hero.tryDemoSubtext": "Tanpa daftar. Langsung eksplorasi dengan data demo.",
   "landing.hero.signIn": "Masuk",
 
   "landing.features.title": "Semua yang Kamu Butuhkan",
@@ -451,6 +530,8 @@ export const id = {
   "landing.features.privacyFirst": "Privasi Utama",
   "landing.features.privacyFirstDesc":
     "Datamu tersimpan di browser. Tidak ada server, tidak ada pihak ketiga — hanya kamu.",
+  "landing.features.filterCore": "Utama",
+  "landing.features.filterAll": "Semua Fitur",
 
   "landing.benefits.title": "Kenapa FinSnap?",
   "landing.benefits.subtitle":
@@ -465,9 +546,85 @@ export const id = {
   "landing.benefits.insightDesc":
     "Visualisasi pengeluaran dengan grafik interaktif. Temukan pola dan ambil keputusan keuangan yang lebih cerdas.",
 
+  // Before & After
+  "landing.beforeAfter.title": "Sebelum & Sesudah FinSnap",
+  "landing.beforeAfter.subtitle":
+    "Masalah keuangan yang familiar — dan bagaimana FinSnap mengatasinya.",
+  "landing.beforeAfter.before1": "Catatan tersebar di spreadsheet, notes, dan struk",
+  "landing.beforeAfter.after1": "Dashboard terpadu untuk semua akun",
+  "landing.beforeAfter.beforeDesc1":
+    "Data keuangan tersebar di mana-mana, susah dilacak dan sering hilang.",
+  "landing.beforeAfter.afterDesc1":
+    "Semua wallet, transaksi, dan budget tersaji rapi dalam satu tampilan.",
+  "landing.beforeAfter.before2": "Tidak tahu ke mana uang pergi tiap bulan",
+  "landing.beforeAfter.after2": "Peringatan budget & breakdown per kategori",
+  "landing.beforeAfter.beforeDesc2": "Akhir bulan selalu kaget karena pengeluaran tidak terpantau.",
+  "landing.beforeAfter.afterDesc2":
+    "Lihat alokasi pengeluaran per kategori dan dapat peringatan sebelum over budget.",
+  "landing.beforeAfter.before3": "Tagihan terlupakan di akhir bulan",
+  "landing.beforeAfter.after3": "Pengingat berulang, tidak ada yang terlewat",
+  "landing.beforeAfter.beforeDesc3": "Lupa bayar tagihan rutin menyebabkan denda dan stres.",
+  "landing.beforeAfter.afterDesc3":
+    "Transaksi berulang otomatis menjaga semua tagihan tetap terkendali.",
+  "landing.beforeAfter.before4": "Cash, kartu, e-wallet bercampur aduk",
+  "landing.beforeAfter.after4": "Multi-wallet dengan transfer mudah",
+  "landing.beforeAfter.beforeDesc4": "Sulit membedakan saldo masing-masing sumber uang.",
+  "landing.beforeAfter.afterDesc4":
+    "Kelola setiap wallet terpisah dan transfer antar wallet dengan satu klik.",
+
+  // New feature cards
+  "landing.features.shoppingList": "Daftar Belanja",
+  "landing.features.shoppingListDesc":
+    "Buat daftar belanja, lacak item, dan catat pengeluaran otomatis saat pembelian.",
+  "landing.features.debtTracking": "Pelacak Hutang",
+  "landing.features.debtTrackingDesc":
+    "Catat hutang dan piutang dengan pengingat jatuh tempo dan riwayat pembayaran.",
+  "landing.features.recurringTx": "Transaksi Berulang",
+  "landing.features.recurringTxDesc":
+    "Atur pembayaran rutin otomatis — tagihan bulanan, langganan, dan lainnya.",
+  "landing.features.pwaReady": "Bisa Dipasang",
+  "landing.features.pwaReadyDesc":
+    "Pasang langsung di HP atau laptop — bisa dipakai tanpa buka browser, bahkan saat offline.",
+
+  // Stats
+  "landing.stats.title": "FinSnap dalam Angka",
+  "landing.stats.subtitle": "Dibangun lengkap untuk kebutuhan keuangan pribadimu.",
+  "landing.stats.features": "10+ Fitur",
+  "landing.stats.featuresDesc": "Alat keuangan menyeluruh",
+  "landing.stats.themes": "7 Tema",
+  "landing.stats.themesDesc": "Tema warna sesuai gayamu",
+  "landing.stats.languages": "2 Bahasa",
+  "landing.stats.languagesDesc": "Bahasa Indonesia & English",
+  "landing.stats.free": "100% Gratis",
+  "landing.stats.freeDesc": "Tanpa biaya tersembunyi saat early access",
+  "landing.stats.pwa": "Bisa Dipasang",
+  "landing.stats.pwaDesc": "Pasang di HP atau laptop",
+  "landing.stats.private": "100% Privat",
+  "landing.stats.privateDesc": "Semua data tersimpan di perangkatmu",
+
+  // Pricing additions
+  "landing.pricing.monthly": "Bulanan",
+  "landing.pricing.annual": "Tahunan",
+  "landing.pricing.annualSave": "Hemat 20%",
+  "landing.pricing.freeNote":
+    "FinSnap sepenuhnya gratis selama pengembangan. Paket berbayar akan diluncurkan nanti.",
+  "landing.pricing.monthlySubtitle": "Ditagih bulanan saat peluncuran",
+  "landing.pricing.annualSubtitle": "Ditagih tahunan saat peluncuran",
+  "landing.pricing.bestValue": "Terbaik",
+  "landing.pricing.earlyFeature8": "Daftar belanja",
+  "landing.pricing.earlyFeature9": "Pelacak hutang/piutang",
+  "landing.pricing.earlyFeature10": "Transaksi berulang",
+  "landing.pricing.earlyFeature11": "Bisa dipasang di HP & laptop",
+
+  // Final CTA
+  "landing.cta.title": "Mulai Kelola Keuanganmu Hari Ini",
+  "landing.cta.subtitle":
+    "Gratis sepenuhnya selama pengembangan. Tanpa kartu kredit. Tanpa daftar untuk mencoba.",
+  "landing.cta.tryDemo": "Coba Demo Sekarang",
+  "landing.cta.signIn": "atau Masuk",
+
   "landing.pricing.title": "Harga Sederhana",
-  "landing.pricing.subtitle":
-    "Gratis selama pengembangan, berbayar nanti saat peluncuran resmi.",
+  "landing.pricing.subtitle": "Gratis selama pengembangan, berbayar nanti saat peluncuran resmi.",
   "landing.pricing.earlyAccess": "Early Access",
   "landing.pricing.earlyBadge": "Sekarang",
   "landing.pricing.free": "GRATIS",

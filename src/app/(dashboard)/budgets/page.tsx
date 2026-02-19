@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { AlertTriangle, Plus } from "lucide-react";
+import { useState, useMemo } from "react";
+import { AlertTriangle, Plus, PiggyBank } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { MONTH_VALUES } from "@/lib/constants";
 import { getMonthName } from "@/lib/utils";
 import { useBudgetStore } from "@/stores/budget-store";
@@ -19,14 +25,24 @@ export default function BudgetsPage() {
   const selectedMonth = useBudgetStore((s) => s.selectedMonth);
   const selectedYear = useBudgetStore((s) => s.selectedYear);
   const setMonth = useBudgetStore((s) => s.setMonth);
+  const now = useMemo(() => new Date(), []);
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
   const categories = useCategoryStore((s) => s.categories);
   const [formOpen, setFormOpen] = useState(false);
 
-  const budgets = allBudgets.filter((b) => b.month === selectedMonth && b.year === selectedYear);
-  const limitBudgets = budgets.filter((b) => {
-    const status = getBudgetStatus(b.spent, b.amount);
-    return status === "warning" || status === "danger";
-  });
+  const budgets = useMemo(
+    () => allBudgets.filter((b) => b.month === selectedMonth && b.year === selectedYear),
+    [allBudgets, selectedMonth, selectedYear],
+  );
+  const limitBudgets = useMemo(
+    () =>
+      budgets.filter((b) => {
+        const status = getBudgetStatus(b.spent, b.amount);
+        return status === "warning" || status === "danger";
+      }),
+    [budgets],
+  );
 
   return (
     <div className="space-y-6">
@@ -48,7 +64,12 @@ export default function BudgetsPage() {
           </SelectTrigger>
           <SelectContent>
             {MONTH_VALUES.map((m) => (
-              <SelectItem key={m} value={String(m)}>{getMonthName(m, locale)}</SelectItem>
+              <SelectItem key={m} value={String(m)}>
+                {getMonthName(m, locale)}
+                {m === currentMonth && selectedYear === currentYear
+                  ? ` ${t("budget.currentMonth")}`
+                  : ""}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -60,8 +81,10 @@ export default function BudgetsPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {[2024, 2025, 2026, 2027, 2028, 2029, 2030].map((y) => (
-              <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+            {Array.from({ length: 7 }, (_, i) => new Date().getFullYear() - 2 + i).map((y) => (
+              <SelectItem key={y} value={String(y)}>
+                {y}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -84,8 +107,15 @@ export default function BudgetsPage() {
               return (
                 <div key={b.id} className="flex items-center justify-between text-sm">
                   <span className="font-medium text-foreground">{cat?.name}</span>
-                  <span className={status === "danger" ? "text-red-600 dark:text-red-400 font-semibold" : "text-yellow-700 dark:text-yellow-400"}>
-                    {formatCurrency(b.spent, b.currency)} / {formatCurrency(b.amount, b.currency)} ({pct}%)
+                  <span
+                    className={
+                      status === "danger"
+                        ? "text-red-600 dark:text-red-400 font-semibold"
+                        : "text-yellow-700 dark:text-yellow-400"
+                    }
+                  >
+                    {formatCurrency(b.spent, b.currency)} / {formatCurrency(b.amount, b.currency)} (
+                    {pct}%)
                   </span>
                 </div>
               );
@@ -95,8 +125,12 @@ export default function BudgetsPage() {
       )}
 
       {budgets.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">{t("budget.emptyState")}</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <PiggyBank className="h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-muted-foreground mb-4">{t("budget.emptyState")}</p>
+          <Button onClick={() => setFormOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" /> {t("budget.addBudget")}
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

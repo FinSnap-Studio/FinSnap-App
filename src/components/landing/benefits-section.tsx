@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  ShoppingCart,
-  Coffee,
-  Zap,
-  Car,
-  ArrowDownLeft,
-  ArrowUpRight,
-} from "lucide-react";
+import { ShoppingCart, Coffee, Zap, Car, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useTranslation } from "@/hooks/use-translation";
+import { type TranslationKey } from "@/lib/i18n";
 
 function MockTransactions() {
   const items = [
@@ -29,9 +23,7 @@ function MockTransactions() {
             <item.icon className="size-4 text-muted-foreground" />
           </div>
           <span className="text-sm flex-1">{item.label}</span>
-          <span className={`text-sm font-medium ${item.color}`}>
-            {item.amount}
-          </span>
+          <span className={`text-sm font-medium ${item.color}`}>{item.amount}</span>
         </div>
       ))}
     </div>
@@ -51,7 +43,9 @@ function MockBudgets() {
         <div key={b.label} className="space-y-1.5">
           <div className="flex justify-between text-sm">
             <span>{b.label}</span>
-            <span className={`font-medium ${b.pct > 100 ? "text-destructive" : b.pct > 75 ? "text-amber-500" : "text-primary"}`}>
+            <span
+              className={`font-medium ${b.pct > 100 ? "text-destructive" : b.pct > 75 ? "text-amber-500" : "text-primary"}`}
+            >
               {b.pct}%
             </span>
           </div>
@@ -80,10 +74,7 @@ function MockChart() {
       <div className="flex items-end justify-between gap-2 h-32 mb-2">
         {bars.map((bar) => (
           <div key={bar.label} className="flex-1 flex flex-col items-center justify-end h-full">
-            <div
-              className="w-full rounded-t-md bg-primary/80"
-              style={{ height: `${bar.h}%` }}
-            />
+            <div className="w-full rounded-t-md bg-primary/80" style={{ height: `${bar.h}%` }} />
           </div>
         ))}
       </div>
@@ -139,13 +130,8 @@ export function BenefitsSection() {
   return (
     <section id="benefits" className="py-20 sm:py-28 bg-muted/30">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div
-          ref={headerRef}
-          className="text-center mb-14 landing-animate animate-fade-up"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            {t("landing.benefits.title")}
-          </h2>
+        <div ref={headerRef} className="text-center mb-14 landing-animate animate-fade-up">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t("landing.benefits.title")}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             {t("landing.benefits.subtitle")}
           </p>
@@ -180,16 +166,9 @@ function BenefitRow({
         reversed ? "md:flex-row-reverse" : "md:flex-row"
       } items-center`}
     >
-      <div
-        ref={textRef}
-        className={`flex-1 landing-animate ${animLeft}`}
-      >
-        <h3 className="text-2xl sm:text-3xl font-bold mb-4">
-          {t(titleKey as any)}
-        </h3>
-        <p className="text-muted-foreground leading-relaxed">
-          {t(descKey as any)}
-        </p>
+      <div ref={textRef} className={`flex-1 landing-animate ${animLeft}`}>
+        <h3 className="text-2xl sm:text-3xl font-bold mb-4">{t(titleKey as TranslationKey)}</h3>
+        <p className="text-muted-foreground leading-relaxed">{t(descKey as TranslationKey)}</p>
       </div>
       <div
         ref={visualRef}

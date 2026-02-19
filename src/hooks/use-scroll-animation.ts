@@ -28,7 +28,7 @@ export function useScrollAnimation({
           el.classList.remove("is-visible");
         }
       },
-      { threshold, rootMargin }
+      { threshold, rootMargin },
     );
 
     observer.observe(el);

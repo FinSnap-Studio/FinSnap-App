@@ -2,11 +2,55 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { Wallet, Coffee, ShoppingCart, ArrowDownLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTranslation } from "@/hooks/use-translation";
 import { seedDemoData } from "@/lib/storage";
+
+const MOCK_TXS = [
+  { icon: Coffee, label: "Coffee", amount: "-Rp 35.000", color: "text-destructive" },
+  { icon: ShoppingCart, label: "Groceries", amount: "-Rp 250.000", color: "text-destructive" },
+  { icon: ArrowDownLeft, label: "Salary", amount: "+Rp 8.500.000", color: "text-primary" },
+];
+
+function HeroPreview() {
+  return (
+    <div className="relative mx-auto mt-14 max-w-sm animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both delay-500">
+      <div className="rounded-2xl border bg-card/80 backdrop-blur shadow-xl p-5 space-y-4">
+        {/* Wallet balance bar */}
+        <div className="flex items-center gap-3">
+          <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Wallet className="size-4 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-muted-foreground">Cash</p>
+            <p className="text-sm font-semibold">Rp 5.250.000</p>
+          </div>
+          <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
+            <div className="h-full w-3/4 rounded-full bg-primary" />
+          </div>
+        </div>
+
+        <div className="border-t" />
+
+        {/* Recent transactions */}
+        <div className="space-y-2.5">
+          {MOCK_TXS.map((tx) => (
+            <div key={tx.label} className="flex items-center gap-3">
+              <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                <tx.icon className="size-3.5 text-muted-foreground" />
+              </div>
+              <span className="text-sm flex-1">{tx.label}</span>
+              <span className={`text-sm font-medium ${tx.color}`}>{tx.amount}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function HeroSection() {
   const { t } = useTranslation();
@@ -16,7 +60,7 @@ export function HeroSection() {
 
   const handleTryDemo = useCallback(async () => {
     setDemoLoading(true);
-    seedDemoData();
+    await seedDemoData();
     await useAuthStore.getState().login("demo@finsnap.app", "demo");
     router.push("/dashboard");
   }, [router]);
@@ -57,19 +101,26 @@ export function HeroSection() {
                 size="lg"
                 onClick={handleTryDemo}
                 disabled={demoLoading}
+                className="ring-primary/20 shadow-lg shadow-primary/25"
               >
                 {demoLoading ? t("common.loading") : t("landing.hero.tryDemo")}
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => router.push("/login")}
-              >
+              <Button size="lg" variant="outline" onClick={() => router.push("/login")}>
                 {t("landing.hero.signIn")}
               </Button>
             </>
           )}
         </div>
+
+        {/* Subtext */}
+        {!isAuthenticated && (
+          <p className="mt-3 text-sm text-muted-foreground animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both delay-500">
+            {t("landing.hero.tryDemoSubtext")}
+          </p>
+        )}
+
+        {/* Dashboard preview */}
+        <HeroPreview />
       </div>
     </section>
   );

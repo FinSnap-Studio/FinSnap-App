@@ -6,6 +6,7 @@ export const STORAGE_KEYS = {
   templates: "finsnap-templates",
   recurring: "finsnap-recurring",
   debts: "finsnap-debts",
+  shoppingLists: "finsnap-shopping-lists",
 } as const;
 
 export function storageGet<T>(key: string): T | null {
@@ -40,15 +41,31 @@ export function storageClearAllData(): void {
 
 /**
  * Seed localStorage with all mock data for "Try Demo" flow.
- * Overwrites any existing data so the demo always starts fresh.
+ * Writes data in Zustand persist format { state: { key: data }, version: 0 }
+ * so rehydration works correctly on the next page load.
  */
-export function seedDemoData(): void {
+export async function seedDemoData(): Promise<void> {
   // Lazy import to avoid pulling mock-data into every store bundle
-  const { MOCK_WALLETS, MOCK_TRANSACTIONS, MOCK_BUDGETS, MOCK_CATEGORIES } =
-    require("@/data/mock-data");
+  const {
+    MOCK_WALLETS,
+    MOCK_TRANSACTIONS,
+    MOCK_BUDGETS,
+    MOCK_CATEGORIES,
+    MOCK_TEMPLATES,
+    MOCK_RECURRING,
+    MOCK_DEBTS,
+    MOCK_SHOPPING_LISTS,
+  } = await import("@/data/mock-data");
 
-  storageSet(STORAGE_KEYS.categories, MOCK_CATEGORIES);
-  storageSet(STORAGE_KEYS.wallets, MOCK_WALLETS);
-  storageSet(STORAGE_KEYS.transactions, MOCK_TRANSACTIONS);
-  storageSet(STORAGE_KEYS.budgets, MOCK_BUDGETS);
+  storageSet(STORAGE_KEYS.categories, { state: { categories: MOCK_CATEGORIES }, version: 0 });
+  storageSet(STORAGE_KEYS.wallets, { state: { wallets: MOCK_WALLETS }, version: 0 });
+  storageSet(STORAGE_KEYS.transactions, { state: { transactions: MOCK_TRANSACTIONS }, version: 0 });
+  storageSet(STORAGE_KEYS.budgets, { state: { budgets: MOCK_BUDGETS }, version: 0 });
+  storageSet(STORAGE_KEYS.templates, { state: { templates: MOCK_TEMPLATES }, version: 0 });
+  storageSet(STORAGE_KEYS.recurring, { state: { recurrings: MOCK_RECURRING }, version: 0 });
+  storageSet(STORAGE_KEYS.debts, { state: { debts: MOCK_DEBTS }, version: 0 });
+  storageSet(STORAGE_KEYS.shoppingLists, {
+    state: { shoppingLists: MOCK_SHOPPING_LISTS },
+    version: 0,
+  });
 }

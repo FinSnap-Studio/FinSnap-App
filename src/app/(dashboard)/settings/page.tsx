@@ -1,7 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Sun, Moon, User, Palette, Database, LogOut, Check, Coins, Languages, Plus, RotateCcw } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  User,
+  Palette,
+  Database,
+  LogOut,
+  Check,
+  Coins,
+  Languages,
+  Plus,
+  RotateCcw,
+  Smartphone,
+  Download,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,18 +40,42 @@ import { useTransactionStore } from "@/stores/transaction-store";
 import { useWalletStore } from "@/stores/wallet-store";
 import { useBudgetStore } from "@/stores/budget-store";
 import { useCategoryStore } from "@/stores/category-store";
+import { useTemplateStore } from "@/stores/template-store";
+import { useRecurringStore } from "@/stores/recurring-store";
+import { useDebtStore } from "@/stores/debt-store";
+import { useShoppingStore } from "@/stores/shopping-store";
 import { COLOR_THEMES } from "@/lib/themes";
 import { LOCALE_OPTIONS } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/use-translation";
-import { storageClearAllData, storageSet, STORAGE_KEYS } from "@/lib/storage";
-import { MOCK_WALLETS, MOCK_TRANSACTIONS, MOCK_BUDGETS, MOCK_CATEGORIES } from "@/data/mock-data";
+import { useInstallPrompt } from "@/hooks/use-install-prompt";
+import { storageClearAllData } from "@/lib/storage";
+import {
+  MOCK_WALLETS,
+  MOCK_TRANSACTIONS,
+  MOCK_BUDGETS,
+  MOCK_CATEGORIES,
+  MOCK_TEMPLATES,
+  MOCK_RECURRING,
+  MOCK_DEBTS,
+  MOCK_SHOPPING_LISTS,
+} from "@/data/mock-data";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
-  const { theme, toggleTheme, colorTheme, setColorTheme, defaultCurrency, setDefaultCurrency, locale, setLocale } = useUIStore();
+  const { user, logout, updateProfile } = useAuthStore();
+  const {
+    theme,
+    toggleTheme,
+    colorTheme,
+    setColorTheme,
+    defaultCurrency,
+    setDefaultCurrency,
+    locale,
+    setLocale,
+  } = useUIStore();
   const { t } = useTranslation();
 
+  const { isInstallable, promptInstall } = useInstallPrompt();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [clearDataOpen, setClearDataOpen] = useState(false);
@@ -48,13 +86,7 @@ export default function SettingsPage() {
       toast.error(t("settings.profileError"));
       return;
     }
-    const stored = localStorage.getItem("finsnap-auth");
-    if (stored) {
-      const data = JSON.parse(stored);
-      const updated = { ...data, name: name.trim(), email: email.trim() };
-      localStorage.setItem("finsnap-auth", JSON.stringify(updated));
-      useAuthStore.setState({ user: updated });
-    }
+    updateProfile({ name: name.trim(), email: email.trim() });
     toast.success(t("settings.profileSuccess"));
   };
 
@@ -64,6 +96,10 @@ export default function SettingsPage() {
     useWalletStore.setState({ wallets: [] });
     useBudgetStore.setState({ budgets: [] });
     useCategoryStore.setState({ categories: [] });
+    useTemplateStore.setState({ templates: [] });
+    useRecurringStore.setState({ recurrings: [] });
+    useDebtStore.setState({ debts: [] });
+    useShoppingStore.setState({ shoppingLists: [] });
     toast.success(t("settings.clearDataSuccess"));
   };
 
@@ -77,36 +113,60 @@ export default function SettingsPage() {
     const existingCatKeys = new Set(categories.map((c) => `${c.name}|${c.type}`));
     const newCats = MOCK_CATEGORIES.filter((c) => !existingCatKeys.has(`${c.name}|${c.type}`));
     if (newCats.length > 0) {
-      const merged = [...categories, ...newCats];
-      useCategoryStore.setState({ categories: merged });
-      storageSet(STORAGE_KEYS.categories, merged);
+      useCategoryStore.setState({ categories: [...categories, ...newCats] });
     }
 
     // Merge mock wallets (skip duplicate by ID)
     const existingWalletIds = new Set(wallets.map((w) => w.id));
     const newWallets = MOCK_WALLETS.filter((w) => !existingWalletIds.has(w.id));
     if (newWallets.length > 0) {
-      const merged = [...wallets, ...newWallets];
-      useWalletStore.setState({ wallets: merged });
-      storageSet(STORAGE_KEYS.wallets, merged);
+      useWalletStore.setState({ wallets: [...wallets, ...newWallets] });
     }
 
     // Merge mock transactions (skip duplicate by ID)
     const existingTxIds = new Set(transactions.map((t) => t.id));
     const newTxs = MOCK_TRANSACTIONS.filter((t) => !existingTxIds.has(t.id));
     if (newTxs.length > 0) {
-      const merged = [...newTxs, ...transactions];
-      useTransactionStore.setState({ transactions: merged });
-      storageSet(STORAGE_KEYS.transactions, merged);
+      useTransactionStore.setState({ transactions: [...newTxs, ...transactions] });
     }
 
     // Merge mock budgets (skip duplicate by ID)
     const existingBudgetIds = new Set(budgets.map((b) => b.id));
     const newBudgets = MOCK_BUDGETS.filter((b) => !existingBudgetIds.has(b.id));
     if (newBudgets.length > 0) {
-      const merged = [...budgets, ...newBudgets];
-      useBudgetStore.setState({ budgets: merged });
-      storageSet(STORAGE_KEYS.budgets, merged);
+      useBudgetStore.setState({ budgets: [...budgets, ...newBudgets] });
+    }
+
+    // Merge mock templates (skip duplicate by ID)
+    const templates = useTemplateStore.getState().templates;
+    const existingTemplateIds = new Set(templates.map((t) => t.id));
+    const newTemplates = MOCK_TEMPLATES.filter((t) => !existingTemplateIds.has(t.id));
+    if (newTemplates.length > 0) {
+      useTemplateStore.setState({ templates: [...templates, ...newTemplates] });
+    }
+
+    // Merge mock recurring (skip duplicate by ID)
+    const recurrings = useRecurringStore.getState().recurrings;
+    const existingRecIds = new Set(recurrings.map((r) => r.id));
+    const newRec = MOCK_RECURRING.filter((r) => !existingRecIds.has(r.id));
+    if (newRec.length > 0) {
+      useRecurringStore.setState({ recurrings: [...recurrings, ...newRec] });
+    }
+
+    // Merge mock debts (skip duplicate by ID)
+    const debts = useDebtStore.getState().debts;
+    const existingDebtIds = new Set(debts.map((d) => d.id));
+    const newDebts = MOCK_DEBTS.filter((d) => !existingDebtIds.has(d.id));
+    if (newDebts.length > 0) {
+      useDebtStore.setState({ debts: [...debts, ...newDebts] });
+    }
+
+    // Merge mock shopping lists (skip duplicate by ID)
+    const shoppingLists = useShoppingStore.getState().shoppingLists;
+    const existingSlIds = new Set(shoppingLists.map((s) => s.id));
+    const newSl = MOCK_SHOPPING_LISTS.filter((s) => !existingSlIds.has(s.id));
+    if (newSl.length > 0) {
+      useShoppingStore.setState({ shoppingLists: [...shoppingLists, ...newSl] });
     }
 
     toast.success(t("settings.addDemoSuccess"));
@@ -122,9 +182,7 @@ export default function SettingsPage() {
       return;
     }
 
-    const merged = [...categories, ...missing];
-    useCategoryStore.setState({ categories: merged });
-    storageSet(STORAGE_KEYS.categories, merged);
+    useCategoryStore.setState({ categories: [...categories, ...missing] });
     toast.success(t("settings.addDefaultCategoriesSuccess"));
   };
 
@@ -183,9 +241,7 @@ export default function SettingsPage() {
           <div className="space-y-2">
             <Label>{t("settings.defaultCurrency")}</Label>
             <CurrencySelect value={defaultCurrency} onValueChange={setDefaultCurrency} />
-            <p className="text-xs text-muted-foreground">
-              {t("settings.currencyHint")}
-            </p>
+            <p className="text-xs text-muted-foreground">{t("settings.currencyHint")}</p>
           </div>
         </CardContent>
       </Card>
@@ -208,7 +264,6 @@ export default function SettingsPage() {
                 className="flex-1"
                 onClick={() => setLocale(opt.code)}
               >
-                <span className="mr-2">{opt.flag}</span>
                 {opt.label}
               </Button>
             ))}
@@ -262,9 +317,7 @@ export default function SettingsPage() {
                     key={themeItem.id}
                     onClick={() => setColorTheme(themeItem.id)}
                     className={`relative flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors hover:bg-accent/50 ${
-                      isActive
-                        ? "border-primary bg-accent/30"
-                        : "border-border"
+                      isActive ? "border-primary bg-accent/30" : "border-border"
                     }`}
                   >
                     {isActive && (
@@ -318,7 +371,9 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium">{t("settings.addDefaultCategories")}</p>
-              <p className="text-xs text-muted-foreground">{t("settings.addDefaultCategoriesDesc")}</p>
+              <p className="text-xs text-muted-foreground">
+                {t("settings.addDefaultCategoriesDesc")}
+              </p>
             </div>
             <Button variant="outline" size="sm" onClick={handleAddDefaultCategories}>
               <RotateCcw className="h-4 w-4 mr-1" />
@@ -338,6 +393,25 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+      {/* Install App */}
+      {isInstallable && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Smartphone className="h-5 w-5" />
+              {t("settings.installApp")}
+            </CardTitle>
+            <CardDescription>{t("settings.installAppDesc")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" onClick={promptInstall}>
+              <Download className="h-4 w-4 mr-2" />
+              {t("settings.installAppButton")}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       <Separator />
 
       {/* Logout */}
@@ -351,9 +425,7 @@ export default function SettingsPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("settings.addDemoTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("settings.addDemoConfirm")}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("settings.addDemoConfirm")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
@@ -369,9 +441,7 @@ export default function SettingsPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("settings.clearDataTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("settings.clearDataConfirm")}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("settings.clearDataConfirm")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>

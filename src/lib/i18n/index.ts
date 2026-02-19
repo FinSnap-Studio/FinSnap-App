@@ -32,8 +32,8 @@ export function getDateLocale(locale: Locale) {
 }
 
 export const LOCALE_OPTIONS = [
-  { code: "id" as Locale, label: "Bahasa Indonesia", flag: "\u{1F1EE}\u{1F1E9}" },
-  { code: "en" as Locale, label: "English", flag: "\u{1F1EC}\u{1F1E7}" },
+  { code: "id" as Locale, label: "Indonesia" },
+  { code: "en" as Locale, label: "English" },
 ];
 
 export type { TranslationKey };

@@ -242,6 +242,50 @@ export interface DebtPaymentInput {
   description?: string;
 }
 
+export type ShoppingListStatus = "ACTIVE" | "COMPLETED" | "ARCHIVED";
+export type ShoppingItemStatus = "PENDING" | "PURCHASED" | "SKIPPED";
+
+export interface ShoppingItem {
+  id: string;
+  name: string;
+  quantity: number;
+  estimatedPrice: number;
+  actualPrice: number | null;
+  categoryId: string | null;
+  status: ShoppingItemStatus;
+  linkedTransactionId: string | null;
+  notes: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ShoppingList {
+  id: string;
+  name: string;
+  walletId: string;
+  currency: CurrencyCode;
+  status: ShoppingListStatus;
+  items: ShoppingItem[];
+  defaultCategoryId: string | null;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ShoppingListFormInput {
+  name: string;
+  walletId: string;
+  defaultCategoryId?: string;
+}
+
+export interface ShoppingItemFormInput {
+  name: string;
+  quantity: number;
+  estimatedPrice: number;
+  categoryId: string;
+  notes?: string;
+}
+
 export interface TransactionFilters {
   type?: TransactionType | "ALL";
   walletId?: string;

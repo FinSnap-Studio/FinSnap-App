@@ -2,11 +2,7 @@
 
 import { Settings, Sun, Moon, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { useUIStore } from "@/stores/ui-store";
 import { useTranslation } from "@/hooks/use-translation";
@@ -14,8 +10,7 @@ import { COLOR_THEMES } from "@/lib/themes";
 import { LOCALE_OPTIONS } from "@/lib/i18n";
 
 export function AuthSettingsPopover() {
-  const { theme, toggleTheme, colorTheme, setColorTheme, locale, setLocale } =
-    useUIStore();
+  const { theme, toggleTheme, colorTheme, setColorTheme, locale, setLocale } = useUIStore();
   const { t } = useTranslation();
 
   return (
@@ -42,7 +37,6 @@ export function AuthSettingsPopover() {
                 className="flex-1 min-w-0 shrink"
                 onClick={() => setLocale(opt.code)}
               >
-                <span>{opt.flag}</span>
                 <span className="truncate">{opt.label}</span>
               </Button>
             ))}
@@ -89,9 +83,7 @@ export function AuthSettingsPopover() {
                   key={themeItem.id}
                   onClick={() => setColorTheme(themeItem.id)}
                   className={`flex flex-col items-center gap-1 rounded-md border p-2 transition-colors hover:bg-accent/50 ${
-                    isActive
-                      ? "border-primary bg-accent/30"
-                      : "border-border"
+                    isActive ? "border-primary bg-accent/30" : "border-border"
                   }`}
                 >
                   <div className="flex gap-1">

@@ -10,18 +10,16 @@ import { useBudgetStore } from "@/stores/budget-store";
 import { useTemplateStore } from "@/stores/template-store";
 import { useRecurringStore } from "@/stores/recurring-store";
 import { useDebtStore } from "@/stores/debt-store";
+import { useShoppingStore } from "@/stores/shopping-store";
 import { AppSidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { OfflineBanner } from "@/components/layout/offline-banner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useTranslation } from "@/hooks/use-translation";
 import { toast } from "sonner";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading, checkAuth } = useAuthStore();
   const fetchWallets = useWalletStore((s) => s.fetchWallets);
@@ -32,6 +30,7 @@ export default function DashboardLayout({
   const fetchRecurring = useRecurringStore((s) => s.fetchRecurring);
   const processRecurringTransactions = useRecurringStore((s) => s.processRecurringTransactions);
   const fetchDebts = useDebtStore((s) => s.fetchDebts);
+  const fetchShoppingLists = useShoppingStore((s) => s.fetchShoppingLists);
   const { t } = useTranslation();
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -56,6 +55,7 @@ export default function DashboardLayout({
         fetchTemplates(),
         fetchRecurring(),
         fetchDebts(),
+        fetchShoppingLists(),
       ]);
 
       // Process recurring transactions after all data is loaded
@@ -64,15 +64,29 @@ export default function DashboardLayout({
         if (result.processed === 1) {
           toast.info(t("recurring.processedSingle", { count: result.created }));
         } else {
-          toast.info(t("recurring.processedMultiple", { count: result.created, sources: result.processed }));
+          toast.info(
+            t("recurring.processedMultiple", { count: result.created, sources: result.processed }),
+          );
         }
       }
 
       setDataLoaded(true);
     };
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, authLoading, router, fetchWallets, fetchCategories, fetchTransactions, fetchBudgets, fetchTemplates, fetchRecurring, fetchDebts]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isAuthenticated,
+    authLoading,
+    router,
+    fetchWallets,
+    fetchCategories,
+    fetchTransactions,
+    fetchBudgets,
+    fetchTemplates,
+    fetchRecurring,
+    fetchDebts,
+    fetchShoppingLists,
+  ]);
 
   if (authLoading || (!dataLoaded && isAuthenticated)) {
     return (
@@ -88,6 +102,7 @@ export default function DashboardLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
+        <OfflineBanner />
         <Header />
         <main className="p-4 md:p-6 pb-20 md:pb-6">{children}</main>
       </SidebarInset>

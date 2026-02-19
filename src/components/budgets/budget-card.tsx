@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +26,7 @@ import {
 import { Budget } from "@/types";
 import { useBudgetStore } from "@/stores/budget-store";
 import { useCategoryStore } from "@/stores/category-store";
-import { formatCurrency, getBudgetStatus } from "@/lib/utils";
+import { cn, formatCurrency, getBudgetStatus } from "@/lib/utils";
 import { IconRenderer } from "@/lib/icon-map";
 import { useTranslation } from "@/hooks/use-translation";
 import { BudgetForm } from "./budget-form";
@@ -46,12 +47,25 @@ export function BudgetCard({ budget }: BudgetCardProps) {
   const status = getBudgetStatus(budget.spent, budget.amount);
 
   const statusConfig = {
-    danger: { label: t("budget.statusDanger"), classes: "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400" },
-    warning: { label: t("budget.statusWarning"), classes: "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/50 dark:text-yellow-400" },
-    safe: { label: t("budget.statusSafe"), classes: "bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-400" },
+    danger: {
+      label: t("budget.statusDanger"),
+      classes: "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400",
+    },
+    warning: {
+      label: t("budget.statusWarning"),
+      classes: "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/50 dark:text-yellow-400",
+    },
+    safe: {
+      label: t("budget.statusSafe"),
+      classes: "bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-400",
+    },
   };
-  const barColor =
-    status === "danger" ? "bg-red-500" : status === "warning" ? "bg-yellow-500" : "bg-green-500";
+  const barIndicatorClass =
+    status === "danger"
+      ? "[&>div]:bg-red-500"
+      : status === "warning"
+        ? "[&>div]:bg-yellow-500"
+        : "[&>div]:bg-green-500";
 
   const handleDelete = async () => {
     try {
@@ -69,10 +83,17 @@ export function BudgetCard({ budget }: BudgetCardProps) {
         <CardContent className="p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
-              <span className="flex items-center justify-center h-9 w-9 rounded-full bg-muted">{category?.icon && <IconRenderer name={category.icon} className="h-4 w-4" color={category.color} />}</span>
+              <span className="flex items-center justify-center h-9 w-9 rounded-full bg-muted">
+                {category?.icon && (
+                  <IconRenderer name={category.icon} className="h-4 w-4" color={category.color} />
+                )}
+              </span>
               <div>
                 <p className="font-semibold text-foreground">{category?.name}</p>
-                <Badge variant="outline" className={`mt-1 border-transparent ${statusConfig[status].classes}`}>
+                <Badge
+                  variant="outline"
+                  className={`mt-1 border-transparent ${statusConfig[status].classes}`}
+                >
                   {statusConfig[status].label}
                 </Badge>
               </div>
@@ -95,14 +116,10 @@ export function BudgetCard({ budget }: BudgetCardProps) {
           </div>
 
           <div className="mt-3 space-y-2">
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all ${barColor}`}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
+            <Progress value={pct} className={cn("h-2", barIndicatorClass)} />
             <p className="text-sm text-muted-foreground">
-              {formatCurrency(budget.spent, budget.currency)} / {formatCurrency(budget.amount, budget.currency)}
+              {formatCurrency(budget.spent, budget.currency)} /{" "}
+              {formatCurrency(budget.amount, budget.currency)}
             </p>
           </div>
         </CardContent>

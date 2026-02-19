@@ -2,10 +2,17 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Search, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -26,6 +33,19 @@ export function TransactionFilters() {
 
   const [searchValue, setSearchValue] = useState(filters.search || "");
 
+  const activeCount = useMemo(
+    () =>
+      [
+        filters.type !== "ALL",
+        filters.walletId,
+        filters.categoryId,
+        filters.dateFrom,
+        filters.dateTo,
+        filters.search,
+      ].filter(Boolean).length,
+    [filters],
+  );
+
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,7 +59,9 @@ export function TransactionFilters() {
       {/* Type Tabs */}
       <Tabs
         value={filters.type || "ALL"}
-        onValueChange={(val) => setFilters({ type: val as "ALL" | "INCOME" | "EXPENSE" | "TRANSFER" })}
+        onValueChange={(val) =>
+          setFilters({ type: val as "ALL" | "INCOME" | "EXPENSE" | "TRANSFER" })
+        }
       >
         <TabsList>
           <TabsTrigger value="ALL">{t("common.all")}</TabsTrigger>
@@ -92,10 +114,15 @@ export function TransactionFilters() {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className={cn("w-[150px] justify-start text-left font-normal", !filters.dateFrom && "text-muted-foreground")}
+              className={cn(
+                "w-[150px] justify-start text-left font-normal",
+                !filters.dateFrom && "text-muted-foreground",
+              )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateFrom ? format(filters.dateFrom, "dd/MM/yy", { locale: getDateLocale(locale) }) : t("common.from")}
+              {filters.dateFrom
+                ? format(filters.dateFrom, "dd/MM/yy", { locale: getDateLocale(locale) })
+                : t("common.from")}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -114,10 +141,15 @@ export function TransactionFilters() {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className={cn("w-[150px] justify-start text-left font-normal", !filters.dateTo && "text-muted-foreground")}
+              className={cn(
+                "w-[150px] justify-start text-left font-normal",
+                !filters.dateTo && "text-muted-foreground",
+              )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {filters.dateTo ? format(filters.dateTo, "dd/MM/yy", { locale: getDateLocale(locale) }) : t("common.to")}
+              {filters.dateTo
+                ? format(filters.dateTo, "dd/MM/yy", { locale: getDateLocale(locale) })
+                : t("common.to")}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -145,13 +177,22 @@ export function TransactionFilters() {
         {/* Reset */}
         <Button
           variant="ghost"
-          size="icon"
+          size={activeCount > 0 ? "sm" : "icon"}
           onClick={() => {
             resetFilters();
             setSearchValue("");
           }}
+          className={activeCount > 0 ? "gap-1.5" : ""}
         >
           <X className="h-4 w-4" />
+          {activeCount > 0 && (
+            <>
+              <span className="text-sm">{t("common.reset")}</span>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-xs">
+                {activeCount}
+              </Badge>
+            </>
+          )}
         </Button>
       </div>
     </div>

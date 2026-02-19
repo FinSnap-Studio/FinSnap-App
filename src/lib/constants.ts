@@ -1,3 +1,12 @@
+import {
+  LayoutDashboard,
+  Wallet,
+  ArrowLeftRight,
+  Handshake,
+  PiggyBank,
+  Tag,
+  ShoppingCart,
+} from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
 
 export const WALLET_TYPES = [
@@ -7,24 +16,53 @@ export const WALLET_TYPES = [
 ] as const;
 
 export const PRESET_COLORS = [
-  "#6366f1", "#8b5cf6", "#0d9488", "#059669", "#2563eb",
-  "#dc2626", "#ea580c", "#d97706", "#64748b", "#0891b2",
+  "#6366f1",
+  "#8b5cf6",
+  "#0d9488",
+  "#059669",
+  "#2563eb",
+  "#dc2626",
+  "#ea580c",
+  "#d97706",
+  "#64748b",
+  "#0891b2",
 ] as const;
 
 export const WALLET_ICONS = [
-  "CreditCard", "Smartphone", "Building2", "Banknote",
-  "Coins", "CircleDollarSign", "Gem", "Landmark",
+  "CreditCard",
+  "Smartphone",
+  "Building2",
+  "Banknote",
+  "Coins",
+  "CircleDollarSign",
+  "Gem",
+  "Landmark",
 ] as const;
 
 export const EXPENSE_ICONS = [
-  "UtensilsCrossed", "Car", "ShoppingCart", "Home",
-  "Gamepad2", "Pill", "BookOpen", "Shirt",
-  "Gift", "Scissors", "PawPrint", "Coffee",
+  "UtensilsCrossed",
+  "Car",
+  "ShoppingCart",
+  "Home",
+  "Gamepad2",
+  "Pill",
+  "BookOpen",
+  "Shirt",
+  "Gift",
+  "Scissors",
+  "PawPrint",
+  "Coffee",
 ] as const;
 
 export const INCOME_ICONS = [
-  "Coins", "Briefcase", "TrendingUp", "Gift",
-  "Banknote", "Trophy", "BarChart3", "Laptop",
+  "Coins",
+  "Briefcase",
+  "TrendingUp",
+  "Gift",
+  "Banknote",
+  "Trophy",
+  "BarChart3",
+  "Laptop",
 ] as const;
 
 export const NAV_ITEMS = [
@@ -32,8 +70,33 @@ export const NAV_ITEMS = [
   { label: "nav.wallets" as TranslationKey, href: "/wallets", icon: "Wallet" },
   { label: "nav.transactions" as TranslationKey, href: "/transactions", icon: "ArrowLeftRight" },
   { label: "nav.debts" as TranslationKey, href: "/debts", icon: "Handshake" },
+  { label: "nav.shopping" as TranslationKey, href: "/shopping", icon: "ShoppingCart" },
   { label: "nav.budgets" as TranslationKey, href: "/budgets", icon: "PiggyBank" },
   { label: "nav.categories" as TranslationKey, href: "/categories", icon: "Tag" },
 ] as const;
 
+// 5-item subset for mobile bottom nav: [Dashboard, Transactions, Budgets, Wallets, Shopping]
+// Debts & Categories accessible via sidebar drawer (hamburger in header)
+export const MOBILE_NAV_ITEMS = [
+  NAV_ITEMS[0], // Dashboard
+  NAV_ITEMS[2], // Transactions
+  NAV_ITEMS[5], // Budgets
+  NAV_ITEMS[1], // Wallets
+  NAV_ITEMS[4], // Shopping
+] as const;
+
 export const MONTH_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
+
+// Mock user ID — single source of truth until real auth is implemented
+export const MOCK_USER_ID = "user-mock-001";
+
+// Shared nav icon mapping used by sidebar and mobile-nav
+export const NAV_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  LayoutDashboard,
+  Wallet,
+  ArrowLeftRight,
+  Handshake,
+  ShoppingCart,
+  PiggyBank,
+  Tag,
+};

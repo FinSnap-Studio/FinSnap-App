@@ -4,6 +4,7 @@ export const en: Record<TranslationKey, string> = {
   // Common
   "common.save": "Save",
   "common.cancel": "Cancel",
+  "common.reset": "Reset",
   "common.delete": "Delete",
   "common.edit": "Edit",
   "common.back": "Back",
@@ -37,6 +38,8 @@ export const en: Record<TranslationKey, string> = {
   "common.year": "Year",
   "common.currency": "Currency",
   "common.selectDate": "Select date",
+  "common.offlineBanner": "You are offline — your data is still available",
+  "common.backOnline": "You are back online",
 
   // Nav
   "nav.dashboard": "Dashboard",
@@ -159,8 +162,7 @@ export const en: Record<TranslationKey, string> = {
   "transaction.selectWalletDest": "Select destination wallet",
   "transaction.selectCategory": "Select category",
   "transaction.descPlaceholder": "Transaction note (optional)",
-  "transaction.crossCurrencyRequired":
-    "Destination amount is required for cross-currency transfer",
+  "transaction.crossCurrencyRequired": "Destination amount is required for cross-currency transfer",
   "transaction.tableDate": "Date",
   "transaction.tableCategory": "Category",
   "transaction.tableDesc": "Description",
@@ -175,14 +177,14 @@ export const en: Record<TranslationKey, string> = {
   "budget.addBudget": "Add Budget",
   "budget.editBudget": "Edit Budget",
   "budget.deleteTitle": "Delete Budget",
-  "budget.deleteDesc":
-    'Are you sure you want to delete the budget for "{name}"?',
+  "budget.deleteDesc": 'Are you sure you want to delete the budget for "{name}"?',
   "budget.deleteSuccess": "Budget deleted successfully",
   "budget.deleteError": "Failed to delete budget",
   "budget.updateSuccess": "Budget updated successfully",
   "budget.addSuccess": "Budget added successfully",
   "budget.saveError": "Failed to save budget",
   "budget.emptyState": "No budgets for this month yet",
+  "budget.currentMonth": "(Now)",
   "budget.limitAlert": "{count} budget(s) approaching or exceeding limit",
   "budget.budgetAmount": "Budget Amount",
   "budget.selectExpenseCategory": "Select expense category",
@@ -219,8 +221,7 @@ export const en: Record<TranslationKey, string> = {
   "settings.currency": "Currency",
   "settings.currencyDesc": "Default currency for new wallets and budgets",
   "settings.defaultCurrency": "Default Currency",
-  "settings.currencyHint":
-    "Used as default when creating new wallets or budgets",
+  "settings.currencyHint": "Used as default when creating new wallets or budgets",
   "settings.language": "Language",
   "settings.languageDesc": "Choose the app display language",
   "settings.appearance": "Appearance",
@@ -232,8 +233,7 @@ export const en: Record<TranslationKey, string> = {
   "settings.data": "Data",
   "settings.dataDesc": "Manage app data",
   "settings.clearData": "Clear all data",
-  "settings.clearDataDesc":
-    "Delete all wallets, transactions, budgets, and categories",
+  "settings.clearDataDesc": "Delete all wallets, transactions, budgets, and categories",
   "settings.clearDataButton": "Clear Data",
   "settings.clearDataTitle": "Clear All Data",
   "settings.clearDataConfirm":
@@ -245,13 +245,17 @@ export const en: Record<TranslationKey, string> = {
   "settings.addDemoDataButton": "Add Demo",
   "settings.addDemoSuccess": "Demo data added successfully",
   "settings.addDemoTitle": "Add Demo Data",
-  "settings.addDemoConfirm": "Demo data (wallets, transactions, budgets) will be added to your existing data. Existing data will not be deleted. Continue?",
+  "settings.addDemoConfirm":
+    "Demo data (wallets, transactions, budgets) will be added to your existing data. Existing data will not be deleted. Continue?",
   "settings.addDefaultCategories": "Add default categories",
   "settings.addDefaultCategoriesDesc": "Add the 14 default categories that are missing",
   "settings.addDefaultCategoriesButton": "Add Categories",
   "settings.addDefaultCategoriesSuccess": "Default categories added successfully",
   "settings.defaultCategoriesExist": "All default categories already exist",
   "settings.logoutButton": "Sign Out",
+  "settings.installApp": "Install App",
+  "settings.installAppDesc": "Add FinSnap to your home screen for quick access without a browser",
+  "settings.installAppButton": "Install Now",
 
   // Theme descriptions
   "theme.slate.desc": "Classic neutral, default",
@@ -337,7 +341,8 @@ export const en: Record<TranslationKey, string> = {
   "recurring.frequencyYearly": "Yearly",
   "recurring.everyLabel": "Every {interval} {unit}",
   "recurring.processedSingle": "{count} recurring transaction(s) auto-created",
-  "recurring.processedMultiple": "{count} recurring transaction(s) auto-created from {sources} schedule(s)",
+  "recurring.processedMultiple":
+    "{count} recurring transaction(s) auto-created from {sources} schedule(s)",
   "recurring.deleteTitle": "Delete Recurring Transaction",
   "recurring.deleteDesc": 'Are you sure you want to delete "{name}"?',
   "recurring.deleteSuccess": "Recurring transaction deleted successfully",
@@ -407,6 +412,76 @@ export const en: Record<TranslationKey, string> = {
   "dashboard.debtReminders": "Debt Reminders",
   "dashboard.viewDebts": "View All",
   "validation.personNameRequired": "Person name is required",
+  "validation.personNameMax": "Maximum 50 characters",
+
+  // Shopping
+  "nav.shopping": "Shopping",
+  "shopping.title": "Shopping Lists",
+  "shopping.addList": "Create List",
+  "shopping.editList": "Edit List",
+  "shopping.deleteList": "Delete List",
+  "shopping.deleteListDesc": 'Are you sure you want to delete "{name}"?',
+  "shopping.listName": "List Name",
+  "shopping.listNamePlaceholder": "e.g. Grocery Run",
+  "shopping.emptyState": "No shopping lists yet",
+  "shopping.addSuccess": "List added successfully",
+  "shopping.updateSuccess": "List updated successfully",
+  "shopping.deleteSuccess": "List deleted successfully",
+  "shopping.saveError": "Failed to save list",
+  "shopping.tabActive": "Active",
+  "shopping.tabCompleted": "Completed",
+  "shopping.tabArchived": "Archived",
+  "shopping.archive": "Archive",
+  "shopping.archiveSuccess": "List archived successfully",
+  "shopping.estimatedTotal": "Estimated Total",
+  "shopping.actualSpent": "Total Spent",
+  "shopping.itemsRemaining": "{count} items remaining",
+  "shopping.progress": "{purchased}/{total} items",
+  "shopping.completeList": "Complete List",
+  "shopping.addItem": "Add Item",
+  "shopping.editItem": "Edit Item",
+  "shopping.removeItem": "Remove Item",
+  "shopping.removeItemDesc": "Are you sure you want to remove this item?",
+  "shopping.itemName": "Item Name",
+  "shopping.itemNamePlaceholder": "e.g. Soap",
+  "shopping.quantity": "Quantity",
+  "shopping.estimatedPrice": "Estimated Price",
+  "shopping.actualPrice": "Actual Price",
+  "shopping.purchase": "Purchase",
+  "shopping.purchaseConfirm": "Confirm Purchase",
+  "shopping.purchaseDesc": "Will auto-create an expense transaction",
+  "shopping.purchaseSuccess": "Item purchased & transaction recorded",
+  "shopping.skip": "Skip",
+  "shopping.purchased": "Purchased",
+  "shopping.skipped": "Skipped",
+  "shopping.pending": "Pending",
+  "shopping.purchaseAll": "Purchase All Remaining",
+  "shopping.purchaseAllDesc": "All remaining items will be purchased at estimated prices",
+  "shopping.purchasedCount": "{count} items purchased",
+  "shopping.noItems": "No items yet",
+  "shopping.backToList": "Back to list",
+  "shopping.totalLists": "Active Lists",
+  "shopping.totalEstimated": "Total Estimated",
+  "shopping.totalItems": "Items Remaining",
+  "shopping.notFound": "Shopping list not found",
+  "shopping.itemsSection": "Items",
+  "shopping.wallet": "Wallet",
+  "shopping.markPending": "Mark as Pending",
+  "shopping.mixedCurrencies": "Multiple currencies",
+  "shopping.archiveConfirmDesc": "This list will be archived and no longer shown as active.",
+  "shopping.emptyStateCompleted": "No completed lists yet",
+  "shopping.emptyStateArchived": "No archived lists",
+  "shopping.remainingEstimate": "Remaining Estimate",
+  "shopping.noCategory": "No Category",
+  "shopping.defaultCategory": "Default Category",
+  "shopping.walletCannotChange": "Wallet cannot be changed after list creation",
+  "shopping.estimatedPricePerItem": "Estimated Price (per item)",
+  "shopping.estimatedTotalPreview": "= {total} for {quantity} items",
+  "validation.shoppingListNameRequired": "List name is required",
+  "validation.shoppingListNameMax": "Maximum 50 characters",
+  "validation.shoppingItemNameRequired": "Item name is required",
+  "validation.shoppingItemNameMax": "Maximum 100 characters",
+  "validation.quantityMin": "Minimum 1",
 
   // Receipt OCR
   "receipt.snapReceipt": "Snap Receipt",
@@ -418,6 +493,7 @@ export const en: Record<TranslationKey, string> = {
   // Landing Page
   "landing.nav.features": "Features",
   "landing.nav.benefits": "Benefits",
+  "landing.nav.beforeAfter": "Before & After",
   "landing.nav.pricing": "Pricing",
   "landing.nav.developer": "Developer",
   "landing.nav.signIn": "Sign In",
@@ -430,6 +506,7 @@ export const en: Record<TranslationKey, string> = {
   "landing.hero.desc":
     "Manage all your wallets, track every transaction, and control your monthly budgets — all in one place, right from your browser.",
   "landing.hero.tryDemo": "Try Demo",
+  "landing.hero.tryDemoSubtext": "No sign-up required. Explore with demo data.",
   "landing.hero.signIn": "Sign In",
 
   "landing.features.title": "Everything You Need",
@@ -453,10 +530,11 @@ export const en: Record<TranslationKey, string> = {
   "landing.features.privacyFirst": "Privacy First",
   "landing.features.privacyFirstDesc":
     "Your data stays in the browser. No servers, no third parties — just you.",
+  "landing.features.filterCore": "Core",
+  "landing.features.filterAll": "All Features",
 
   "landing.benefits.title": "Why FinSnap?",
-  "landing.benefits.subtitle":
-    "Designed to help you manage your finances better.",
+  "landing.benefits.subtitle": "Designed to help you manage your finances better.",
   "landing.benefits.trackTitle": "Track Every Penny",
   "landing.benefits.trackDesc":
     "No more missed transactions. Record all income and expenses from multiple wallets in seconds.",
@@ -467,9 +545,84 @@ export const en: Record<TranslationKey, string> = {
   "landing.benefits.insightDesc":
     "Visualize spending with interactive charts. Discover patterns and make smarter financial decisions.",
 
+  // Before & After
+  "landing.beforeAfter.title": "Before & After FinSnap",
+  "landing.beforeAfter.subtitle": "Familiar money problems — and how FinSnap solves them.",
+  "landing.beforeAfter.before1": "Scattered tracking across spreadsheets, notes, receipts",
+  "landing.beforeAfter.after1": "Unified dashboard with all accounts",
+  "landing.beforeAfter.beforeDesc1":
+    "Financial data scattered everywhere, hard to track and often lost.",
+  "landing.beforeAfter.afterDesc1":
+    "All wallets, transactions, and budgets neatly organized in one view.",
+  "landing.beforeAfter.before2": "No idea where money goes each month",
+  "landing.beforeAfter.after2": "Budget alerts & category breakdown",
+  "landing.beforeAfter.beforeDesc2": "End-of-month shock because spending goes unmonitored.",
+  "landing.beforeAfter.afterDesc2":
+    "See spending by category and get alerts before going over budget.",
+  "landing.beforeAfter.before3": "End-of-month surprises from forgotten bills",
+  "landing.beforeAfter.after3": "Recurring reminders, nothing slips",
+  "landing.beforeAfter.beforeDesc3": "Forgetting routine payments leads to penalties and stress.",
+  "landing.beforeAfter.afterDesc3":
+    "Automated recurring transactions keep all bills under control.",
+  "landing.beforeAfter.before4": "Cash, cards, e-wallets all mixed up",
+  "landing.beforeAfter.after4": "Multi-wallet with easy transfers",
+  "landing.beforeAfter.beforeDesc4": "Hard to tell how much is in each money source.",
+  "landing.beforeAfter.afterDesc4":
+    "Manage each wallet separately and transfer between them in one click.",
+
+  // New feature cards
+  "landing.features.shoppingList": "Shopping Lists",
+  "landing.features.shoppingListDesc":
+    "Create shopping lists, track items, and auto-record expenses on purchase.",
+  "landing.features.debtTracking": "Debt Tracker",
+  "landing.features.debtTrackingDesc":
+    "Track debts and receivables with due-date reminders and payment history.",
+  "landing.features.recurringTx": "Recurring Transactions",
+  "landing.features.recurringTxDesc":
+    "Set up automatic recurring payments — monthly bills, subscriptions, and more.",
+  "landing.features.pwaReady": "Installable App",
+  "landing.features.pwaReadyDesc":
+    "Add to your phone or laptop — use it without a browser, even when offline.",
+
+  // Stats
+  "landing.stats.title": "FinSnap in Numbers",
+  "landing.stats.subtitle": "Built complete for your personal finance needs.",
+  "landing.stats.features": "10+ Features",
+  "landing.stats.featuresDesc": "Comprehensive finance tools",
+  "landing.stats.themes": "7 Themes",
+  "landing.stats.themesDesc": "Color themes to match your style",
+  "landing.stats.languages": "2 Languages",
+  "landing.stats.languagesDesc": "Bahasa Indonesia & English",
+  "landing.stats.free": "100% Free",
+  "landing.stats.freeDesc": "No hidden costs during early access",
+  "landing.stats.pwa": "Installable",
+  "landing.stats.pwaDesc": "Add to phone or laptop",
+  "landing.stats.private": "100% Private",
+  "landing.stats.privateDesc": "All data stays on your device",
+
+  // Pricing additions
+  "landing.pricing.monthly": "Monthly",
+  "landing.pricing.annual": "Annual",
+  "landing.pricing.annualSave": "Save 20%",
+  "landing.pricing.freeNote":
+    "FinSnap is completely free during development. Paid plans will launch later.",
+  "landing.pricing.monthlySubtitle": "Billed monthly at launch",
+  "landing.pricing.annualSubtitle": "Billed annually at launch",
+  "landing.pricing.bestValue": "Best Value",
+  "landing.pricing.earlyFeature8": "Shopping lists",
+  "landing.pricing.earlyFeature9": "Debt & receivable tracker",
+  "landing.pricing.earlyFeature10": "Recurring transactions",
+  "landing.pricing.earlyFeature11": "Installable on phone & laptop",
+
+  // Final CTA
+  "landing.cta.title": "Start Managing Your Money Today",
+  "landing.cta.subtitle":
+    "Completely free during development. No credit card. No sign-up required to try.",
+  "landing.cta.tryDemo": "Try the Demo Now",
+  "landing.cta.signIn": "or Sign In",
+
   "landing.pricing.title": "Simple Pricing",
-  "landing.pricing.subtitle":
-    "Free during development, paid plans coming at official launch.",
+  "landing.pricing.subtitle": "Free during development, paid plans coming at official launch.",
   "landing.pricing.earlyAccess": "Early Access",
   "landing.pricing.earlyBadge": "Current",
   "landing.pricing.free": "FREE",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { ArrowLeftRight, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeftRight, MoreHorizontal, Pencil, Receipt, Trash2 } from "lucide-react";
 import { IconRenderer } from "@/lib/icon-map";
 import { toast } from "sonner";
 import {
@@ -36,16 +36,20 @@ import { useCategoryStore } from "@/stores/category-store";
 import { formatCurrency, formatDate, getTransactionColor, getTransactionSign } from "@/lib/utils";
 import { TransactionForm } from "./transaction-form";
 import { useTranslation } from "@/hooks/use-translation";
+import { useFilteredTransactions } from "@/hooks/use-filtered-transactions";
 
 const PAGE_SIZE = 10;
 
 export function TransactionList() {
-  const transactions = useTransactionStore((s) => s.transactions);
   const filters = useTransactionStore((s) => s.filters);
   const deleteTransaction = useTransactionStore((s) => s.deleteTransaction);
   const getWalletById = useWalletStore((s) => s.getWalletById);
   const categories = useCategoryStore((s) => s.categories);
   const { t, locale } = useTranslation();
+
+  const allTransactions = useFilteredTransactions();
+
+  const categoryMap = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
 
   const [page, setPage] = useState(1);
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
@@ -56,42 +60,9 @@ export function TransactionList() {
   useEffect(() => {
     if (filtersRef.current !== filters) {
       filtersRef.current = filters;
-      setPage(1);
+      setPage(1); // eslint-disable-line react-hooks/set-state-in-effect -- intentional: reset pagination when filters change
     }
   }, [filters]);
-
-  const allTransactions = useMemo(() => {
-    let result = [...transactions];
-
-    if (filters.type && filters.type !== "ALL") {
-      result = result.filter((t) => t.type === filters.type);
-    }
-    if (filters.walletId) {
-      result = result.filter(
-        (t) => t.walletId === filters.walletId || t.toWalletId === filters.walletId
-      );
-    }
-    if (filters.categoryId) {
-      result = result.filter((t) => t.categoryId === filters.categoryId);
-    }
-    if (filters.dateFrom) {
-      result = result.filter((t) => new Date(t.date) >= filters.dateFrom!);
-    }
-    if (filters.dateTo) {
-      const endOfDay = new Date(filters.dateTo);
-      endOfDay.setHours(23, 59, 59, 999);
-      result = result.filter((t) => new Date(t.date) <= endOfDay);
-    }
-    if (filters.search) {
-      const search = filters.search.toLowerCase();
-      result = result.filter((t) =>
-        t.description.toLowerCase().includes(search)
-      );
-    }
-
-    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    return result;
-  }, [transactions, filters]);
   const totalPages = Math.max(1, Math.ceil(allTransactions.length / PAGE_SIZE));
   const paginatedTransactions = allTransactions.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
@@ -108,7 +79,8 @@ export function TransactionList() {
 
   if (allTransactions.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <Receipt className="h-12 w-12 text-muted-foreground mb-4" />
         <p className="text-muted-foreground">{t("transaction.noTransactions")}</p>
       </div>
     );
@@ -130,7 +102,7 @@ export function TransactionList() {
           </TableHeader>
           <TableBody>
             {paginatedTransactions.map((tx) => {
-              const category = categories.find((c) => c.id === tx.categoryId);
+              const category = tx.categoryId ? categoryMap.get(tx.categoryId) : undefined;
               const wallet = getWalletById(tx.walletId);
               const toWallet = tx.toWalletId ? getWalletById(tx.toWalletId) : null;
 
@@ -143,24 +115,34 @@ export function TransactionList() {
                         {tx.type === "TRANSFER" ? (
                           <ArrowLeftRight className="h-4 w-4 text-blue-500" />
                         ) : category?.icon ? (
-                          <IconRenderer name={category.icon} className="h-4 w-4" color={category.color} />
+                          <IconRenderer
+                            name={category.icon}
+                            className="h-4 w-4"
+                            color={category.color}
+                          />
                         ) : null}
                       </span>
-                      <span className="text-sm">{tx.type === "TRANSFER" ? t("common.transfer") : category?.name}</span>
+                      <span className="text-sm">
+                        {tx.type === "TRANSFER" ? t("common.transfer") : category?.name}
+                      </span>
                     </span>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground hidden md:table-cell">
                     {tx.description}
                   </TableCell>
                   <TableCell className="text-sm">
-                    {tx.type === "TRANSFER"
-                      ? `${wallet?.name} → ${toWallet?.name}`
-                      : wallet?.name}
+                    {tx.type === "TRANSFER" ? `${wallet?.name} → ${toWallet?.name}` : wallet?.name}
                   </TableCell>
-                  <TableCell className={`text-right text-sm font-semibold ${getTransactionColor(tx.type)}`}>
-                    {getTransactionSign(tx.type)}{formatCurrency(tx.amount, tx.currency)}
+                  <TableCell
+                    className={`text-right text-sm font-semibold ${getTransactionColor(tx.type)}`}
+                  >
+                    {getTransactionSign(tx.type)}
+                    {formatCurrency(tx.amount, tx.currency)}
                     {tx.toAmount && tx.toCurrency && (
-                      <span className="text-muted-foreground font-normal"> → {formatCurrency(tx.toAmount, tx.toCurrency)}</span>
+                      <span className="text-muted-foreground font-normal">
+                        {" "}
+                        → {formatCurrency(tx.toAmount, tx.toCurrency)}
+                      </span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -229,9 +211,7 @@ export function TransactionList() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("transaction.deleteTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("transaction.deleteDesc")}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("transaction.deleteDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>

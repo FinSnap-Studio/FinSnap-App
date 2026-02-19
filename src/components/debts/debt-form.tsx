@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -10,7 +10,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CurrencyInput } from "@/components/ui/currency-input";
@@ -52,9 +58,9 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
     },
   });
 
-  const watchType = form.watch("type");
-  const watchWalletId = form.watch("walletId");
-  const watchCreateTx = form.watch("createInitialTransaction");
+  const watchType = useWatch({ control: form.control, name: "type" });
+  const watchWalletId = useWatch({ control: form.control, name: "walletId" });
+  const watchCreateTx = useWatch({ control: form.control, name: "createInitialTransaction" });
   const selectedWallet = wallets.find((w) => w.id === watchWalletId);
 
   useEffect(() => {
@@ -118,7 +124,9 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
                   className={cn(
                     "w-full",
                     watchType === type && type === "DEBT" && "bg-red-600 hover:bg-red-700",
-                    watchType === type && type === "RECEIVABLE" && "bg-green-600 hover:bg-green-700"
+                    watchType === type &&
+                      type === "RECEIVABLE" &&
+                      "bg-green-600 hover:bg-green-700",
                   )}
                   onClick={() => form.setValue("type", type)}
                   disabled={isEditing}
@@ -146,7 +154,7 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
           <div className="space-y-2">
             <Label>Wallet</Label>
             <Select
-              value={form.watch("walletId")}
+              value={watchWalletId}
               onValueChange={(val) => form.setValue("walletId", val)}
               disabled={isEditing}
             >
@@ -155,7 +163,9 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
               </SelectTrigger>
               <SelectContent>
                 {wallets.map((w) => (
-                  <SelectItem key={w.id} value={w.id}>{w.name} ({w.currency})</SelectItem>
+                  <SelectItem key={w.id} value={w.id}>
+                    {w.name} ({w.currency})
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -196,10 +206,15 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground",
+                      )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "dd MMM yyyy", { locale: getDateLocale(locale) }) : t("debt.noDueDate")}
+                      {field.value
+                        ? format(field.value, "dd MMM yyyy", { locale: getDateLocale(locale) })
+                        : t("debt.noDueDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -211,7 +226,12 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
                     />
                     {field.value && (
                       <div className="p-2 border-t">
-                        <Button variant="ghost" size="sm" className="w-full" onClick={() => field.onChange(null)}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-full"
+                          onClick={() => field.onChange(null)}
+                        >
                           {t("debt.noDueDate")}
                         </Button>
                       </div>
@@ -246,14 +266,20 @@ export function DebtForm({ open, onOpenChange, debt }: DebtFormProps) {
               {watchCreateTx && (
                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted p-2 rounded">
                   <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                  <span>{watchType === "DEBT" ? t("debt.helpDebt") : t("debt.helpReceivable")}</span>
+                  <span>
+                    {watchType === "DEBT" ? t("debt.helpDebt") : t("debt.helpReceivable")}
+                  </span>
                 </div>
               )}
             </div>
           )}
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? t("common.saving") : isEditing ? t("common.update") : t("common.save")}
+            {form.formState.isSubmitting
+              ? t("common.saving")
+              : isEditing
+                ? t("common.update")
+                : t("common.save")}
           </Button>
         </form>
       </DialogContent>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import { Camera, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -85,10 +86,13 @@ export function ReceiptUpload({ onResult, disabled }: ReceiptUploadProps) {
 
       {(state === "preview" || state === "scanning") && preview && (
         <div className="relative overflow-hidden rounded-lg border">
-          <img
+          <Image
             src={preview}
             alt="Receipt"
+            width={512}
+            height={128}
             className="h-32 w-full object-cover"
+            unoptimized
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
             <div className="flex items-center gap-2 rounded-full bg-background/90 px-4 py-2">
@@ -103,10 +107,13 @@ export function ReceiptUpload({ onResult, disabled }: ReceiptUploadProps) {
 
       {state === "done" && preview && (
         <div className="relative flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
-          <img
+          <Image
             src={preview}
             alt="Receipt"
+            width={48}
+            height={48}
             className="h-12 w-12 rounded object-cover"
+            unoptimized
           />
           <div className="flex items-center gap-1.5 text-sm font-medium text-green-600 dark:text-green-400">
             <Check className="h-4 w-4" />

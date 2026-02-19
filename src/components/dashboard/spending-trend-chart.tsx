@@ -9,10 +9,10 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { useTransactionStore } from "@/stores/transaction-store";
 import { useBudgetStore } from "@/stores/budget-store";
 import { formatCurrency } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
+import { useDailyTotals } from "@/hooks/use-transaction-computed";
 
 const chartConfig = {
   cumulative: {
@@ -22,7 +22,6 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function SpendingTrendChart() {
-  const transactions = useTransactionStore((s) => s.transactions);
   const allBudgets = useBudgetStore((s) => s.budgets);
   const selectedMonth = useBudgetStore((s) => s.selectedMonth);
   const selectedYear = useBudgetStore((s) => s.selectedYear);
@@ -32,46 +31,16 @@ export function SpendingTrendChart() {
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
-  const dailyData = useMemo(() => {
-    const daysInMonth = new Date(year, month, 0).getDate();
-    const dailyMap = new Map<number, { income: number; expense: number }>();
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      dailyMap.set(day, { income: 0, expense: 0 });
-    }
-
-    for (const t of transactions) {
-      const d = new Date(t.date);
-      if (d.getMonth() + 1 !== month || d.getFullYear() !== year) continue;
-      if (t.type !== "INCOME" && t.type !== "EXPENSE") continue;
-      const day = d.getDate();
-      const entry = dailyMap.get(day)!;
-      if (t.type === "INCOME") entry.income += t.amount;
-      else entry.expense += t.amount;
-    }
-
-    const result: { date: string; dayLabel: string; income: number; expense: number }[] = [];
-    for (let day = 1; day <= daysInMonth; day++) {
-      const entry = dailyMap.get(day)!;
-      result.push({
-        date: `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
-        dayLabel: String(day),
-        income: entry.income,
-        expense: entry.expense,
-      });
-    }
-    return result;
-  }, [transactions, month, year]);
+  const dailyData = useDailyTotals(month, year);
 
   const cumulativeData = useMemo(() => {
-    let cumulative = 0;
-    return dailyData.map((d) => {
-      cumulative += d.expense;
-      return {
-        ...d,
-        cumulative,
-      };
-    });
+    const result: ((typeof dailyData)[number] & { cumulative: number })[] = [];
+    dailyData.reduce((sum, d) => {
+      const next = sum + d.expense;
+      result.push({ ...d, cumulative: next });
+      return next;
+    }, 0);
+    return result;
   }, [dailyData]);
 
   const totalBudget = useMemo(() => {
@@ -87,15 +56,13 @@ export function SpendingTrendChart() {
         label: t("common.expense"),
       },
     }),
-    [t]
+    [t],
   );
 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          {t("dashboard.spendingTrend")}
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">{t("dashboard.spendingTrend")}</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={localConfig} className="max-h-[250px] w-full">
@@ -131,9 +98,7 @@ export function SpendingTrendChart() {
             />
             <ChartTooltip
               content={
-                <ChartTooltipContent
-                  formatter={(value) => formatCurrency(value as number)}
-                />
+                <ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />
               }
             />
             {totalBudget > 0 && (

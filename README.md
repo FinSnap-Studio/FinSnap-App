@@ -20,6 +20,7 @@
 | 📊 **Smart Tracking**  | Record income, expenses, and inter-wallet transfers with full category support  |
 | 💡 **Budget Planner**  | Set monthly budgets per category with visual alerts when approaching limits     |
 | 📈 **Analytics**       | Charts, trends, and spending insights to understand your financial habits       |
+| 💳 **Debt Tracking**   | Track debts and receivables with due dates, payment history, and reminders      |
 | 🎨 **Personalization** | 7 color themes, dark/light mode, and 2 languages (English & Bahasa Indonesia)   |
 | 🔒 **Privacy First**   | Your data stays in the browser via `localStorage` — no server, no third parties |
 | 🧾 **Receipt OCR**     | Snap and scan receipts to auto-fill transaction data _(mock/demo)_              |
@@ -41,6 +42,9 @@
 | **Icons**            | [Lucide React](https://lucide.dev/)                                         |
 | **Date Utilities**   | [date-fns 4](https://date-fns.org/)                                         |
 | **Notifications**    | [Sonner](https://sonner.emilkowal.dev/)                                     |
+| **Code Formatting**  | [Biome 2](https://biomejs.dev/)                                             |
+| **Bundler**          | [Turbopack](https://turbo.build/pack) (Next.js 16 default)                  |
+| **Compiler**         | [React Compiler](https://react.dev/learn/react-compiler) (experimental)     |
 
 ---
 
@@ -48,15 +52,15 @@
 
 ### Prerequisites
 
-- **Node.js** ≥ 18.x
+- **Node.js** ≥ 20.x (tested with v20.19.5)
 - **npm** ≥ 9.x
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/dompet-hub.git
-cd dompet-hub
+git clone https://github.com/FinSnap-Studio/FinSnap-App.git
+cd FinSnap-App
 
 # Install dependencies
 npm install
@@ -69,12 +73,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Available Scripts
 
-| Command         | Description              |
-| --------------- | ------------------------ |
-| `npm run dev`   | Start development server |
-| `npm run build` | Create production build  |
-| `npm start`     | Start production server  |
-| `npm run lint`  | Run ESLint               |
+| Command          | Description              |
+| ---------------- | ------------------------ |
+| `npm run dev`    | Start development server |
+| `npm run build`  | Create production build  |
+| `npm start`      | Start production server  |
+| `npm run lint`   | Run ESLint               |
+| `npm run format` | Format code with Biome   |
 
 ---
 
@@ -90,6 +95,7 @@ src/
 │   │   ├── transactions/     # Transaction listing & filters
 │   │   ├── budgets/          # Budget planning
 │   │   ├── categories/       # Category management
+│   │   ├── debts/            # Debt & receivable tracking
 │   │   └── settings/         # App settings & preferences
 │   ├── layout.tsx            # Root layout
 │   ├── page.tsx              # Landing page
@@ -102,8 +108,11 @@ src/
 │   ├── wallets/              # Wallet cards & forms
 │   ├── transactions/         # Transaction list, filters, form
 │   ├── budgets/              # Budget cards & forms
-│   └── categories/           # Category items & forms
-├── stores/                   # Zustand state stores
+│   ├── categories/           # Category items & forms
+│   ├── debts/                # Debt tracking & payment forms
+│   ├── recurring/            # Recurring transaction templates
+│   └── templates/            # Transaction templates
+├── stores/                   # Zustand state stores (9 stores: auth, wallet, transaction, budget, category, template, recurring, debt, ui)
 ├── hooks/                    # Custom React hooks
 ├── lib/                      # Utilities, constants, i18n, validations
 ├── types/                    # TypeScript type definitions

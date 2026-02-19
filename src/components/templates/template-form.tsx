@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Info } from "lucide-react";
@@ -10,7 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { createTemplateSchema } from "@/lib/validations/template";
 import { formatCurrency, mergeRefs } from "@/lib/utils";
@@ -57,17 +63,19 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
     },
   });
 
-  const watchType = form.watch("type");
-  const watchWalletId = form.watch("walletId");
-  const watchToWalletId = form.watch("toWalletId");
-  const watchAmount = form.watch("amount");
-  const watchToAmount = form.watch("toAmount");
+  const watchType = useWatch({ control: form.control, name: "type" });
+  const watchWalletId = useWatch({ control: form.control, name: "walletId" });
+  const watchToWalletId = useWatch({ control: form.control, name: "toWalletId" });
+  const watchAmount = useWatch({ control: form.control, name: "amount" });
+  const watchToAmount = useWatch({ control: form.control, name: "toAmount" });
+  const watchCategoryId = useWatch({ control: form.control, name: "categoryId" });
 
   const sourceWallet = wallets.find((w) => w.id === watchWalletId);
   const destWallet = wallets.find((w) => w.id === watchToWalletId);
   const isCrossCurrency = !!(
     watchType === "TRANSFER" &&
-    sourceWallet && destWallet &&
+    sourceWallet &&
+    destWallet &&
     sourceWallet.currency !== destWallet.currency
   );
 
@@ -134,15 +142,18 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
     }
   };
 
-  const implicitRate = isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
-    ? watchAmount / watchToAmount
-    : null;
+  const implicitRate =
+    isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
+      ? watchAmount / watchToAmount
+      : null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto px-6">
         <SheetHeader>
-          <SheetTitle>{isEditing ? t("template.editTemplate") : t("template.addTemplate")}</SheetTitle>
+          <SheetTitle>
+            {isEditing ? t("template.editTemplate") : t("template.addTemplate")}
+          </SheetTitle>
         </SheetHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
@@ -151,7 +162,10 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
             <Label>{t("template.name")}</Label>
             <Input
               placeholder={t("template.namePlaceholder")}
-              {...(() => { const { ref, ...rest } = form.register("name"); return rest; })()}
+              {...(() => {
+                const { ref: _ref, ...rest } = form.register("name");
+                return rest;
+              })()}
               ref={mergeRefs(nameRef, form.register("name").ref)}
             />
             {form.formState.errors.name && (
@@ -162,9 +176,15 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
           {/* Type Tabs */}
           <Tabs value={watchType} onValueChange={onTypeChange}>
             <TabsList className="w-full">
-              <TabsTrigger value="INCOME" className="flex-1">{t("common.income")}</TabsTrigger>
-              <TabsTrigger value="EXPENSE" className="flex-1">{t("common.expense")}</TabsTrigger>
-              <TabsTrigger value="TRANSFER" className="flex-1">{t("common.transfer")}</TabsTrigger>
+              <TabsTrigger value="INCOME" className="flex-1">
+                {t("common.income")}
+              </TabsTrigger>
+              <TabsTrigger value="EXPENSE" className="flex-1">
+                {t("common.expense")}
+              </TabsTrigger>
+              <TabsTrigger value="TRANSFER" className="flex-1">
+                {t("common.transfer")}
+              </TabsTrigger>
             </TabsList>
           </Tabs>
 
@@ -221,7 +241,7 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
               <div className="space-y-2">
                 <Label>{t("common.category")}</Label>
                 <Select
-                  value={form.watch("categoryId") || ""}
+                  value={watchCategoryId || ""}
                   onValueChange={(val) => form.setValue("categoryId", val)}
                 >
                   <SelectTrigger>
@@ -243,10 +263,7 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
           ) : (
             <div className="space-y-2">
               <Label>{t("transfer.fromWallet")}</Label>
-              <Select
-                value={watchWalletId}
-                onValueChange={(val) => form.setValue("walletId", val)}
-              >
+              <Select value={watchWalletId} onValueChange={(val) => form.setValue("walletId", val)}>
                 <SelectTrigger>
                   <SelectValue placeholder={t("transaction.selectWallet")} />
                 </SelectTrigger>
@@ -269,7 +286,7 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
             <div className="space-y-2">
               <Label>{t("transaction.walletDest")}</Label>
               <Select
-                value={form.watch("toWalletId") || ""}
+                value={watchToWalletId || ""}
                 onValueChange={(val) => form.setValue("toWalletId", val)}
               >
                 <SelectTrigger>
@@ -296,7 +313,12 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
             <>
               <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
                 <Info className="h-4 w-4 flex-shrink-0" />
-                <span>{t("transfer.crossCurrency", { from: sourceWallet?.currency ?? "", to: destWallet?.currency ?? "" })}</span>
+                <span>
+                  {t("transfer.crossCurrency", {
+                    from: sourceWallet?.currency ?? "",
+                    to: destWallet?.currency ?? "",
+                  })}
+                </span>
               </div>
               <div className="space-y-2">
                 <Label>{t("transfer.amountDest", { currency: destWallet?.currency ?? "" })}</Label>
@@ -318,7 +340,10 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
                 )}
                 {implicitRate && (
                   <p className="text-xs text-muted-foreground">
-                    {t("transfer.rate", { dest: destWallet?.currency ?? "", rate: formatCurrency(implicitRate, sourceWallet?.currency) })}
+                    {t("transfer.rate", {
+                      dest: destWallet?.currency ?? "",
+                      rate: formatCurrency(implicitRate, sourceWallet?.currency),
+                    })}
                   </p>
                 )}
               </div>
@@ -335,7 +360,11 @@ export function TemplateForm({ open, onOpenChange, template, defaultValues }: Te
           </div>
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? t("common.saving") : isEditing ? t("common.update") : t("common.save")}
+            {form.formState.isSubmitting
+              ? t("common.saving")
+              : isEditing
+                ? t("common.update")
+                : t("common.save")}
           </Button>
         </form>
       </SheetContent>

@@ -108,16 +108,24 @@ export function RecurringList() {
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground truncate">
-                  {rec.type === "TRANSFER" ? t("common.transfer") : category?.name ?? "—"} · {wallet?.name ?? "—"}
+                  {rec.type === "TRANSFER" ? t("common.transfer") : (category?.name ?? "—")} ·{" "}
+                  {wallet?.name ?? "—"}
                 </p>
                 <p className={`text-sm font-semibold ${getTransactionColor(rec.type)}`}>
-                  {getTransactionSign(rec.type)}{formatCurrency(rec.amount, wallet?.currency)}
+                  {getTransactionSign(rec.type)}
+                  {formatCurrency(rec.amount, wallet?.currency)}
                 </p>
                 <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
                   <span>{getFrequencyLabel(t, rec.frequency, rec.interval)}</span>
-                  <span>{t("recurring.nextRun")}: {format(new Date(rec.nextRunDate), "dd MMM yyyy", { locale: dateLocale })}</span>
+                  <span>
+                    {t("recurring.nextRun")}:{" "}
+                    {format(new Date(rec.nextRunDate), "dd MMM yyyy", { locale: dateLocale })}
+                  </span>
                   {rec.lastRunDate && (
-                    <span>{t("recurring.lastRun")}: {format(new Date(rec.lastRunDate), "dd MMM yyyy", { locale: dateLocale })}</span>
+                    <span>
+                      {t("recurring.lastRun")}:{" "}
+                      {format(new Date(rec.lastRunDate), "dd MMM yyyy", { locale: dateLocale })}
+                    </span>
                   )}
                 </div>
               </div>
@@ -130,9 +138,13 @@ export function RecurringList() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => handleToggle(rec)}>
                     {rec.isActive ? (
-                      <><Pause className="h-4 w-4 mr-2" /> {t("recurring.paused")}</>
+                      <>
+                        <Pause className="h-4 w-4 mr-2" /> {t("recurring.paused")}
+                      </>
                     ) : (
-                      <><Play className="h-4 w-4 mr-2" /> {t("recurring.active")}</>
+                      <>
+                        <Play className="h-4 w-4 mr-2" /> {t("recurring.active")}
+                      </>
                     )}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setEditingRecurring(rec)}>
@@ -159,7 +171,10 @@ export function RecurringList() {
       />
 
       {/* Delete Confirmation */}
-      <AlertDialog open={!!deletingRecurring} onOpenChange={(open) => !open && setDeletingRecurring(null)}>
+      <AlertDialog
+        open={!!deletingRecurring}
+        onOpenChange={(open) => !open && setDeletingRecurring(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("recurring.deleteTitle")}</AlertDialogTitle>

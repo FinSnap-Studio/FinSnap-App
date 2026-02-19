@@ -1,6 +1,12 @@
 "use client";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CURRENCIES, type CurrencyCode } from "@/lib/currencies";
 
 interface CurrencySelectProps {
@@ -11,7 +17,11 @@ interface CurrencySelectProps {
 
 export function CurrencySelect({ value, onValueChange, disabled }: CurrencySelectProps) {
   return (
-    <Select value={value} onValueChange={(v) => onValueChange(v as CurrencyCode)} disabled={disabled}>
+    <Select
+      value={value}
+      onValueChange={(v) => onValueChange(v as CurrencyCode)}
+      disabled={disabled}
+    >
       <SelectTrigger>
         <SelectValue placeholder="Pilih mata uang" />
       </SelectTrigger>

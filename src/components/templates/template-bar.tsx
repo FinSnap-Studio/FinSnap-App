@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowDownCircle, ArrowLeftRight, ArrowUpCircle, ListPlus, Plus, Settings2 } from "lucide-react";
+import {
+  ArrowDownCircle,
+  ArrowLeftRight,
+  ArrowUpCircle,
+  ListPlus,
+  Plus,
+  Settings2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TransactionTemplate } from "@/types";
 import { useTemplateStore } from "@/stores/template-store";
@@ -24,9 +31,10 @@ interface TemplateBarProps {
   onApply: (template: TransactionTemplate) => void;
   onAdd: () => void;
   onManage: () => void;
+  wrap?: boolean;
 }
 
-export function TemplateBar({ onApply, onAdd, onManage }: TemplateBarProps) {
+export function TemplateBar({ onApply, onAdd, onManage, wrap = false }: TemplateBarProps) {
   const templates = useTemplateStore((s) => s.templates);
   const getWalletById = useWalletStore((s) => s.getWalletById);
   const { t } = useTranslation();
@@ -42,7 +50,9 @@ export function TemplateBar({ onApply, onAdd, onManage }: TemplateBarProps) {
         </div>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <div
+        className={wrap ? "flex flex-wrap gap-2" : "flex gap-2 overflow-x-auto pb-1 scrollbar-none"}
+      >
         {/* Add template button */}
         <button
           type="button"

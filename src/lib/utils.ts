@@ -9,13 +9,22 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const currencyFormatters = new Map<string, Intl.NumberFormat>();
+
 export function formatCurrency(amount: number, currency?: CurrencyCode): string {
-  const info = getCurrencyInfo(currency ?? "IDR");
-  return new Intl.NumberFormat(info.locale, {
-    style: "currency", currency: info.code,
-    minimumFractionDigits: info.minFractionDigits,
-    maximumFractionDigits: info.maxFractionDigits,
-  }).format(amount);
+  const code = currency ?? "IDR";
+  let formatter = currencyFormatters.get(code);
+  if (!formatter) {
+    const info = getCurrencyInfo(code);
+    formatter = new Intl.NumberFormat(info.locale, {
+      style: "currency",
+      currency: info.code,
+      minimumFractionDigits: info.minFractionDigits,
+      maximumFractionDigits: info.maxFractionDigits,
+    });
+    currencyFormatters.set(code, formatter);
+  }
+  return formatter.format(amount);
 }
 
 export function formatDate(dateString: string, pattern = "dd MMM yyyy", locale?: Locale): string {
@@ -31,6 +40,7 @@ export function getMonthName(month: number, locale?: Locale): string {
 }
 
 export function getBudgetStatus(spent: number, amount: number): "safe" | "warning" | "danger" {
+  if (amount <= 0) return "safe";
   const pct = (spent / amount) * 100;
   if (pct >= 90) return "danger";
   if (pct >= 70) return "warning";

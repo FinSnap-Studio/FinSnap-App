@@ -11,9 +11,9 @@ import {
   ChartLegendContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { useTransactionStore } from "@/stores/transaction-store";
 import { formatCurrency } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
+import { useMonthlyTrend } from "@/hooks/use-transaction-computed";
 
 const chartConfig = {
   income: {
@@ -27,57 +27,29 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function IncomeVsExpenseChart() {
-  const transactions = useTransactionStore((s) => s.transactions);
   const { t } = useTranslation();
 
-  const data = useMemo(() => {
-    const now = new Date();
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const result: { month: number; year: number; label: string; income: number; expense: number }[] = [];
-
-    for (let i = 5; i >= 0; i--) {
-      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const m = date.getMonth() + 1;
-      const y = date.getFullYear();
-      let income = 0;
-      let expense = 0;
-      for (const t of transactions) {
-        const d = new Date(t.date);
-        if (d.getMonth() + 1 !== m || d.getFullYear() !== y) continue;
-        if (t.type === "INCOME") income += t.amount;
-        else if (t.type === "EXPENSE") expense += t.amount;
-      }
-      result.push({ month: m, year: y, label: monthNames[m - 1], income, expense });
-    }
-    return result;
-  }, [transactions]);
+  const data = useMonthlyTrend(6);
 
   const localConfig = useMemo(
     () => ({
       income: { ...chartConfig.income, label: t("common.income") },
       expense: { ...chartConfig.expense, label: t("common.expense") },
     }),
-    [t]
+    [t],
   );
 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          {t("dashboard.incomeVsExpense")}
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">{t("dashboard.incomeVsExpense")}</CardTitle>
         <CardDescription>{t("dashboard.last6Months")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={localConfig} className="max-h-[250px] w-full">
           <BarChart data={data} accessibilityLayer>
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="label"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} />
             <YAxis
               tickLine={false}
               axisLine={false}
@@ -90,9 +62,7 @@ export function IncomeVsExpenseChart() {
             />
             <ChartTooltip
               content={
-                <ChartTooltipContent
-                  formatter={(value) => formatCurrency(value as number)}
-                />
+                <ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />
               }
             />
             <ChartLegend content={<ChartLegendContent />} />

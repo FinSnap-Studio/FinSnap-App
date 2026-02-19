@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import Link from "next/link";
 import { AlertTriangle, Clock, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,9 @@ import { useTranslation } from "@/hooks/use-translation";
 export function DebtReminder() {
   const { t } = useTranslation();
   const debts = useDebtStore((s) => s.debts);
+  // eslint-disable-next-line react-hooks/purity -- capture timestamp once on mount, intentionally impure
+  const nowRef = useRef(Date.now());
+  const now = nowRef.current;
 
   const reminders = useMemo(() => {
     const now = new Date();
@@ -47,21 +50,37 @@ export function DebtReminder() {
         {overdue.length > 0 && (
           <div className="space-y-2">
             {overdue.map((debt) => {
-              const days = Math.abs(Math.ceil((new Date(debt.dueDate!).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+              const days = Math.abs(
+                Math.ceil((new Date(debt.dueDate!).getTime() - now) / (1000 * 60 * 60 * 24)),
+              );
               return (
-                <div key={debt.id} className="flex items-center justify-between p-2 rounded bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900">
+                <div
+                  key={debt.id}
+                  className="flex items-center justify-between p-2 rounded bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900"
+                >
                   <div className="flex items-center gap-2 min-w-0">
                     <AlertTriangle className="h-4 w-4 text-red-500 shrink-0" />
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{debt.personName}</p>
-                      <p className="text-xs text-red-600 dark:text-red-400">{t("debt.overdue", { days })}</p>
+                      <p className="text-xs text-red-600 dark:text-red-400">
+                        {t("debt.overdue", { days })}
+                      </p>
                     </div>
                   </div>
                   <div className="text-right shrink-0 ml-2">
-                    <Badge variant="outline" className={debt.type === "DEBT" ? "border-red-300 text-red-600" : "border-green-300 text-green-600"}>
+                    <Badge
+                      variant="outline"
+                      className={
+                        debt.type === "DEBT"
+                          ? "border-red-300 text-red-600"
+                          : "border-green-300 text-green-600"
+                      }
+                    >
                       {debt.type === "DEBT" ? t("debt.typeDebt") : t("debt.typeReceivable")}
                     </Badge>
-                    <p className="text-xs font-medium mt-1">{formatCurrency(debt.amount - debt.paidAmount, debt.currency)}</p>
+                    <p className="text-xs font-medium mt-1">
+                      {formatCurrency(debt.amount - debt.paidAmount, debt.currency)}
+                    </p>
                   </div>
                 </div>
               );
@@ -72,9 +91,15 @@ export function DebtReminder() {
         {dueSoon.length > 0 && (
           <div className="space-y-2">
             {dueSoon.map((debt) => {
-              const days = Math.max(0, Math.ceil((new Date(debt.dueDate!).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+              const days = Math.max(
+                0,
+                Math.ceil((new Date(debt.dueDate!).getTime() - now) / (1000 * 60 * 60 * 24)),
+              );
               return (
-                <div key={debt.id} className="flex items-center justify-between p-2 rounded bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900">
+                <div
+                  key={debt.id}
+                  className="flex items-center justify-between p-2 rounded bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900"
+                >
                   <div className="flex items-center gap-2 min-w-0">
                     <Clock className="h-4 w-4 text-yellow-500 shrink-0" />
                     <div className="min-w-0">
@@ -85,10 +110,19 @@ export function DebtReminder() {
                     </div>
                   </div>
                   <div className="text-right shrink-0 ml-2">
-                    <Badge variant="outline" className={debt.type === "DEBT" ? "border-red-300 text-red-600" : "border-green-300 text-green-600"}>
+                    <Badge
+                      variant="outline"
+                      className={
+                        debt.type === "DEBT"
+                          ? "border-red-300 text-red-600"
+                          : "border-green-300 text-green-600"
+                      }
+                    >
                       {debt.type === "DEBT" ? t("debt.typeDebt") : t("debt.typeReceivable")}
                     </Badge>
-                    <p className="text-xs font-medium mt-1">{formatCurrency(debt.amount - debt.paidAmount, debt.currency)}</p>
+                    <p className="text-xs font-medium mt-1">
+                      {formatCurrency(debt.amount - debt.paidAmount, debt.currency)}
+                    </p>
                   </div>
                 </div>
               );

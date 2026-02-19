@@ -1,13 +1,19 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CurrencySelect } from "@/components/ui/currency-select";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { createBudgetSchema } from "@/lib/validations/budget";
@@ -50,6 +56,11 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
       year: selectedYear,
     },
   });
+
+  const watchCategoryId = useWatch({ control: form.control, name: "categoryId" });
+  const watchCurrency = useWatch({ control: form.control, name: "currency" });
+  const watchMonth = useWatch({ control: form.control, name: "month" });
+  const watchYear = useWatch({ control: form.control, name: "year" });
 
   useEffect(() => {
     if (open) {
@@ -110,7 +121,7 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
             <div className="space-y-2">
               <Label>{t("common.category")}</Label>
               <Select
-                value={form.watch("categoryId")}
+                value={watchCategoryId}
                 onValueChange={(val) => form.setValue("categoryId", val)}
                 disabled={isEditing}
               >
@@ -133,7 +144,7 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
             <div className="space-y-2">
               <Label>{t("common.currency")}</Label>
               <CurrencySelect
-                value={form.watch("currency")}
+                value={watchCurrency}
                 onValueChange={(val) => form.setValue("currency", val as CurrencyCode)}
                 disabled={isEditing}
               />
@@ -154,7 +165,7 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
-                  currencyCode={form.watch("currency")}
+                  currencyCode={watchCurrency}
                   hasError={!!form.formState.errors.amount}
                 />
               )}
@@ -168,7 +179,7 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
             <div className="space-y-2">
               <Label>{t("common.month")}</Label>
               <Select
-                value={String(form.watch("month"))}
+                value={String(watchMonth)}
                 onValueChange={(val) => form.setValue("month", Number(val))}
                 disabled={isEditing}
               >
@@ -177,7 +188,9 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
                 </SelectTrigger>
                 <SelectContent>
                   {MONTH_VALUES.map((m) => (
-                    <SelectItem key={m} value={String(m)}>{getMonthName(m, locale)}</SelectItem>
+                    <SelectItem key={m} value={String(m)}>
+                      {getMonthName(m, locale)}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -185,7 +198,7 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
             <div className="space-y-2">
               <Label>{t("common.year")}</Label>
               <Select
-                value={String(form.watch("year"))}
+                value={String(watchYear)}
                 onValueChange={(val) => form.setValue("year", Number(val))}
                 disabled={isEditing}
               >
@@ -194,7 +207,9 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
                 </SelectTrigger>
                 <SelectContent>
                   {[2024, 2025, 2026, 2027, 2028, 2029, 2030].map((y) => (
-                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                    <SelectItem key={y} value={String(y)}>
+                      {y}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -202,7 +217,11 @@ export function BudgetForm({ open, onOpenChange, budget }: BudgetFormProps) {
           </div>
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? t("common.saving") : isEditing ? t("common.update") : t("common.save")}
+            {form.formState.isSubmitting
+              ? t("common.saving")
+              : isEditing
+                ? t("common.update")
+                : t("common.save")}
           </Button>
         </form>
       </DialogContent>

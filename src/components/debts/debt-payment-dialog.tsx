@@ -51,17 +51,18 @@ export function DebtPaymentDialog({ open, onOpenChange, debt }: DebtPaymentDialo
     if (open && debt) {
       form.reset({ amount: 0, date: new Date(), description: "" });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, debt]);
 
   if (!debt) return null;
 
-  const title = debt.type === "DEBT"
-    ? t("debt.paymentTitle", { name: debt.personName })
-    : t("debt.collectionTitle", { name: debt.personName });
+  const title =
+    debt.type === "DEBT"
+      ? t("debt.paymentTitle", { name: debt.personName })
+      : t("debt.collectionTitle", { name: debt.personName });
 
   const setQuickAmount = (pct: number) => {
-    const amount = pct === 100 ? remaining : Math.round(remaining * pct / 100);
+    const amount = pct === 100 ? remaining : Math.round((remaining * pct) / 100);
     form.setValue("amount", amount);
   };
 
@@ -83,7 +84,10 @@ export function DebtPaymentDialog({ open, onOpenChange, debt }: DebtPaymentDialo
         </DialogHeader>
 
         <div className="text-sm text-muted-foreground mb-2">
-          {t("debt.remaining")}: <span className="font-semibold text-foreground">{formatCurrency(remaining, debt.currency)}</span>
+          {t("debt.remaining")}:{" "}
+          <span className="font-semibold text-foreground">
+            {formatCurrency(remaining, debt.currency)}
+          </span>
         </div>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -133,10 +137,15 @@ export function DebtPaymentDialog({ open, onOpenChange, debt }: DebtPaymentDialo
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground",
+                      )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "dd MMM yyyy", { locale: getDateLocale(locale) }) : t("common.selectDate")}
+                      {field.value
+                        ? format(field.value, "dd MMM yyyy", { locale: getDateLocale(locale) })
+                        : t("common.selectDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -162,7 +171,11 @@ export function DebtPaymentDialog({ open, onOpenChange, debt }: DebtPaymentDialo
           </div>
 
           <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? t("common.processing") : debt.type === "DEBT" ? t("debt.makePayment") : t("debt.collectPayment")}
+            {form.formState.isSubmitting
+              ? t("common.processing")
+              : debt.type === "DEBT"
+                ? t("debt.makePayment")
+                : t("debt.collectPayment")}
           </Button>
         </form>
       </DialogContent>

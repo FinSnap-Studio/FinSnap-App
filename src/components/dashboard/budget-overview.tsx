@@ -68,12 +68,7 @@ export function BudgetOverview() {
                   startAngle={90}
                   endAngle={-270}
                 >
-                  <PolarAngleAxis
-                    type="number"
-                    domain={[0, 100]}
-                    angleAxisId={0}
-                    tick={false}
-                  />
+                  <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                   <RadialBar
                     dataKey="used"
                     cornerRadius={6}
@@ -92,7 +87,9 @@ export function BudgetOverview() {
                 </RadialBarChart>
               </ChartContainer>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-foreground">{t("dashboard.overallBudget")}</p>
+                <p className="text-sm font-medium text-foreground">
+                  {t("dashboard.overallBudget")}
+                </p>
                 <p className="text-xs text-muted-foreground">
                   {formatCurrency(totalSpent)} / {formatCurrency(totalBudget)}
                 </p>
@@ -112,18 +109,25 @@ export function BudgetOverview() {
                   status === "danger"
                     ? "bg-red-500"
                     : status === "warning"
-                    ? "bg-yellow-500"
-                    : "bg-green-500";
+                      ? "bg-yellow-500"
+                      : "bg-green-500";
 
                 return (
                   <div key={budget.id} className="space-y-1.5">
                     <div className="flex items-center justify-between text-sm">
                       <span className="flex items-center gap-1.5">
-                        {category?.icon && <IconRenderer name={category.icon} className="h-4 w-4" color={category.color} />}
+                        {category?.icon && (
+                          <IconRenderer
+                            name={category.icon}
+                            className="h-4 w-4"
+                            color={category.color}
+                          />
+                        )}
                         <span className="font-medium">{category?.name}</span>
                       </span>
                       <span className="text-muted-foreground">
-                        {formatCurrency(budget.spent, budget.currency)} / {formatCurrency(budget.amount, budget.currency)}
+                        {formatCurrency(budget.spent, budget.currency)} /{" "}
+                        {formatCurrency(budget.amount, budget.currency)}
                       </span>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">

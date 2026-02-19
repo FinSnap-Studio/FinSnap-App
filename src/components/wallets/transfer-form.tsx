@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -10,7 +10,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CurrencyInput } from "@/components/ui/currency-input";
@@ -53,14 +59,19 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
     },
   });
 
-  const watchWalletId = form.watch("walletId");
-  const watchToWalletId = form.watch("toWalletId");
-  const watchAmount = form.watch("amount");
-  const watchToAmount = form.watch("toAmount");
+  const watchWalletId = useWatch({ control: form.control, name: "walletId" });
+  const watchToWalletId = useWatch({ control: form.control, name: "toWalletId" });
+  const watchAmount = useWatch({ control: form.control, name: "amount" });
+  const watchToAmount = useWatch({ control: form.control, name: "toAmount" });
+  const watchDate = useWatch({ control: form.control, name: "date" });
 
   const sourceWallet = wallets.find((w) => w.id === watchWalletId);
   const destWallet = wallets.find((w) => w.id === watchToWalletId);
-  const isCrossCurrency = !!(sourceWallet && destWallet && sourceWallet.currency !== destWallet.currency);
+  const isCrossCurrency = !!(
+    sourceWallet &&
+    destWallet &&
+    sourceWallet.currency !== destWallet.currency
+  );
 
   useEffect(() => {
     if (open) {
@@ -91,9 +102,10 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
     }
   };
 
-  const implicitRate = isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
-    ? watchAmount / watchToAmount
-    : null;
+  const implicitRate =
+    isCrossCurrency && watchAmount > 0 && watchToAmount && watchToAmount > 0
+      ? watchAmount / watchToAmount
+      : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -109,7 +121,7 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
               value={watchWalletId}
               onValueChange={(val) => {
                 form.setValue("walletId", val);
-                if (form.watch("toWalletId") === val) {
+                if (watchToWalletId === val) {
                   form.setValue("toWalletId", "");
                 }
               }}
@@ -133,7 +145,7 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
           <div className="space-y-2">
             <Label>{t("transfer.toWallet")}</Label>
             <Select
-              value={form.watch("toWalletId") || ""}
+              value={watchToWalletId || ""}
               onValueChange={(val) => form.setValue("toWalletId", val)}
             >
               <SelectTrigger>
@@ -157,7 +169,12 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
           {isCrossCurrency && (
             <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
               <Info className="h-4 w-4 flex-shrink-0" />
-              <span>{t("transfer.crossCurrency", { from: sourceWallet?.currency ?? "", to: destWallet?.currency ?? "" })}</span>
+              <span>
+                {t("transfer.crossCurrency", {
+                  from: sourceWallet?.currency ?? "",
+                  to: destWallet?.currency ?? "",
+                })}
+              </span>
             </div>
           )}
 
@@ -207,7 +224,10 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
               )}
               {implicitRate && (
                 <p className="text-xs text-muted-foreground">
-                  {t("transfer.rate", { dest: destWallet?.currency ?? "", rate: formatCurrency(implicitRate, sourceWallet?.currency) })}
+                  {t("transfer.rate", {
+                    dest: destWallet?.currency ?? "",
+                    rate: formatCurrency(implicitRate, sourceWallet?.currency),
+                  })}
                 </p>
               )}
             </div>
@@ -226,19 +246,19 @@ export function TransferForm({ open, onOpenChange }: TransferFormProps) {
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !form.watch("date") && "text-muted-foreground"
+                    !watchDate && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {form.watch("date")
-                    ? format(form.watch("date"), "PPP", { locale: getDateLocale(locale) })
+                  {watchDate
+                    ? format(watchDate, "PPP", { locale: getDateLocale(locale) })
                     : t("common.selectDate")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={form.watch("date")}
+                  selected={watchDate}
                   onSelect={(date) => date && form.setValue("date", date)}
                   locale={getDateLocale(locale)}
                   initialFocus
