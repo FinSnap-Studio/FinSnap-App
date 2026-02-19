@@ -5,9 +5,11 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useUIStore } from "@/stores/ui-store";
 import { LandingNavbar } from "@/components/landing/landing-navbar";
 import { HeroSection } from "@/components/landing/hero-section";
+import { BeforeAfterSection } from "@/components/landing/before-after-section";
 import { FeaturesSection } from "@/components/landing/features-section";
-import { BenefitsSection } from "@/components/landing/benefits-section";
+import { StatsSection } from "@/components/landing/stats-section";
 import { PricingSection } from "@/components/landing/pricing-section";
+import { FinalCtaSection } from "@/components/landing/final-cta-section";
 import { DeveloperSection } from "@/components/landing/developer-section";
 import { LandingFooter } from "@/components/landing/landing-footer";
 
@@ -33,9 +35,11 @@ export default function Home() {
       <LandingNavbar />
       <main className="pt-16">
         <HeroSection />
+        <BeforeAfterSection />
         <FeaturesSection />
-        <BenefitsSection />
+        <StatsSection />
         <PricingSection />
+        <FinalCtaSection />
         <DeveloperSection />
       </main>
       <LandingFooter />

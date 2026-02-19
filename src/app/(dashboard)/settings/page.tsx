@@ -264,7 +264,6 @@ export default function SettingsPage() {
                 className="flex-1"
                 onClick={() => setLocale(opt.code)}
               >
-                <span className="mr-2">{opt.flag}</span>
                 {opt.label}
               </Button>
             ))}

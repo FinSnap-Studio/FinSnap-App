@@ -16,11 +16,10 @@ import { useUIStore } from "@/stores/ui-store";
 import { seedDemoData } from "@/lib/storage";
 import { useTranslation } from "@/hooks/use-translation";
 import { COLOR_THEMES } from "@/lib/themes";
-import { LOCALE_OPTIONS } from "@/lib/i18n";
 
 const NAV_LINKS = [
+  { key: "landing.nav.beforeAfter" as const, href: "#before-after" },
   { key: "landing.nav.features" as const, href: "#features" },
-  { key: "landing.nav.benefits" as const, href: "#benefits" },
   { key: "landing.nav.pricing" as const, href: "#pricing" },
   { key: "landing.nav.developer" as const, href: "#developer" },
 ];
@@ -52,8 +51,6 @@ export function LandingNavbar() {
     await useAuthStore.getState().login("demo@finsnap.app", "demo");
     router.push("/dashboard");
   }, [router]);
-
-  const currentFlag = LOCALE_OPTIONS.find((o) => o.code === locale)?.flag ?? "🌐";
 
   return (
     <header
@@ -124,7 +121,7 @@ export function LandingNavbar() {
             size="icon-sm"
             onClick={() => setLocale(locale === "id" ? "en" : "id")}
           >
-            <span className="text-sm leading-none">{currentFlag}</span>
+            <span className="text-sm font-medium leading-none">{locale.toUpperCase()}</span>
           </Button>
 
           {/* Desktop Auth CTA */}

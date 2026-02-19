@@ -106,8 +106,7 @@ export function Header() {
                     className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-colors ${locale === opt.code ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
                     onClick={() => setLocale(opt.code)}
                   >
-                    <span>{opt.flag}</span>
-                    <span>{opt.code.toUpperCase()}</span>
+                    <span>{opt.label}</span>
                   </button>
                 ))}
               </div>

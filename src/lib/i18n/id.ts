@@ -493,6 +493,7 @@ export const id = {
   // Landing Page
   "landing.nav.features": "Fitur",
   "landing.nav.benefits": "Keunggulan",
+  "landing.nav.beforeAfter": "Sebelum & Sesudah",
   "landing.nav.pricing": "Harga",
   "landing.nav.developer": "Developer",
   "landing.nav.signIn": "Masuk",
@@ -505,6 +506,7 @@ export const id = {
   "landing.hero.desc":
     "Kelola semua wallet, lacak setiap transaksi, dan kendalikan budget bulananmu — semuanya di satu tempat, langsung dari browser.",
   "landing.hero.tryDemo": "Coba Demo",
+  "landing.hero.tryDemoSubtext": "Tanpa daftar. Langsung eksplorasi dengan data demo.",
   "landing.hero.signIn": "Masuk",
 
   "landing.features.title": "Semua yang Kamu Butuhkan",
@@ -528,6 +530,8 @@ export const id = {
   "landing.features.privacyFirst": "Privasi Utama",
   "landing.features.privacyFirstDesc":
     "Datamu tersimpan di browser. Tidak ada server, tidak ada pihak ketiga — hanya kamu.",
+  "landing.features.filterCore": "Utama",
+  "landing.features.filterAll": "Semua Fitur",
 
   "landing.benefits.title": "Kenapa FinSnap?",
   "landing.benefits.subtitle":
@@ -541,6 +545,83 @@ export const id = {
   "landing.benefits.insightTitle": "Lihat Gambaran Lengkap",
   "landing.benefits.insightDesc":
     "Visualisasi pengeluaran dengan grafik interaktif. Temukan pola dan ambil keputusan keuangan yang lebih cerdas.",
+
+  // Before & After
+  "landing.beforeAfter.title": "Sebelum & Sesudah FinSnap",
+  "landing.beforeAfter.subtitle":
+    "Masalah keuangan yang familiar — dan bagaimana FinSnap mengatasinya.",
+  "landing.beforeAfter.before1": "Catatan tersebar di spreadsheet, notes, dan struk",
+  "landing.beforeAfter.after1": "Dashboard terpadu untuk semua akun",
+  "landing.beforeAfter.beforeDesc1":
+    "Data keuangan tersebar di mana-mana, susah dilacak dan sering hilang.",
+  "landing.beforeAfter.afterDesc1":
+    "Semua wallet, transaksi, dan budget tersaji rapi dalam satu tampilan.",
+  "landing.beforeAfter.before2": "Tidak tahu ke mana uang pergi tiap bulan",
+  "landing.beforeAfter.after2": "Peringatan budget & breakdown per kategori",
+  "landing.beforeAfter.beforeDesc2": "Akhir bulan selalu kaget karena pengeluaran tidak terpantau.",
+  "landing.beforeAfter.afterDesc2":
+    "Lihat alokasi pengeluaran per kategori dan dapat peringatan sebelum over budget.",
+  "landing.beforeAfter.before3": "Tagihan terlupakan di akhir bulan",
+  "landing.beforeAfter.after3": "Pengingat berulang, tidak ada yang terlewat",
+  "landing.beforeAfter.beforeDesc3": "Lupa bayar tagihan rutin menyebabkan denda dan stres.",
+  "landing.beforeAfter.afterDesc3":
+    "Transaksi berulang otomatis menjaga semua tagihan tetap terkendali.",
+  "landing.beforeAfter.before4": "Cash, kartu, e-wallet bercampur aduk",
+  "landing.beforeAfter.after4": "Multi-wallet dengan transfer mudah",
+  "landing.beforeAfter.beforeDesc4": "Sulit membedakan saldo masing-masing sumber uang.",
+  "landing.beforeAfter.afterDesc4":
+    "Kelola setiap wallet terpisah dan transfer antar wallet dengan satu klik.",
+
+  // New feature cards
+  "landing.features.shoppingList": "Daftar Belanja",
+  "landing.features.shoppingListDesc":
+    "Buat daftar belanja, lacak item, dan catat pengeluaran otomatis saat pembelian.",
+  "landing.features.debtTracking": "Pelacak Hutang",
+  "landing.features.debtTrackingDesc":
+    "Catat hutang dan piutang dengan pengingat jatuh tempo dan riwayat pembayaran.",
+  "landing.features.recurringTx": "Transaksi Berulang",
+  "landing.features.recurringTxDesc":
+    "Atur pembayaran rutin otomatis — tagihan bulanan, langganan, dan lainnya.",
+  "landing.features.pwaReady": "Bisa Dipasang",
+  "landing.features.pwaReadyDesc":
+    "Pasang langsung di HP atau laptop — bisa dipakai tanpa buka browser, bahkan saat offline.",
+
+  // Stats
+  "landing.stats.title": "FinSnap dalam Angka",
+  "landing.stats.subtitle": "Dibangun lengkap untuk kebutuhan keuangan pribadimu.",
+  "landing.stats.features": "10+ Fitur",
+  "landing.stats.featuresDesc": "Alat keuangan menyeluruh",
+  "landing.stats.themes": "7 Tema",
+  "landing.stats.themesDesc": "Tema warna sesuai gayamu",
+  "landing.stats.languages": "2 Bahasa",
+  "landing.stats.languagesDesc": "Bahasa Indonesia & English",
+  "landing.stats.free": "100% Gratis",
+  "landing.stats.freeDesc": "Tanpa biaya tersembunyi saat early access",
+  "landing.stats.pwa": "Bisa Dipasang",
+  "landing.stats.pwaDesc": "Pasang di HP atau laptop",
+  "landing.stats.private": "100% Privat",
+  "landing.stats.privateDesc": "Semua data tersimpan di perangkatmu",
+
+  // Pricing additions
+  "landing.pricing.monthly": "Bulanan",
+  "landing.pricing.annual": "Tahunan",
+  "landing.pricing.annualSave": "Hemat 20%",
+  "landing.pricing.freeNote":
+    "FinSnap sepenuhnya gratis selama pengembangan. Paket berbayar akan diluncurkan nanti.",
+  "landing.pricing.monthlySubtitle": "Ditagih bulanan saat peluncuran",
+  "landing.pricing.annualSubtitle": "Ditagih tahunan saat peluncuran",
+  "landing.pricing.bestValue": "Terbaik",
+  "landing.pricing.earlyFeature8": "Daftar belanja",
+  "landing.pricing.earlyFeature9": "Pelacak hutang/piutang",
+  "landing.pricing.earlyFeature10": "Transaksi berulang",
+  "landing.pricing.earlyFeature11": "Bisa dipasang di HP & laptop",
+
+  // Final CTA
+  "landing.cta.title": "Mulai Kelola Keuanganmu Hari Ini",
+  "landing.cta.subtitle":
+    "Gratis sepenuhnya selama pengembangan. Tanpa kartu kredit. Tanpa daftar untuk mencoba.",
+  "landing.cta.tryDemo": "Coba Demo Sekarang",
+  "landing.cta.signIn": "atau Masuk",
 
   "landing.pricing.title": "Harga Sederhana",
   "landing.pricing.subtitle": "Gratis selama pengembangan, berbayar nanti saat peluncuran resmi.",

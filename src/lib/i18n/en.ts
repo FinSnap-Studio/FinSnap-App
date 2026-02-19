@@ -493,6 +493,7 @@ export const en: Record<TranslationKey, string> = {
   // Landing Page
   "landing.nav.features": "Features",
   "landing.nav.benefits": "Benefits",
+  "landing.nav.beforeAfter": "Before & After",
   "landing.nav.pricing": "Pricing",
   "landing.nav.developer": "Developer",
   "landing.nav.signIn": "Sign In",
@@ -505,6 +506,7 @@ export const en: Record<TranslationKey, string> = {
   "landing.hero.desc":
     "Manage all your wallets, track every transaction, and control your monthly budgets — all in one place, right from your browser.",
   "landing.hero.tryDemo": "Try Demo",
+  "landing.hero.tryDemoSubtext": "No sign-up required. Explore with demo data.",
   "landing.hero.signIn": "Sign In",
 
   "landing.features.title": "Everything You Need",
@@ -528,6 +530,8 @@ export const en: Record<TranslationKey, string> = {
   "landing.features.privacyFirst": "Privacy First",
   "landing.features.privacyFirstDesc":
     "Your data stays in the browser. No servers, no third parties — just you.",
+  "landing.features.filterCore": "Core",
+  "landing.features.filterAll": "All Features",
 
   "landing.benefits.title": "Why FinSnap?",
   "landing.benefits.subtitle": "Designed to help you manage your finances better.",
@@ -540,6 +544,82 @@ export const en: Record<TranslationKey, string> = {
   "landing.benefits.insightTitle": "See the Full Picture",
   "landing.benefits.insightDesc":
     "Visualize spending with interactive charts. Discover patterns and make smarter financial decisions.",
+
+  // Before & After
+  "landing.beforeAfter.title": "Before & After FinSnap",
+  "landing.beforeAfter.subtitle": "Familiar money problems — and how FinSnap solves them.",
+  "landing.beforeAfter.before1": "Scattered tracking across spreadsheets, notes, receipts",
+  "landing.beforeAfter.after1": "Unified dashboard with all accounts",
+  "landing.beforeAfter.beforeDesc1":
+    "Financial data scattered everywhere, hard to track and often lost.",
+  "landing.beforeAfter.afterDesc1":
+    "All wallets, transactions, and budgets neatly organized in one view.",
+  "landing.beforeAfter.before2": "No idea where money goes each month",
+  "landing.beforeAfter.after2": "Budget alerts & category breakdown",
+  "landing.beforeAfter.beforeDesc2": "End-of-month shock because spending goes unmonitored.",
+  "landing.beforeAfter.afterDesc2":
+    "See spending by category and get alerts before going over budget.",
+  "landing.beforeAfter.before3": "End-of-month surprises from forgotten bills",
+  "landing.beforeAfter.after3": "Recurring reminders, nothing slips",
+  "landing.beforeAfter.beforeDesc3": "Forgetting routine payments leads to penalties and stress.",
+  "landing.beforeAfter.afterDesc3":
+    "Automated recurring transactions keep all bills under control.",
+  "landing.beforeAfter.before4": "Cash, cards, e-wallets all mixed up",
+  "landing.beforeAfter.after4": "Multi-wallet with easy transfers",
+  "landing.beforeAfter.beforeDesc4": "Hard to tell how much is in each money source.",
+  "landing.beforeAfter.afterDesc4":
+    "Manage each wallet separately and transfer between them in one click.",
+
+  // New feature cards
+  "landing.features.shoppingList": "Shopping Lists",
+  "landing.features.shoppingListDesc":
+    "Create shopping lists, track items, and auto-record expenses on purchase.",
+  "landing.features.debtTracking": "Debt Tracker",
+  "landing.features.debtTrackingDesc":
+    "Track debts and receivables with due-date reminders and payment history.",
+  "landing.features.recurringTx": "Recurring Transactions",
+  "landing.features.recurringTxDesc":
+    "Set up automatic recurring payments — monthly bills, subscriptions, and more.",
+  "landing.features.pwaReady": "Installable App",
+  "landing.features.pwaReadyDesc":
+    "Add to your phone or laptop — use it without a browser, even when offline.",
+
+  // Stats
+  "landing.stats.title": "FinSnap in Numbers",
+  "landing.stats.subtitle": "Built complete for your personal finance needs.",
+  "landing.stats.features": "10+ Features",
+  "landing.stats.featuresDesc": "Comprehensive finance tools",
+  "landing.stats.themes": "7 Themes",
+  "landing.stats.themesDesc": "Color themes to match your style",
+  "landing.stats.languages": "2 Languages",
+  "landing.stats.languagesDesc": "Bahasa Indonesia & English",
+  "landing.stats.free": "100% Free",
+  "landing.stats.freeDesc": "No hidden costs during early access",
+  "landing.stats.pwa": "Installable",
+  "landing.stats.pwaDesc": "Add to phone or laptop",
+  "landing.stats.private": "100% Private",
+  "landing.stats.privateDesc": "All data stays on your device",
+
+  // Pricing additions
+  "landing.pricing.monthly": "Monthly",
+  "landing.pricing.annual": "Annual",
+  "landing.pricing.annualSave": "Save 20%",
+  "landing.pricing.freeNote":
+    "FinSnap is completely free during development. Paid plans will launch later.",
+  "landing.pricing.monthlySubtitle": "Billed monthly at launch",
+  "landing.pricing.annualSubtitle": "Billed annually at launch",
+  "landing.pricing.bestValue": "Best Value",
+  "landing.pricing.earlyFeature8": "Shopping lists",
+  "landing.pricing.earlyFeature9": "Debt & receivable tracker",
+  "landing.pricing.earlyFeature10": "Recurring transactions",
+  "landing.pricing.earlyFeature11": "Installable on phone & laptop",
+
+  // Final CTA
+  "landing.cta.title": "Start Managing Your Money Today",
+  "landing.cta.subtitle":
+    "Completely free during development. No credit card. No sign-up required to try.",
+  "landing.cta.tryDemo": "Try the Demo Now",
+  "landing.cta.signIn": "or Sign In",
 
   "landing.pricing.title": "Simple Pricing",
   "landing.pricing.subtitle": "Free during development, paid plans coming at official launch.",

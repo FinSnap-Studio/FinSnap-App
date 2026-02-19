@@ -29,6 +29,7 @@ const withSerwist = withSerwistInit({
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  turbopack: {},
 };
 
 export default withSerwist(nextConfig);

@@ -37,7 +37,6 @@ export function AuthSettingsPopover() {
                 className="flex-1 min-w-0 shrink"
                 onClick={() => setLocale(opt.code)}
               >
-                <span>{opt.flag}</span>
                 <span className="truncate">{opt.label}</span>
               </Button>
             ))}
